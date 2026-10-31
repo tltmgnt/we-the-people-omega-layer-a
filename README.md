@@ -4,6 +4,8 @@ Layer A defines a foundational review architecture for constitutional, legal and
 
 ## Start here
 
+- [The Five-Layer Architecture — A, B, C, D and E](Docs/Architecture/README.md)
+
 - [All 44 defined workstreams: controllable synthetic use cases](layer-b/portfolio/CONTROLLED-PORTFOLIO.md)
 - [All 50 slots: coverage and six definition holds](layer-b/portfolio/CONTROL-COVERAGE.md)
 

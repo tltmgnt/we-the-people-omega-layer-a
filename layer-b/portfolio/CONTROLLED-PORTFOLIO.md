@@ -97,3 +97,7 @@ The [one-action demo loader](DEMO-LOADER.md) creates 44 completed fictional exam
 ## Baseline and alternative comparisons
 
 The [snapshot comparison workspace](SCENARIO-COMPARISONS.md), at `/compare-scenarios`, freezes two same-workflow snapshots and their metric definitions, shows arithmetic differences and withholds incompatible/missing/stale metric deltas. Source/catalog changes are flagged without rewriting historical arithmetic. It makes no causal or real-world improvement claim.
+
+## Portable review and five-layer architecture
+
+[Selected review bundles](REVIEW-BUNDLES.md) package exact snapshots/comparisons and referenced scenario evidence with checksums and an independent verifier. The [central A–E architecture index](../../Docs/Architecture/README.md) links user-supplied summaries and existing detailed A/B documents; C/D/E remain conceptual outlines with shared support. Bundle checks do not grant authority or institutional acceptance.

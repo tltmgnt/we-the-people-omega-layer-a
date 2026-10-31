@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "basis": "User-provided five-layer descriptions in this conversation, 2026-10-31; linked full Google Docs not fetched/imported",
+  "status": "PROPOSED_NOT_UNIVERSALLY_VALIDATED",
+  "execution_authorized": false,
+  "full_documents_imported": false,
+  "layers": [
+    {
+      "key": "A",
+      "title": "Constitutional Legitimacy",
+      "source_url": "https://docs.google.com/document/d/1ixpAtB6LFI5UiVTfP_g6tFzesB0zH0WbIO1BhPuZXJc/edit?usp=drivesdk",
+      "summary": "Establishes the legal, constitutional, democratic, and ethical foundations that govern every proposed intervention. It addresses constitutional rights, civil liberties, rule of law, elections, courts, government ethics, federalism, intergovernmental authority, and Tribal sovereignty.",
+      "repository_scope": "Existing Layer A review architecture, A1–A7 prompts, schema and blocked validation. Qualified applicability/reviewer authority and institutional permission are not established."
+    },
+    {
+      "key": "B",
+      "title": "Government Operations",
+      "source_url": "https://docs.google.com/document/d/1gGWLE-OlwpJJM6PmE98WdETNTDslqg3bKLVJJN3JPIA/edit?usp=drivesdk",
+      "summary": "Examines how public institutions convert lawful authority, public funding, personnel, information, procurement, and infrastructure into reliable services. It covers institutional operations, budgets, contracts, workforce capacity, records management, public works, and essential services.",
+      "repository_scope": "Existing Layer B documentation, domain labs and a local synthetic portfolio/controller. This is not a live government operating system or accepted service implementation."
+    },
+    {
+      "key": "C",
+      "title": "Human and Community Outcomes",
+      "source_url": "https://docs.google.com/document/d/1e44bB6EJIJ9VCdMwU-cgrSI8RzHoPgVVSecutiIveJI/edit?usp=drivesdk",
+      "summary": "Evaluates whether public services and investments produce meaningful, measurable improvements in people’s lives. Its scope includes education, healthcare, housing, food security, employment, public safety, mobility, environmental quality, civic participation, and integrated community well-being.",
+      "repository_scope": "Conceptual architecture outline and manually supplied synthetic outcome/counter-measure records. No separate completed Layer C package, verified real outcome dataset, distributional evaluation or causal-effect assessment is delivered."
+    },
+    {
+      "key": "D",
+      "title": "Intelligence and Evidence",
+      "source_url": "https://docs.google.com/document/d/1cYUOeIGpu8yEbwGRWS82Au5qMEpCt8_slN5y_odcYf8/edit?usp=drivesdk",
+      "summary": "Provides the shared research and analytical foundation for the initiative. It incorporates Topological Gap Analysis Ω, DTI Ω temporal-capacity analysis, HedgeOps Ω multi-agent decision intelligence, data provenance and quality, causal evaluation, AI governance, uncertainty analysis, and independent validation.",
+      "repository_scope": "Conceptual outline plus shared source snapshots/hashes, revision checks, frozen comparisons and proposed method documentation. No separate completed Layer D package, actual multi-agent analytical execution, qualified causal evaluation or universally validated combined method is delivered."
+    },
+    {
+      "key": "E",
+      "title": "Transformation and Institutional Learning",
+      "source_url": "https://docs.google.com/document/d/1_yXjEx_H9z3hu1Ok5_Hy49X5cCJkXOSMf7VofwDeJe4/edit?usp=drivesdk",
+      "summary": "Connects diagnosis to implementation. It establishes methods for controlled pilots, public performance scorecards, independent review, transition management, leadership, corrective action, institutional adoption, and continuous improvement.",
+      "repository_scope": "Conceptual outline plus synthetic pilot/governance rehearsals, checked corrections, scenario rollback/restore and capstone references. No separate completed Layer E package, real institutional transition, independent adoption evidence or completed government pilot is delivered."
+    }
+  ],
+  "cycle": [
+    "Establish legitimacy",
+    "Understand operations",
+    "Measure human outcomes",
+    "Validate evidence",
+    "Test and implement separately authorized improvements",
+    "Verify results",
+    "Institutionalize learning"
+  ]
+}

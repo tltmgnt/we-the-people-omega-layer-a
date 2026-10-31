@@ -9,6 +9,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 from .store import Conflict, MAX_TEXT, Store, now
+from .review_bundles import ReviewBundles
 from .scenario_comparisons import ScenarioComparisons
 from .scenarios import Scenarios, ACTIONS as SCENARIO_ACTIONS, QUALITY as SCENARIO_QUALITY, catalog as scenario_catalog
 from .permits import Permits, STAGES as PERMIT_STAGES
@@ -43,6 +44,7 @@ def strict_json(raw):
 
 def server(store, port=8765):
     token = secrets.token_urlsafe(32)
+    bundles = ReviewBundles(store)
     comparisons = ScenarioComparisons(store)
     scenarios = Scenarios(store)
     permits = Permits(store)
@@ -62,11 +64,12 @@ def server(store, port=8765):
         def log_message(self, *_):
             pass
 
-        def send(self, status, body, kind='application/json; charset=utf-8'):
+        def send(self, status, body, kind='application/json; charset=utf-8',download_name=None):
             raw = json.dumps(body, allow_nan=False).encode() if kind.startswith('application/json') else body
             self.send_response(status)
             self.send_header('Content-Type', kind)
             self.send_header('Content-Length', str(len(raw)))
+            if download_name:self.send_header('Content-Disposition','attachment; filename="'+download_name+'"')
             self.send_header('Cache-Control', 'no-store')
             self.send_header('X-Content-Type-Options', 'nosniff')
             self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'")
@@ -95,8 +98,8 @@ def server(store, port=8765):
                 parts = urlsplit(self.path).path.strip('/').split('/')
                 if not mutation:
                     path = urlsplit(self.path).path
-                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js', '/election-services', '/election-services.js', '/finance', '/finance.js', '/justice', '/justice.js', '/initiative', '/initiative.js', '/scenarios', '/scenarios.js', '/compare-scenarios', '/compare-scenarios.js']:
-                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js', '/election-services': 'election-services.html', '/election-services.js': 'election-services.js', '/finance': 'finance.html', '/finance.js': 'finance.js', '/justice': 'justice.html', '/justice.js': 'justice.js', '/initiative': 'initiative.html', '/initiative.js': 'initiative.js', '/scenarios': 'scenarios.html', '/scenarios.js': 'scenarios.js', '/compare-scenarios': 'compare-scenarios.html', '/compare-scenarios.js': 'compare-scenarios.js'}[path]
+                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js', '/election-services', '/election-services.js', '/finance', '/finance.js', '/justice', '/justice.js', '/initiative', '/initiative.js', '/scenarios', '/scenarios.js', '/compare-scenarios', '/compare-scenarios.js', '/review-bundles', '/review-bundles.js']:
+                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js', '/election-services': 'election-services.html', '/election-services.js': 'election-services.js', '/finance': 'finance.html', '/finance.js': 'finance.js', '/justice': 'justice.html', '/justice.js': 'justice.js', '/initiative': 'initiative.html', '/initiative.js': 'initiative.js', '/scenarios': 'scenarios.html', '/scenarios.js': 'scenarios.js', '/compare-scenarios': 'compare-scenarios.html', '/compare-scenarios.js': 'compare-scenarios.js', '/review-bundles': 'review-bundles.html', '/review-bundles.js': 'review-bundles.js'}[path]
                         kind = 'text/html' if name.endswith('.html') else 'text/javascript' if name.endswith('.js') else 'text/css'
                         self.send(200, (STATIC / name).read_bytes(), kind + '; charset=utf-8')
                     elif path == '/api/bootstrap':
@@ -187,6 +190,9 @@ def server(store, port=8765):
                         self.send(200, store.source_content(parts[2]))
                     else:
                         self.send(404, {'error': 'route not found'})
+                elif parts == ['api','review-bundles']:
+                    bundle=bundles.build(data)
+                    self.send(200,bundle['content'],'application/zip',bundle['filename'])
                 elif parts == ['api','scenario-comparisons']:
                     self.send(201,comparisons.create(data))
                 elif parts == ['api','scenarios','demo']:
@@ -379,6 +385,13 @@ def main(argv=None):
     sub = parser.add_subparsers(dest='command', required=True)
     sub.add_parser('init')
     sub.add_parser('report')
+    review_bundle = sub.add_parser('export-review-bundle')
+    review_bundle.add_argument('--bundle-id',required=True)
+    review_bundle.add_argument('--snapshot',action='append',default=[],help='SYN-RUN:sequence')
+    review_bundle.add_argument('--comparison',action='append',default=[])
+    review_bundle.add_argument('--actor',required=True)
+    review_bundle.add_argument('--note',required=True)
+    review_bundle.add_argument('--output',type=Path,required=True)
     demo = sub.add_parser('demo-scenarios')
     demo.add_argument('--batch-id',default='SYN-DEMO-V1')
     demo.add_argument('--actor',required=True)
@@ -405,6 +418,16 @@ def main(argv=None):
         elif args.command == 'report':
             for p in store.export()['projects']:
                 print(f"{p['project_id']} {p['status']:20} {p['completed_steps']}/{p['total_steps']} {p['title'] or '[title to confirm]'}")
+        elif args.command == 'export-review-bundle':
+            if args.output.exists():raise ValueError('output exists; refusing to overwrite')
+            selections=[]
+            for value in args.snapshot:
+                key,sep,seq=value.rpartition(':')
+                if not sep or not seq.isdigit():raise ValueError('snapshot must be SYN-RUN:sequence')
+                selections.append(dict(run_id=key,sequence=int(seq)))
+            bundle=ReviewBundles(store).build(dict(bundle_id=args.bundle_id,selections=selections,comparison_ids=args.comparison,actor=args.actor,note=args.note))
+            with args.output.open('xb') as stream:stream.write(bundle['content'])
+            print(args.output)
         elif args.command == 'demo-scenarios':
             print(json.dumps(Scenarios(store).load_demo(dict(batch_id=args.batch_id,actor=args.actor)),indent=2))
         elif args.command == 'export':

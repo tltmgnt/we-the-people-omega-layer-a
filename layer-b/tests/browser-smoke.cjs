@@ -1199,6 +1199,27 @@ const path = require('node:path');
     if(!(await page.locator('#warnings').textContent()).includes('fixed historical comparison'))throw Error('Comparison historical warning missing');
     if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Comparison mobile overflow');
     await page.screenshot({path:'.local/portfolio-comparison-mobile.png'});
+    await page.goto(url+'/review-bundles');
+    await page.locator('#comparisons').selectOption('SYN-BROWSER-COMPARISON');
+    const selectedBundleSnapshot=await page.locator('#snapshots').evaluate(select=>[...select.options].map(o=>o.value).find(v=>JSON.parse(v).run_id==='SYN-CONTROL-P050'));
+    if(!selectedBundleSnapshot)throw Error('Review bundle capstone source missing');
+    await page.locator('#snapshots').selectOption(selectedBundleSnapshot);
+    await page.locator('#bundle-id').fill('SYN-BROWSER-REVIEW');await page.locator('#actor').fill('BUNDLE REVIEWER');
+    await page.locator('#note').fill('Selected fictional snapshots/comparison only; no institutional acceptance');
+    const downloadPromise=page.waitForEvent('download');
+    await page.getByRole('button',{name:'Download selected review ZIP',exact:true}).click();
+    const download=await downloadPromise;
+    if(download.suggestedFilename()!=='SYN-BROWSER-REVIEW.zip')throw Error('Review bundle download filename failed');
+    const reviewPath=path.join(directory,'selected-review.zip');await download.saveAs(reviewPath);
+    const verifiedBundle=await new Promise((resolve,reject)=>{
+      const verify=spawn(process.env.PYTHON||'python',['-m','scripts.verify_review_bundle',reviewPath]);
+      let output='',stderr='';verify.stdout.on('data',c=>output+=c);verify.stderr.on('data',c=>stderr+=c);verify.on('error',reject);
+      verify.on('exit',code=>code===0?resolve(JSON.parse(output)):reject(Error('Independent bundle verification failed: '+stderr)));
+    });
+    if(verifiedBundle.verified_snapshots<4||verifiedBundle.verified_comparisons!==1||verifiedBundle.execution_authorized||verifiedBundle.layer_a_status!=='LEGAL_REVIEW_REQUIRED')throw Error('Review bundle scope/authority verification failed');
+    await page.getByText('Selected review ZIP built. Check the manifest and selected notes before sharing; no authority is granted.',{exact:true}).waitFor();
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Review bundle mobile overflow');
+    await page.screenshot({path:'.local/portfolio-review-bundle-mobile.png'});
     if(errors.length)throw Error(errors.join('; '));
     console.log('PASS: all 44 defined-workstream controls, legacy domain labs, measurements, capstone evidence holds, snapshots, persistence and mobile layout');
   } catch(error) {
