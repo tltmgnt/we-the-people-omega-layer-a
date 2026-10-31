@@ -9,6 +9,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 from .store import Conflict, MAX_TEXT, Store, now
+from .scenario_comparisons import ScenarioComparisons
 from .scenarios import Scenarios, ACTIONS as SCENARIO_ACTIONS, QUALITY as SCENARIO_QUALITY, catalog as scenario_catalog
 from .permits import Permits, STAGES as PERMIT_STAGES
 from .maintenance import Maintenance
@@ -42,6 +43,7 @@ def strict_json(raw):
 
 def server(store, port=8765):
     token = secrets.token_urlsafe(32)
+    comparisons = ScenarioComparisons(store)
     scenarios = Scenarios(store)
     permits = Permits(store)
     maintenance = Maintenance(store)
@@ -93,8 +95,8 @@ def server(store, port=8765):
                 parts = urlsplit(self.path).path.strip('/').split('/')
                 if not mutation:
                     path = urlsplit(self.path).path
-                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js', '/election-services', '/election-services.js', '/finance', '/finance.js', '/justice', '/justice.js', '/initiative', '/initiative.js', '/scenarios', '/scenarios.js']:
-                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js', '/election-services': 'election-services.html', '/election-services.js': 'election-services.js', '/finance': 'finance.html', '/finance.js': 'finance.js', '/justice': 'justice.html', '/justice.js': 'justice.js', '/initiative': 'initiative.html', '/initiative.js': 'initiative.js', '/scenarios': 'scenarios.html', '/scenarios.js': 'scenarios.js'}[path]
+                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js', '/election-services', '/election-services.js', '/finance', '/finance.js', '/justice', '/justice.js', '/initiative', '/initiative.js', '/scenarios', '/scenarios.js', '/compare-scenarios', '/compare-scenarios.js']:
+                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js', '/election-services': 'election-services.html', '/election-services.js': 'election-services.js', '/finance': 'finance.html', '/finance.js': 'finance.js', '/justice': 'justice.html', '/justice.js': 'justice.js', '/initiative': 'initiative.html', '/initiative.js': 'initiative.js', '/scenarios': 'scenarios.html', '/scenarios.js': 'scenarios.js', '/compare-scenarios': 'compare-scenarios.html', '/compare-scenarios.js': 'compare-scenarios.js'}[path]
                         kind = 'text/html' if name.endswith('.html') else 'text/javascript' if name.endswith('.js') else 'text/css'
                         self.send(200, (STATIC / name).read_bytes(), kind + '; charset=utf-8')
                     elif path == '/api/bootstrap':
@@ -102,6 +104,10 @@ def server(store, port=8765):
                         self.send(200, {'token': token, 'projects': exported['projects'], 'sources': exported['sources']})
                     elif path == '/api/export':
                         self.send(200, store.export())
+                    elif path == '/api/scenario-comparisons':
+                        self.send(200,dict(comparisons=comparisons.comparisons(),runs=scenarios.runs(),token=token))
+                    elif len(parts)==3 and parts[:2]==['api','scenario-comparisons']:
+                        self.send(200,comparisons.report(parts[2]))
                     elif path == '/api/scenarios':
                         self.send(200,dict(runs=scenarios.runs(),token=token,stages={k:sorted(v) for k,v in PERMIT_STAGES.items()},quality=SCENARIO_QUALITY,actions=SCENARIO_ACTIONS,workflows=scenario_catalog(),demo_batches=scenarios.demo_batches()))
                     elif len(parts)==4 and parts[:3]==['api','scenarios','demo']:
@@ -181,6 +187,8 @@ def server(store, port=8765):
                         self.send(200, store.source_content(parts[2]))
                     else:
                         self.send(404, {'error': 'route not found'})
+                elif parts == ['api','scenario-comparisons']:
+                    self.send(201,comparisons.create(data))
                 elif parts == ['api','scenarios','demo']:
                     self.send(201,scenarios.load_demo(data))
                 elif parts == ['api','scenarios']:

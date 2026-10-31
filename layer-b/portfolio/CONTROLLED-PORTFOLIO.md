@@ -93,3 +93,7 @@ Software scenario coverage is delivered for 007–050. Remaining substantive wor
 ## Ready-to-inspect example batch
 
 The [one-action demo loader](DEMO-LOADER.md) creates 44 completed fictional examples, sample catalog observations and a linked capstone through the normal controls. It is atomic, rejects collisions and preserves later edits on repeat loading. The CLI command is `python -m civic_portfolio demo-scenarios --batch-id SYN-DEMO-V1 --actor "DEMO INITIATOR"`. Existing source/project/domain records and all legal/live holds remain unchanged.
+
+## Baseline and alternative comparisons
+
+The [snapshot comparison workspace](SCENARIO-COMPARISONS.md), at `/compare-scenarios`, freezes two same-workflow snapshots and their metric definitions, shows arithmetic differences and withholds incompatible/missing/stale metric deltas. Source/catalog changes are flagged without rewriting historical arithmetic. It makes no causal or real-world improvement claim.
