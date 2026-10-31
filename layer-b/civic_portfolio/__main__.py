@@ -9,7 +9,8 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 from .store import Conflict, MAX_TEXT, Store, now
-from .permits import Permits
+from .scenarios import Scenarios, ACTIONS as SCENARIO_ACTIONS, QUALITY as SCENARIO_QUALITY
+from .permits import Permits, STAGES as PERMIT_STAGES
 from .maintenance import Maintenance
 from .sanitation import Sanitation
 from .transit import Transit
@@ -41,6 +42,7 @@ def strict_json(raw):
 
 def server(store, port=8765):
     token = secrets.token_urlsafe(32)
+    scenarios = Scenarios(store)
     permits = Permits(store)
     maintenance = Maintenance(store)
     sanitation = Sanitation(store)
@@ -91,8 +93,8 @@ def server(store, port=8765):
                 parts = urlsplit(self.path).path.strip('/').split('/')
                 if not mutation:
                     path = urlsplit(self.path).path
-                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js', '/election-services', '/election-services.js', '/finance', '/finance.js', '/justice', '/justice.js', '/initiative', '/initiative.js']:
-                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js', '/election-services': 'election-services.html', '/election-services.js': 'election-services.js', '/finance': 'finance.html', '/finance.js': 'finance.js', '/justice': 'justice.html', '/justice.js': 'justice.js', '/initiative': 'initiative.html', '/initiative.js': 'initiative.js'}[path]
+                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js', '/election-services', '/election-services.js', '/finance', '/finance.js', '/justice', '/justice.js', '/initiative', '/initiative.js', '/scenarios', '/scenarios.js']:
+                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js', '/election-services': 'election-services.html', '/election-services.js': 'election-services.js', '/finance': 'finance.html', '/finance.js': 'finance.js', '/justice': 'justice.html', '/justice.js': 'justice.js', '/initiative': 'initiative.html', '/initiative.js': 'initiative.js', '/scenarios': 'scenarios.html', '/scenarios.js': 'scenarios.js'}[path]
                         kind = 'text/html' if name.endswith('.html') else 'text/javascript' if name.endswith('.js') else 'text/css'
                         self.send(200, (STATIC / name).read_bytes(), kind + '; charset=utf-8')
                     elif path == '/api/bootstrap':
@@ -100,6 +102,10 @@ def server(store, port=8765):
                         self.send(200, {'token': token, 'projects': exported['projects'], 'sources': exported['sources']})
                     elif path == '/api/export':
                         self.send(200, store.export())
+                    elif path == '/api/scenarios':
+                        self.send(200,dict(runs=scenarios.runs(),token=token,stages={k:sorted(v) for k,v in PERMIT_STAGES.items()},quality=SCENARIO_QUALITY,actions=SCENARIO_ACTIONS))
+                    elif len(parts)==4 and parts[:2]==['api','scenarios'] and parts[3]=='report':
+                        self.send(200,scenarios.report(parts[2]))
                     elif path == '/api/permits':
                         self.send(200, {'cases': permits.cases(), 'token': token})
                     elif path == '/api/maintenance':
@@ -173,6 +179,10 @@ def server(store, port=8765):
                         self.send(200, store.source_content(parts[2]))
                     else:
                         self.send(404, {'error': 'route not found'})
+                elif parts == ['api','scenarios']:
+                    self.send(201,scenarios.create(data))
+                elif len(parts)==4 and parts[:2]==['api','scenarios'] and parts[3]=='commands':
+                    self.send(200,scenarios.command(parts[2],data))
                 elif parts == ['api','initiative','import-specification']:
                     if set(data)!={'actor'} or not isinstance(data.get('actor'),str) or not data['actor'].strip() or len(data['actor'])>200:raise ValueError('actor required, at most 200 characters')
                     with store.connect() as db:

@@ -835,8 +835,53 @@ const path = require('node:path');
     await page.screenshot({path:'.local/portfolio-initiative-mobile.png'});
     await page.goto(url+'/?project=050');
     await page.getByRole('heading',{name:'Integrated Civic Systems Simulation and Capstone.',exact:true}).waitFor();
+    await page.goto(url+'/scenarios');
+    await page.locator('#actor').fill('SCENARIO OPERATOR');
+    await page.locator('#note').fill('Fictional controlled use-case exercise');
+    await page.locator('#run-id').fill('SYN-CONTROL-DEMO');
+    await page.getByRole('button',{name:'Create scenario',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('#run').value==='SYN-CONTROL-DEMO'&&!document.querySelector('#pause').disabled);
+    async function scenarioClick(id){
+      const before=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+      await page.locator('#'+id).click();
+      await page.waitForFunction(n=>JSON.parse(document.querySelector('#snapshot-data').textContent).sequence===n&&!document.querySelector('#refresh').disabled,before+1);
+    }
+    await scenarioClick('pause');
+    if(!(await page.locator('#step').isDisabled()))throw Error('Paused scenario permits stepping');
+    await scenarioClick('tick');
+    let scenarioReport=JSON.parse(await page.locator('#report').textContent());
+    if(scenarioReport.execution!=='PAUSED'||scenarioReport.clock_minutes!==60)throw Error('Manual paused clock failed');
+    await scenarioClick('stop');await scenarioClick('resume');
+    await page.locator('#next').selectOption('IN_REVIEW');await scenarioClick('step');
+    const checkpoint=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#next').selectOption('AWAITING_CORRECTION');await scenarioClick('step');
+    await page.locator('#next').selectOption('IN_REVIEW');await scenarioClick('step');
+    await page.locator('#next').selectOption('INSPECTION');await scenarioClick('step');
+    await page.locator('#next').selectOption('DECIDED');await scenarioClick('step');
+    if(!(await page.locator('#step').isDisabled())||!(await page.locator('#resume').isDisabled()))throw Error('Terminal state can be resumed');
+    await scenarioClick('fail');await scenarioClick('pass');
+    scenarioReport=JSON.parse(await page.locator('#report').textContent());
+    if(scenarioReport.quality!=='PASS'||scenarioReport.correction_cycles!==1||scenarioReport.execution_authorized!==false)throw Error('Scenario quality/correction/hold failed');
+    await scenarioClick('reset');
+    const beforeRestore=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#snapshot').selectOption(String(checkpoint));
+    await page.locator('#restore').click();
+    await page.waitForFunction(n=>JSON.parse(document.querySelector('#snapshot-data').textContent).sequence===n&&!document.querySelector('#refresh').disabled,beforeRestore+1);
+    scenarioReport=JSON.parse(await page.locator('#report').textContent());
+    if(scenarioReport.stage!=='IN_REVIEW'||scenarioReport.clock_minutes!==120)throw Error('Snapshot restore did not reproduce state');
+    for(const stage of ['RECEIVED','IN_REVIEW','AWAITING_CORRECTION','INSPECTION','DECIDED','WITHDRAWN']){
+      await page.locator('#preset-stage').selectOption(stage);
+      if(stage==='DECIDED')await page.locator('#preset-quality').selectOption('FAIL');
+      await scenarioClick('preset');
+      const report=JSON.parse(await page.locator('#report').textContent());
+      if(report.stage!==stage||report.execution_authorized)throw Error('Scenario state preset failed: '+stage);
+    }
+    await page.reload();await page.locator('#run').selectOption('SYN-CONTROL-DEMO');
+    await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "WITHDRAWN"')&&!document.querySelector('#refresh').disabled);
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Scenario controls mobile overflow');
+    await page.screenshot({path:'.local/portfolio-scenarios-mobile.png'});
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: portfolio and eleven domain labs and connected initiative, evidence/hold safeguards, reports, persistence and mobile layout');
+    console.log('PASS: portfolio and eleven domain labs, connected initiative and scenario controls, evidence/hold safeguards, reports, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){
