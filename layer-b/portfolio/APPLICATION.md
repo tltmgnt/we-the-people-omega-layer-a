@@ -60,7 +60,7 @@ Each plan requires source review, confirmed scope, a data contract, baseline/cou
 
 A project reports `COMPLETE_AS_RECORDED` only when it has a title, accountable owner, confirmed scope, an imported and reviewed current source, and completion evidence for all eight steps. Unknown source data and unperformed work remain open. The application never grants execution authorization, and the original packet validator continues to enforce the Layer A hold.
 
-**Outstanding project-specific work:** import and review the real source documents; confirm 001–006; replace or accept the proposed requirements; implement and test each confirmed domain workflow beyond the bounded project 009–017 simulations; obtain qualified acceptance and resolve licensing. This shared delivery application and synthetic labs are not substitutes for those 50 accepted domain implementations.
+**Outstanding project-specific work:** import and review the real source documents; confirm 001–006; replace or accept the proposed requirements; implement and test each confirmed domain workflow beyond the bounded project 009–018 simulations; obtain qualified acceptance and resolve licensing. This shared delivery application and synthetic labs are not substitutes for those 50 accepted domain implementations.
 
 ## Export, backup and restore
 
@@ -83,3 +83,5 @@ python -m scripts.validate_packet --require-ready examples/permit/operational-re
 ```
 
 The readiness command must exit 2 for the supplied synthetic packet. Application tests cover all 50 IDs, generated-plan consistency, source hashes/version history, persistence, stale edits/reviews, invalid inputs, evidence requirements, source/scope invalidation, backup restoration, HTTP writes/exports and local-origin protections. Run `python -m scripts.build_implementation_plans` to regenerate plans from the proposed profiles; runtime edits remain in SQLite and do not rewrite the source register or generated plans.
+
+The [synthetic finance lab for project 018](FINANCE-LAB.md), at `/finance`, preserves category-specific signed entries, comparison histories and outcome notes. No payment, tax calculation or spending authorization occurs.
