@@ -14,3 +14,4 @@ jobs:
       - run: python -m unittest discover -s tests -v
       - run: python scripts/validate_review.py example-review.json
       - run: python scripts/validate_review.py pilots/benefits-process/01-intake.json pilots/benefits-process/02-escalated.json
+      - run: python -m scripts.validate_exchange examples/cross-layer/exchange.json

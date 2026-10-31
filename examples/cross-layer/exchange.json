@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1.0",
+  "exchange_id": "SYNTHETIC-EXCHANGE-001",
+  "kind": "SYNTHETIC",
+  "layer_b": {
+    "schema_version": "0.1.0",
+    "proposal_id": "HYPOTHETICAL-BENEFITS-001",
+    "summary": "Hypothetical digital benefits process change"
+  },
+  "layer_c": {
+    "schema_version": "0.1.0",
+    "proposal_id": "HYPOTHETICAL-BENEFITS-001",
+    "outcome_questions": [
+      "How might the digital process affect access, notice delivery and correction opportunities?"
+    ],
+    "affected_populations": [
+      "Hypothetical applicants, including people unable to use the digital route; actual population not identified"
+    ]
+  },
+  "layer_a_ref": {
+    "path": "pilots/benefits-process/02-escalated.json",
+    "sha256": "5c1b96bf50442594f8ba7ba8f38a03bc5039b20fade086543410e09c1d74eb79",
+    "review_id": "PILOT-A-BENEFITS-001",
+    "proposal_id": "HYPOTHETICAL-BENEFITS-001",
+    "schema_version": "0.1.0",
+    "revision": 2
+  },
+  "layer_d": {
+    "schema_version": "0.1.0",
+    "record_id": "SYNTHETIC-D-EVIDENCE-001",
+    "proposal_id": "HYPOTHETICAL-BENEFITS-001",
+    "evidence_ids": [
+      "PILOT-PROPOSAL-001",
+      "PILOT-TRIAGE-001"
+    ],
+    "manifest_ref": {
+      "path": "pilots/benefits-process/sources.json",
+      "sha256": "87e55819122aff1dc28b8006eafe2292a43efa50b4f880596d5d8cb4df870cdf"
+    },
+    "uncertainties": [
+      "Jurisdiction and governing benefits program are unknown.",
+      "Evidence describes synthetic proposal and triage only; no qualified legal review or applicable authority is established."
+    ]
+  }
+}

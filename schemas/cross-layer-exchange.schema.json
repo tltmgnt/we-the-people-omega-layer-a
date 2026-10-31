@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Proposed synthetic cross-layer exchange 0.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "exchange_id",
+    "kind",
+    "layer_b",
+    "layer_c",
+    "layer_a_ref",
+    "layer_d"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "exchange_id": {
+      "$ref": "#/$defs/text"
+    },
+    "kind": {
+      "const": "SYNTHETIC"
+    },
+    "layer_b": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "proposal_id",
+        "summary"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "proposal_id": {
+          "$ref": "#/$defs/text"
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "layer_c": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "proposal_id",
+        "outcome_questions",
+        "affected_populations"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "proposal_id": {
+          "$ref": "#/$defs/text"
+        },
+        "outcome_questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "affected_populations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        }
+      }
+    },
+    "layer_a_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "review_id",
+        "proposal_id",
+        "schema_version",
+        "revision"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/text"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "review_id": {
+          "$ref": "#/$defs/text"
+        },
+        "proposal_id": {
+          "$ref": "#/$defs/text"
+        },
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "layer_d": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "record_id",
+        "proposal_id",
+        "evidence_ids",
+        "manifest_ref",
+        "uncertainties"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "record_id": {
+          "$ref": "#/$defs/text"
+        },
+        "proposal_id": {
+          "$ref": "#/$defs/text"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "manifest_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/text"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "uncertainties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "pattern": "\\S"
+    }
+  }
+}

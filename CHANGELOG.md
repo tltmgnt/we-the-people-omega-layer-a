@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Add a versioned synthetic B/C/A/D exchange, pinned-reference consumer, contract documentation and negative integration tests.
 - Add A1–A7 domain checklists with review questions, evidence requests, escalation triggers and shared record-field mapping.
 - Add a reproducible synthetic benefits-process pilot with preserved intake and escalation revisions, source manifest, blocked outcome and integration tests.
 - Add versioned review-record JSON Schema 0.1.0 and Python structural validator.

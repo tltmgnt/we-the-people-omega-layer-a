@@ -10,7 +10,7 @@ Layer A defines a foundational review architecture for constitutional, legal and
 - [Review JSON Schema v0.1.0](schemas/review-record.schema.json)
 - [Hypothetical review record](example-review.json)
 - [Reproducible benefits-process pilot](pilots/benefits-process/README.md)
-- [Cross-layer integration](cross-layer-integration.md)
+- [Cross-layer integration](cross-layer-integration.md) and [versioned synthetic exchange](examples/cross-layer/README.md)
 - [Contribution guidance](CONTRIBUTING.md) and [changelog](CHANGELOG.md)
 - [License selection status](LICENSE-SELECTION.md)
 
