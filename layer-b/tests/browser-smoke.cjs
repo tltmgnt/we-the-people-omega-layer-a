@@ -50,8 +50,47 @@ const path = require('node:path');
     await page.setViewportSize({width:390,height:844});
     await page.screenshot({path:'.local/portfolio-mobile.png'});
     if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Mobile horizontal overflow');
+    await page.goto(url+'/permits');
+    await page.getByRole('heading',{name:'Synthetic permit lab'}).waitFor();
+    await page.getByText('No fictional cases yet. No baseline is assumed.',{exact:true}).waitFor();
+    await page.locator('#actor').fill('SYNTHETIC UI TEST');
+    await page.locator('#asof').fill('2026-01-02T00:00:00Z');
+    await page.locator('#case-id').fill('SYN-BROWSER');
+    await page.locator('#case-category').fill('Fictional test category');
+    await page.locator('#received').fill('2026-01-01T00:00:00Z');
+    await page.locator('#case-evidence').fill('SYNTHETIC browser-test intake');
+    await page.getByRole('button',{name:'Create synthetic case',exact:true}).click();
+    await page.getByRole('heading',{name:'SYN-BROWSER',exact:true}).waitFor();
+    for(const [stage,hour] of [['IN_REVIEW','01'],['INSPECTION','02'],['DECIDED','03']]){
+      await page.getByLabel('Next synthetic stage',{exact:true}).selectOption(stage);
+      await page.getByLabel('Event timestamp',{exact:true}).fill(`2026-01-01T${hour}:00:00Z`);
+      await page.getByLabel('Event evidence / scenario',{exact:true}).fill('SYNTHETIC stage result');
+      await page.getByRole('button',{name:'Record synthetic stage',exact:true}).click();
+      await page.locator('#detail > p').filter({hasText:'Fictional test category · '+stage}).waitFor();
+    }
+    await page.getByLabel('Quality-review timestamp',{exact:true}).fill('2026-01-01T04:00:00Z');
+    await page.getByLabel('Quality criteria and review evidence',{exact:true}).fill('SYNTHETIC checked criteria');
+    await page.getByRole('button',{name:'Record quality review',exact:true}).click();
+    await page.locator('#detail li').filter({hasText:'SYNTHETIC checked criteria'}).waitFor();
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).quality_sample_size===1);
+    const report=JSON.parse(await page.locator('#report-data').textContent());
+    if(report.decided!==1||report.elapsed_calendar_hours.median!==3||report.quality_pass_rate!==1)throw Error('Permit report mismatch');
+    await page.screenshot({path:'.local/portfolio-permit-mobile.png'});
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Permit mobile overflow');
+    await page.reload();
+    await page.getByRole('heading',{name:'SYN-BROWSER',exact:true}).waitFor();
+    await page.getByRole('heading',{name:'Synthetic quality review',exact:true}).waitFor();
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: 50 projects, persisted edits, source import/read/review, script escaping, search and desktop/mobile layout');
+    console.log('PASS: portfolio and synthetic permit lifecycle, reports, persisted records and mobile layout');
+  } catch(error) {
+    const page=browser?.contexts()[0]?.pages()[0];
+    if(page){
+      await mkdir('.local',{recursive:true});
+      await page.screenshot({path:'.local/portfolio-failure.png'}).catch(()=>{});
+      console.error('Application status:',await page.locator('#message').textContent().catch(()=>''));
+    }
+    throw error;
   } finally {
     if(browser)await browser.close();
     child.kill();

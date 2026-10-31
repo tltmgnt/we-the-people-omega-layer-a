@@ -4,6 +4,8 @@
 
 The local application provides a working delivery workspace for all 50 registered proposals: search/filter, project definitions, accountable owners, proposed plans, completion evidence, source-text import/review, content hashes, immutable source versions, a change history, JSON export and SQLite backup.
 
+A project-specific [synthetic permit lab for project 009](PERMIT-LAB.md) is also available at `/permits`. It demonstrates case progression, correction loops, time/effort measurement and quality reviews using fictional records. It is not a live permit system or a completed project acceptance.
+
 The [50 individual plans](plans/README.md) define proposed outcomes, input records, measurement and counter-metrics, safeguards, eight delivery steps and acceptance criteria. Plans 001–006 retain unresolved titles and source mapping. Plans 007–050 use the supplied titles and explicitly labeled editorial proposals. None is represented as a transcription of the linked document or a completed domain service.
 
 ## Run locally
@@ -42,7 +44,7 @@ Each plan requires source review, confirmed scope, a data contract, baseline/cou
 
 A project reports `COMPLETE_AS_RECORDED` only when it has a title, accountable owner, confirmed scope, an imported and reviewed current source, and completion evidence for all eight steps. Unknown source data and unperformed work remain open. The application never grants execution authorization, and the original packet validator continues to enforce the Layer A hold.
 
-**Outstanding project-specific work:** import and review the real source documents; confirm 001–006; replace or accept the proposed requirements; implement and test each bounded domain workflow; obtain qualified acceptance and resolve licensing. This shared delivery application is not a substitute for those 50 domain implementations.
+**Outstanding project-specific work:** import and review the real source documents; confirm 001–006; replace or accept the proposed requirements; implement and test each confirmed domain workflow beyond the bounded project 009 simulation; obtain qualified acceptance and resolve licensing. This shared delivery application and synthetic lab are not substitutes for those 50 accepted domain implementations.
 
 ## Export, backup and restore
 
