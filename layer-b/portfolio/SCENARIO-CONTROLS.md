@@ -86,3 +86,7 @@ The [education-service use case](EDUCATION-LAB.md) adds nine states for access, 
 ## Additional workflow: Project 021
 
 The [fictional health-referral use case](HEALTH-LAB.md) adds eleven states for consent assertions, referrals/waiting, service/follow-up, interruption, decline and consent withdrawal. A separate current-revision continuity check is required before closure. Restore reproduces a fictional branch; it never renews real consent or authorizes any service. No clinical decisions or outcomes are assessed.
+
+## Additional workflow: Project 022
+
+The [controlled emergency-readiness exercise](EMERGENCY-LAB.md) adds eleven states, readiness checks before a simulated start and separate corrective-action checks before closure. Presets explicitly replay each gated check. Abort/cancel, all shared controls and snapshot restoration apply. No dispatch, emergency operations or readiness certification is performed.

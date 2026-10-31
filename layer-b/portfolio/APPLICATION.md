@@ -106,4 +106,8 @@ The [education-service access and continuity use case](EDUCATION-LAB.md), at `/s
 
 ## Project 021 health-referral scenario
 
-The [health-service referral and continuity use case](HEALTH-LAB.md), at `/scenarios?workflow=health`, adds eleven controllable states with fictional consent, handoffs/waiting, interruptions, fresh continuity checks and decline/withdrawal. No patient records, clinical decisions or outcomes are processed. There are now fourteen bounded synthetic domain prototypes (009–021 and 023); real source review, data governance and institutional acceptance remain outstanding.
+The [health-service referral and continuity use case](HEALTH-LAB.md), at `/scenarios?workflow=health`, adds eleven controllable states with fictional consent, handoffs/waiting, interruptions, fresh continuity checks and decline/withdrawal. No patient records, clinical decisions or outcomes are processed. This remains a bounded synthetic prototype; real source review, data governance and institutional acceptance remain outstanding.
+
+## Project 022 readiness-exercise scenario
+
+The [controlled readiness-exercise use case](EMERGENCY-LAB.md), at `/scenarios?workflow=emergency`, adds eleven states with separate readiness and corrective-action checks, response milestones, abort/cancel paths and replay/restore. Live dispatch and readiness certification remain false. There are now fifteen bounded synthetic domain prototypes (009–023); actual source review, safety rules and institutional acceptance remain outstanding.
