@@ -1,4 +1,6 @@
 # WE THE PEOPLE Ω — Layer B
+
+[C/D/E workspaces: outcomes, evidence and controlled learning](portfolio/LAYER-WORKSPACES.md) — open `/layers` in the local app.
 ## Government Operations
 
 **Institutional Capacity · Public Finance · Procurement · Civil Service · Records · Public Works · Essential Services**

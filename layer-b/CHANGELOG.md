@@ -1,5 +1,10 @@
 # Changelog
 
+## Dedicated C/D/E synthetic workspaces
+
+- Add exact-text evidence revision/check registry, aggregate outcome/counter-measure pairs and context-pinned rehearsal/learning phases with reopen/rollback.
+- Add `/layers` forms, reports, persistence/export, architecture handoffs and tests for stale source/outcome holds. All legal and institutional acceptance holds remain.
+
 ## Unreleased — 0.1.0-alpha preparation
 
 - Add selected review ZIPs with bounded transitive snapshot/comparison scope, workflow definitions, A–E summary, checksums and standalone offline verification of references/state hashes/arithmetic/boundaries. Add guarded UI/API/CLI without overwriting outputs or exporting unrelated workspace records.

@@ -24,21 +24,21 @@
       "title": "Human and Community Outcomes",
       "source_url": "https://docs.google.com/document/d/1e44bB6EJIJ9VCdMwU-cgrSI8RzHoPgVVSecutiIveJI/edit?usp=drivesdk",
       "summary": "Evaluates whether public services and investments produce meaningful, measurable improvements in people’s lives. Its scope includes education, healthcare, housing, food security, employment, public safety, mobility, environmental quality, civic participation, and integrated community well-being.",
-      "repository_scope": "Conceptual architecture outline and manually supplied synthetic outcome/counter-measure records. No separate completed Layer C package, verified real outcome dataset, distributional evaluation or causal-effect assessment is delivered."
+      "repository_scope": "Dedicated synthetic aggregate outcome workspace: immutable measurement/cohort/exclusion/uncertainty contracts, revision-pinned baseline/follow-up observations, counter-measures, separate checks and descriptive deltas with missing/stale-data holds. No verified real outcome dataset, distributional inference or causal-effect assessment is delivered."
     },
     {
       "key": "D",
       "title": "Intelligence and Evidence",
       "source_url": "https://docs.google.com/document/d/1cYUOeIGpu8yEbwGRWS82Au5qMEpCt8_slN5y_odcYf8/edit?usp=drivesdk",
       "summary": "Provides the shared research and analytical foundation for the initiative. It incorporates Topological Gap Analysis Ω, DTI Ω temporal-capacity analysis, HedgeOps Ω multi-agent decision intelligence, data provenance and quality, causal evaluation, AI governance, uncertainty analysis, and independent validation.",
-      "repository_scope": "Conceptual outline plus shared source snapshots/hashes, revision checks, frozen comparisons and proposed method documentation. No separate completed Layer D package, actual multi-agent analytical execution, qualified causal evaluation or universally validated combined method is delivered."
+      "repository_scope": "Dedicated synthetic evidence workspace: exact-text SHA-256 revisions, origins, confidence A/B/C assertions, limitations and separate revision checks; existing source/comparison tools remain available. No authenticated evidence, executed multi-agent analysis, qualified causal evaluation or universally validated method is delivered."
     },
     {
       "key": "E",
       "title": "Transformation and Institutional Learning",
       "source_url": "https://docs.google.com/document/d/1_yXjEx_H9z3hu1Ok5_Hy49X5cCJkXOSMf7VofwDeJe4/edit?usp=drivesdk",
       "summary": "Connects diagnosis to implementation. It establishes methods for controlled pilots, public performance scorecards, independent review, transition management, leadership, corrective action, institutional adoption, and continuous improvement.",
-      "repository_scope": "Conceptual outline plus synthetic pilot/governance rehearsals, checked corrections, scenario rollback/restore and capstone references. No separate completed Layer E package, real institutional transition, independent adoption evidence or completed government pilot is delivered."
+      "repository_scope": "Dedicated synthetic rehearsal/learning workspace: owner/resources/continuity/rollback plans, linked outcome studies, context-pinned phases, separate checks, stale-context holds and reopen/rollback history. No real institutional transition, adoption evidence or completed government pilot is delivered."
     }
   ],
   "cycle": [

@@ -36,6 +36,13 @@ class Store:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.connect() as db:
             db.executescript('''
+                CREATE TABLE IF NOT EXISTS layer_documents (
+                  id TEXT NOT NULL, revision INTEGER NOT NULL, body TEXT NOT NULL, PRIMARY KEY(id,revision));
+                CREATE TABLE IF NOT EXISTS layer_studies (id TEXT PRIMARY KEY, body TEXT NOT NULL, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS layer_trials (id TEXT PRIMARY KEY, body TEXT NOT NULL, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS layer_activity (
+                  kind TEXT NOT NULL, object_id TEXT NOT NULL, sequence INTEGER NOT NULL, body TEXT NOT NULL,
+                  PRIMARY KEY(kind,object_id,sequence));
                 CREATE TABLE IF NOT EXISTS projects (
                   id TEXT PRIMARY KEY, body TEXT NOT NULL, version INTEGER NOT NULL);
                 CREATE TABLE IF NOT EXISTS sources (
@@ -396,6 +403,8 @@ class Store:
                             ('evidence','rights_evidence','case_id,evidence_id,revision'),('candidate_authorities','rights_authorities','case_id,authority_id'),
                             ('questions','rights_questions','id'),('question_events','rights_question_events','question_id,sequence')]},
                     'synthetic_scenarios': {'comparisons':[dict(r) for r in db.execute('SELECT * FROM scenario_comparisons ORDER BY id')], 'demo_batches':[dict(r) for r in db.execute('SELECT * FROM scenario_demo_batches ORDER BY id')], 'runs':[dict(r) for r in db.execute('SELECT * FROM scenario_runs ORDER BY id')], 'events':[dict(r) for r in db.execute('SELECT * FROM scenario_events ORDER BY run_id,sequence')]},
+                    'synthetic_layers': {name:[dict(r) for r in db.execute('SELECT * FROM '+table+' ORDER BY '+ordering)] for name,table,ordering in [
+                        ('evidence','layer_documents','id,revision'),('studies','layer_studies','id'),('trials','layer_trials','id'),('activity','layer_activity','kind,object_id,sequence')]},
                     'synthetic_initiative': {'programs':[dict(r) for r in db.execute('SELECT * FROM initiative_programs ORDER BY id')], 'events':[dict(r) for r in db.execute('SELECT * FROM initiative_events ORDER BY program_id,sequence')]},
                     'synthetic_justice': {'pilots':[dict(r) for r in db.execute('SELECT * FROM justice_pilots ORDER BY id')], 'events':[dict(r) for r in db.execute('SELECT * FROM justice_events ORDER BY pilot_id,sequence')]},
                     'synthetic_finance': {'ledgers':[dict(r) for r in db.execute('SELECT * FROM finance_ledgers ORDER BY id')], 'events':[dict(r) for r in db.execute('SELECT * FROM finance_events ORDER BY ledger_id,sequence')]},
