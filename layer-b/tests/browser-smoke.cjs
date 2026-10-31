@@ -622,8 +622,91 @@ const path = require('node:path');
     await page.reload();
     await page.getByRole('heading',{name:'SYN-RIGHTS-UI',exact:true}).waitFor();
     await page.locator('#question-list summary').filter({hasText:'SYN-QUESTION-UI · OPEN'}).waitFor();
+    await page.goto(url+'/election-services');
+    await page.getByText('No fictional administrative service sessions. No readiness or validity finding is assumed.',{exact:true}).waitFor();
+    await page.locator('#actor').fill('SYNTHETIC ADMIN');
+    await page.locator('#asof').fill('2026-01-01T12:00:00Z');
+    await page.locator('#session-id').fill('SYN-SERVICE-UI');
+    await page.locator('#session-label').fill('Fictional administrative information service');
+    await page.locator('#session-area').fill('Demo area');
+    await page.locator('#session-at').fill('2026-01-01T00:00:00Z');
+    await page.locator('#session-open').fill('2026-01-01T08:00:00Z');
+    await page.locator('#session-close').fill('2026-01-01T18:00:00Z');
+    await page.getByRole('button',{name:'Register synthetic service session',exact:true}).click();
+    await page.getByRole('heading',{name:'SYN-SERVICE-UI',exact:true}).waitFor();
+    async function serviceReadiness(hour,status){
+      await page.getByLabel('Scenario readiness item',{exact:true}).selectOption('ACCESSIBLE_CHANNEL');
+      await page.getByLabel('Scenario readiness assertion',{exact:true}).selectOption(status);
+      await page.getByLabel('Fictional readiness-criteria reference (required for MET/GAP)',{exact:true}).fill('SYNTHETIC CRITERION ONLY');
+      await page.getByLabel('Readiness assertion timestamp',{exact:true}).fill(`2026-01-01T${hour}:00:00Z`);
+      await page.getByLabel('Readiness assertion evidence',{exact:true}).fill('Synthetic readiness assertion '+hour);
+      await page.getByRole('button',{name:'Record service readiness',exact:true}).click();
+      await page.locator('#detail li').filter({hasText:'Synthetic readiness assertion '+hour}).waitFor();
+    }
+    async function serviceReadinessCheck(hour){
+      await page.getByLabel('Readiness item to check',{exact:true}).selectOption('ACCESSIBLE_CHANNEL');
+      await page.getByLabel('Distinct readiness verifier identifier',{exact:true}).fill('SYNTHETIC VERIFIER');
+      await page.getByLabel('Readiness-check timestamp',{exact:true}).fill(`2026-01-01T${hour}:00:00Z`);
+      await page.getByLabel('Readiness-check evidence',{exact:true}).fill('Synthetic readiness check '+hour);
+      await page.getByRole('button',{name:'Check service readiness',exact:true}).click();
+      await page.locator('#detail li').filter({hasText:'Synthetic readiness check '+hour}).waitFor();
+    }
+    await serviceReadiness('01','GAP');await serviceReadinessCheck('02');
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).checked_gap_items===1);
+    await serviceReadiness('03','MET');
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).unknown_or_unverified_items===5);
+    await serviceReadinessCheck('04');
+    async function serviceObservation(id,hour,barrier,affected){
+      await page.getByLabel('Access observation ID',{exact:true}).fill(id);
+      await page.getByLabel('Administrative access-barrier category',{exact:true}).selectOption(barrier);
+      await page.getByLabel('Access observation timestamp',{exact:true}).fill(`2026-01-01T${hour}:00:00Z`);
+      await page.getByLabel('Fictional non-identifying access observation',{exact:true}).fill('Fictional administrative access observation; no voter data');
+      await page.getByLabel('Aggregate affected service observations (blank = unknown)',{exact:true}).fill(affected);
+      await page.getByLabel('Access observation evidence',{exact:true}).fill('Synthetic service access observation '+hour);
+      await page.getByRole('button',{name:'Record service-access observation',exact:true}).click();
+      await page.locator('#observation-list summary').filter({hasText:id+' · OPEN'}).waitFor();
+    }
+    await serviceObservation('SYN-ACCESS-UI','05','PHYSICAL_ACCESS','2');
+    const serviceObservationPanel=page.locator('#observation-list details').filter({hasText:'SYN-ACCESS-UI'});
+    async function observationAction(status,hour,failure=false){
+      if(await serviceObservationPanel.getAttribute('open')===null)await serviceObservationPanel.locator('summary').click();
+      await serviceObservationPanel.getByLabel('Service-observation action',{exact:true}).selectOption(status);
+      await serviceObservationPanel.getByLabel('Service correction/action timestamp',{exact:true}).fill(`2026-01-01T${hour}:00:00Z`);
+      if(status==='CORRECTION_RECORDED')await serviceObservationPanel.getByLabel('Fictional correction reference (correction records only)',{exact:true}).fill('Synthetic correction label');
+      await serviceObservationPanel.getByLabel('Correction, closure or repeat-observation evidence',{exact:true}).fill('Synthetic service-observation action '+hour);
+      await serviceObservationPanel.getByRole('button',{name:'Record service-observation action',exact:true}).click();
+      if(!failure)await serviceObservationPanel.locator('li').filter({hasText:'Synthetic service-observation action '+hour}).waitFor({state:'attached'});
+    }
+    await observationAction('CORRECTION_RECORDED','06');
+    await observationAction('CLOSED','07',true);
+    await page.locator('#message').filter({hasText:'closure requires a passing check for the current correction record'}).waitFor();
+    if(await serviceObservationPanel.getAttribute('open')===null)await serviceObservationPanel.locator('summary').click();
+    await serviceObservationPanel.getByLabel('Distinct correction verifier identifier',{exact:true}).fill('SYNTHETIC VERIFIER');
+    await serviceObservationPanel.getByLabel('Service correction-check timestamp',{exact:true}).fill('2026-01-01T07:00:00Z');
+    await serviceObservationPanel.getByLabel('Service correction-check evidence',{exact:true}).fill('Synthetic service correction check');
+    await serviceObservationPanel.getByRole('button',{name:'Check service-access correction',exact:true}).click();
+    await serviceObservationPanel.locator('li').filter({hasText:'Synthetic service correction check'}).waitFor({state:'attached'});
+    await observationAction('CLOSED','08');
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).closed_observations===1);
+    let serviceReport=JSON.parse(await page.locator('#report-data').textContent());
+    if(serviceReport.checked_correction_hours.median!==1||serviceReport.correction_check_lag_hours.median!==1)throw Error('Administrative service correction report mismatch');
+    await observationAction('REOPENED','09');
+    await serviceObservation('SYN-UNKNOWN-ACCESS-UI','10','COMMUNICATION','');
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).access_observations===2);
+    serviceReport=JSON.parse(await page.locator('#report-data').textContent());
+    if(serviceReport.open_observations!==2||serviceReport.reopen_events!==1||serviceReport.checked_met_items!==1||serviceReport.access_observations_by_barrier.COMMUNICATION.aggregate_affected_service_observations!==null)throw Error('Administrative service unknown/reopening report mismatch');
+    if(serviceReport.institutional_acceptance!=='NOT_ESTABLISHED'||serviceReport.election_validity_assessed||serviceReport.representation_assessed||serviceReport.execution_authorized)throw Error('Service records incorrectly established election conclusions');
+    await page.screenshot({path:'.local/portfolio-election-services-mobile.png'});
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Election-service mobile overflow');
+    await page.reload();
+    await page.getByRole('heading',{name:'SYN-SERVICE-UI',exact:true}).waitFor();
+    await page.locator('#observation-list summary').filter({hasText:'SYN-ACCESS-UI · REOPENED'}).waitFor();
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: portfolio and eight domain labs, evidence/hold safeguards, reports, persistence and mobile layout');
+    console.log('PASS: portfolio and nine domain labs, evidence/hold safeguards, reports, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){

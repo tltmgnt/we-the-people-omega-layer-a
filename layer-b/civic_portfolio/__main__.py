@@ -16,6 +16,7 @@ from .housing import Housing
 from .public_access import PublicAccess
 from .utilities import Utilities
 from .rights import Rights
+from .election_services import ElectionServices
 
 STATIC = Path(__file__).parent / 'static'
 
@@ -44,6 +45,7 @@ def server(store, port=8765):
     public_access = PublicAccess(store)
     utilities = Utilities(store)
     rights = Rights(store)
+    election_services = ElectionServices(store)
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
@@ -82,8 +84,8 @@ def server(store, port=8765):
                 parts = urlsplit(self.path).path.strip('/').split('/')
                 if not mutation:
                     path = urlsplit(self.path).path
-                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js']:
-                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js'}[path]
+                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js', '/election-services', '/election-services.js']:
+                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js', '/election-services': 'election-services.html', '/election-services.js': 'election-services.js'}[path]
                         kind = 'text/html' if name.endswith('.html') else 'text/javascript' if name.endswith('.js') else 'text/css'
                         self.send(200, (STATIC / name).read_bytes(), kind + '; charset=utf-8')
                     elif path == '/api/bootstrap':
@@ -107,6 +109,11 @@ def server(store, port=8765):
                         self.send(200, {'assets': utilities.assets(), 'incidents': utilities.incidents(), 'token': token})
                     elif path == '/api/rights':
                         self.send(200, {'cases': rights.cases(), 'token': token})
+                    elif path == '/api/election-services':
+                        self.send(200, {'sessions': election_services.sessions(), 'token': token})
+                    elif path == '/api/election-services/report':
+                        query = parse_qs(urlsplit(self.path).query)
+                        self.send(200, election_services.report(query.get('as_of', [None])[0], query.get('area', [None])[0], query.get('channel', [None])[0]))
                     elif path == '/api/rights/report':
                         query = parse_qs(urlsplit(self.path).query)
                         self.send(200, rights.report(query.get('as_of', [None])[0], query.get('jurisdiction', [None])[0]))
@@ -137,6 +144,24 @@ def server(store, port=8765):
                         self.send(200, permits.report(query.get('as_of', [None])[0], query.get('category', [None])[0]))
                     elif len(parts) == 3 and parts[:2] == ['api', 'sources']:
                         self.send(200, store.source_content(parts[2]))
+                    else:
+                        self.send(404, {'error': 'route not found'})
+                elif parts == ['api', 'election-services', 'sessions']:
+                    self.send(201, election_services.create_session(data))
+                elif len(parts) == 5 and parts[:3] == ['api', 'election-services', 'sessions']:
+                    if parts[4] == 'readiness':
+                        self.send(200, election_services.readiness(parts[3], data))
+                    elif parts[4] == 'readiness-checks':
+                        self.send(200, election_services.verify_readiness(parts[3], data))
+                    elif parts[4] == 'observations':
+                        self.send(201, election_services.create_observation(parts[3], data))
+                    else:
+                        self.send(404, {'error': 'route not found'})
+                elif len(parts) == 7 and parts[:3] == ['api', 'election-services', 'sessions'] and parts[4]=='observations':
+                    if parts[6] == 'events':
+                        self.send(200, election_services.advance(parts[3], parts[5], data))
+                    elif parts[6] == 'checks':
+                        self.send(200, election_services.verify_correction(parts[3], parts[5], data))
                     else:
                         self.send(404, {'error': 'route not found'})
                 elif parts == ['api', 'rights', 'cases']:
