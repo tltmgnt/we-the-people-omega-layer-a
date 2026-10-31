@@ -705,8 +705,40 @@ const path = require('node:path');
     await page.reload();
     await page.getByRole('heading',{name:'SYN-SERVICE-UI',exact:true}).waitFor();
     await page.locator('#observation-list summary').filter({hasText:'SYN-ACCESS-UI · REOPENED'}).waitFor();
+    await page.goto(url+'/finance');
+    await page.locator('#actor').fill('FINANCE RECORDER');
+    await page.locator('#ledger-id').fill('SYN-BROWSER-FINANCE');
+    await page.locator('#label').fill('Fictional finance service');
+    await page.locator('#period').fill('Demo FY2026');
+    await page.locator('#basis').fill('Fictional accrual scenario');
+    await page.getByRole('button',{name:'Create synthetic ledger',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('#ledger').value==='SYN-BROWSER-FINANCE');
+    async function financeRecord(kind,amount,actor,note){
+      await page.locator('#actor').fill(actor);
+      await page.locator('#kind').selectOption(kind);
+      if(kind!=='OUTCOME'){await page.locator('#category').selectOption('EXPENDITURE');await page.locator('#amount').fill(String(amount));}
+      await page.locator('#reference').fill('SYNTHETIC EVIDENCE');
+      await page.locator('#note').fill(note);
+      await page.getByRole('button',{name:'Append synthetic record',exact:true}).click();
+      await page.waitForFunction(note=>document.querySelector('#history').textContent.includes(note)&&!document.querySelector('#record button').disabled,note);
+    }
+    await financeRecord('ENTRY',101,'FINANCE RECORDER','Fictional expenditure entry');
+    await financeRecord('RECONCILIATION',100,'FINANCE CHECKER','Fictional comparison with discrepancy');
+    let financeReport=JSON.parse(await page.locator('#report').textContent());
+    if(financeReport.categories.find(x=>x.category==='EXPENDITURE').discrepancy_minor!==1)throw Error('Finance discrepancy missing');
+    await financeRecord('ENTRY',-1,'FINANCE RECORDER','Fictional signed correction');
+    financeReport=JSON.parse(await page.locator('#report').textContent());
+    if(financeReport.categories.find(x=>x.category==='EXPENDITURE').comparison_current)throw Error('Finance reconciliation incorrectly current');
+    await financeRecord('RECONCILIATION',100,'FINANCE CHECKER','Fictional corrected comparison');
+    await financeRecord('OUTCOME',null,'FINANCE RECORDER','Fictional service quality unknown');
+    financeReport=JSON.parse(await page.locator('#report').textContent());
+    if(financeReport.categories.find(x=>x.category==='EXPENDITURE').discrepancy_minor!==0||financeReport.outcome_notes.length!==1)throw Error('Finance comparison/outcome separation failed');
+    await page.reload();await page.locator('#ledger').selectOption('SYN-BROWSER-FINANCE');
+    await page.waitForFunction(()=>document.querySelector('#history').textContent.includes('Fictional service quality unknown'));
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Finance mobile overflow');
+    await page.screenshot({path:'.local/portfolio-finance-mobile.png'});
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: portfolio and nine domain labs, evidence/hold safeguards, reports, persistence and mobile layout');
+    console.log('PASS: portfolio and ten domain labs, evidence/hold safeguards, reports, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){

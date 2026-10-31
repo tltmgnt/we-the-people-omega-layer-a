@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Add project 018 synthetic finance ledgers with bounded integer minor units, separate accounting categories, append-only signed adjustments, revision-specific comparisons, explicit discrepancies and separate outcome notes.
+- Add seven finance tests and browser coverage for discrepancy correction, stale reconciliation, outcomes, persistence and mobile layout. Source review and real accounting acceptance remain pending.
+
 - Implement project 017's synthetic administrative-service readiness, revision-specific checks, anonymous access observations and correction/closure/reopening workflow, with explicit unknown counts, censored ages and area/channel inventory context.
 - Add seven election-service tests and expand browser CI through readiness revision, correction-proof holds, reopening, unknown counts, persistence and mobile layout. Preserve actual service/representation requirements and avoid voter-level data or election-outcome conclusions.
 
