@@ -10,6 +10,8 @@ The [synthetic maintenance lab for project 010](MAINTENANCE-LAB.md), at `/mainte
 
 The [synthetic sanitation lab for project 011](SANITATION-LAB.md), at `/sanitation`, records route runs, verified cumulative service totals, recovery revisions and anonymous report responses. It separates stop-visit denominators, verification gaps, recovery times and repeat reports. No household-level fields, actual collections or dispatch are provided.
 
+The [synthetic transit lab for project 012](TRANSIT-LAB.md), at `/transit`, records scheduled arrival boundaries, verified arrivals/cancellations, explicit aggregate passenger delay and independent accessibility-finding histories. It exposes verification coverage and missing passenger measurements alongside on-time reports; no actual dispatch or passenger-level records are provided.
+
 The [50 individual plans](plans/README.md) define proposed outcomes, input records, measurement and counter-metrics, safeguards, eight delivery steps and acceptance criteria. Plans 001–006 retain unresolved titles and source mapping. Plans 007–050 use the supplied titles and explicitly labeled editorial proposals. None is represented as a transcription of the linked document or a completed domain service.
 
 ## Run locally
@@ -48,7 +50,7 @@ Each plan requires source review, confirmed scope, a data contract, baseline/cou
 
 A project reports `COMPLETE_AS_RECORDED` only when it has a title, accountable owner, confirmed scope, an imported and reviewed current source, and completion evidence for all eight steps. Unknown source data and unperformed work remain open. The application never grants execution authorization, and the original packet validator continues to enforce the Layer A hold.
 
-**Outstanding project-specific work:** import and review the real source documents; confirm 001–006; replace or accept the proposed requirements; implement and test each confirmed domain workflow beyond the bounded project 009–011 simulations; obtain qualified acceptance and resolve licensing. This shared delivery application and synthetic labs are not substitutes for those 50 accepted domain implementations.
+**Outstanding project-specific work:** import and review the real source documents; confirm 001–006; replace or accept the proposed requirements; implement and test each confirmed domain workflow beyond the bounded project 009–012 simulations; obtain qualified acceptance and resolve licensing. This shared delivery application and synthetic labs are not substitutes for those 50 accepted domain implementations.
 
 ## Export, backup and restore
 
