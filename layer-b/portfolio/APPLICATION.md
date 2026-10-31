@@ -102,4 +102,8 @@ The [procurement and contract-delivery use case](PROCUREMENT-LAB.md), at `/scena
 
 ## Project 020 education scenario
 
-The [education-service access and continuity use case](EDUCATION-LAB.md), at `/scenarios?workflow=education`, adds nine controllable states, service/follow-up revision checks, interruptions and withdrawal. It assesses no learning, eligibility or rankings. There are now thirteen bounded synthetic domain prototypes (009–020 and 023); source review and real institutional acceptance remain outstanding.
+The [education-service access and continuity use case](EDUCATION-LAB.md), at `/scenarios?workflow=education`, adds nine controllable states, service/follow-up revision checks, interruptions and withdrawal. It assesses no learning, eligibility or rankings. This remains a bounded synthetic prototype; source review and real institutional acceptance remain outstanding.
+
+## Project 021 health-referral scenario
+
+The [health-service referral and continuity use case](HEALTH-LAB.md), at `/scenarios?workflow=health`, adds eleven controllable states with fictional consent, handoffs/waiting, interruptions, fresh continuity checks and decline/withdrawal. No patient records, clinical decisions or outcomes are processed. There are now fourteen bounded synthetic domain prototypes (009–021 and 023); real source review, data governance and institutional acceptance remain outstanding.
