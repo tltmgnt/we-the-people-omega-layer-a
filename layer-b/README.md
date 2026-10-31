@@ -46,7 +46,7 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 
 ## Current package
 
-A repository-ready **0.1.0-alpha preparation**, not a deployed government system.
+A publicly imported **0.1.0-alpha preparation** in the [Layer A repository](https://github.com/tltmgnt/we-the-people-omega-layer-a/tree/main/layer-b). See [setup and acceptance](SETUP.md) for the current layout and remaining release work.
 It includes proposed methods, a draft record schema, validation tooling and a synthetic
 permit packet. No real institution, data connection, personnel evaluation, procurement
 decision, legal approval or public-service change is represented as completed.
@@ -56,7 +56,7 @@ framework; this package does not claim external validation or institutional adop
 
 ## Validate locally
 
-Use Python 3.12 from the repository root:
+Use Python 3.12 from the `layer-b/` directory (run `cd layer-b` from the repository root):
 
 ```sh
 python -m pip install -r requirements-dev.txt
