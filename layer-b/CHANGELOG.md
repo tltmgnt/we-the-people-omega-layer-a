@@ -2,6 +2,10 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Add an isolated, deterministic permit-use-case controller with all six workflow-state presets, pause/resume/stop, valid steps, manual clock, quality outcomes, reset and append-only snapshot restore. Preserve domain records and fixed legal/execution holds.
+- Add eleven scenario tests and browser coverage for control availability, correction loops, quality outcomes, restore, all presets, persistence and mobile layout.
+
+
 - Add the connected 50-workstream initiative catalog, full supplied overview/provenance, explicit method prerequisites, priority history, eight checked safeguards, challenge/response records and staged collaboration rehearsal with project/source revision invalidation.
 - Add initiative tests and browser coverage for all 50 records, undefined workstreams, overview import, cycle rejection, checked framework review, blocked selection, challenges, persistence and mobile layout. Preserve missing source/domain work and fixed live-authorization holds.
 

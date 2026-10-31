@@ -33,6 +33,8 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 
 ## Start here
 
+- [Control every state of a synthetic permit use case](portfolio/SCENARIO-CONTROLS.md)
+
 - [Explore all 50 connected workstreams and the collaboration rehearsal](portfolio/INITIATIVE-LAB.md)
 - [Read the supplied portfolio overview and source links](portfolio/sources/initiative-user-specification.md)
 

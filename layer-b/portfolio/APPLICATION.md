@@ -91,3 +91,7 @@ The [Project 023 justice observatory](JUSTICE-LAB.md), at `/justice`, adds the s
 ## Connected portfolio and collaboration rehearsal
 
 The [connected initiative workspace](INITIATIVE-LAB.md), at `/initiative`, shows all 50 workstreams, source/completion gaps, the eleven existing synthetic prototypes and the shared methods. It adds explicit prerequisite dependencies, documented priorities, version-pinned safeguards and a checked staged pilot rehearsal based on the [supplied portfolio overview](sources/initiative-user-specification.md). It does not implement the outstanding domain services, fetch the linked Google Docs, identify a receiving office or send a collaboration proposal.
+
+## Controllable use case
+
+The [permit scenario control console](SCENARIO-CONTROLS.md), at `/scenarios`, provides all six workflow states, pause/resume/stop, valid stepping, a manual scenario clock, quality outcomes, presets, reset and append-only snapshot restore. It uses isolated scenario tables and does not change domain permit records, project acceptance or legal/execution holds.
