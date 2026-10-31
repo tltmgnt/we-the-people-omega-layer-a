@@ -2,6 +2,10 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Add Project 022 controlled emergency-readiness exercise with eleven states, separate readiness/correction gates, exact-revision distinct-recorder checks, explicit preset gate records, abort/cancel and snapshot restore. Preserve prior workflow semantics.
+- Add ten exercise tests and browser coverage for both phase holds, revised corrections, all states, restore, persistence and mobile layout. Live dispatch/readiness certification remain false; source/safety/operational review remains pending.
+
+
 - Add Project 021 controllable fictional health-service referrals: eleven states, consent assertion/withdrawal, handoffs/waiting, interruptions, current service/follow-up checks, decline, presets and snapshot restore. Add explicit nonclinical and consent-assertion diagnostics.
 - Add nine health-referral tests and browser coverage for check holds, interrupted referral cycles, withdrawal, all states, restore, persistence and mobile layout. Source/consent/privacy/clinical/legal and institutional review remain outstanding.
 

@@ -996,6 +996,44 @@ const path = require('node:path');
     await page.reload();await page.locator('#run').selectOption('SYN-HEALTH-DEMO');
     await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "CONSENT_WITHDRAWN"')&&!document.querySelector('#refresh').disabled);
     await page.screenshot({path:'.local/portfolio-health-mobile.png'});
+    await page.locator('#workflow').selectOption('emergency');
+    await page.locator('#actor').fill('EXERCISE OPERATOR');
+    await page.locator('#note').fill('Controlled fictional exercise; no live dispatch');
+    await page.locator('#run-id').fill('SYN-EMERGENCY-DEMO');
+    await page.getByRole('button',{name:'Create scenario',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('#run').value==='SYN-EMERGENCY-DEMO'&&!document.querySelector('#pause').disabled);
+    for(const stage of ['READINESS_RECORDED','READINESS_REVIEW']){await page.locator('#next').selectOption(stage);await scenarioClick('step');}
+    if(await page.locator('#next option[value="EXERCISE_STARTED"]').count())throw Error('Exercise start allowed without readiness check');
+    await page.locator('#pass').click();await page.getByText('readiness requires a checker distinct from the current readiness recorder',{exact:true}).waitFor();
+    await page.locator('#actor').fill('EXERCISE CHECKER');await scenarioClick('fail');
+    if(await page.locator('#next option[value="EXERCISE_STARTED"]').count())throw Error('Failed readiness permits start');
+    await scenarioClick('pass');
+    const exerciseCheckpoint=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#actor').fill('EXERCISE OPERATOR');
+    for(const stage of ['EXERCISE_STARTED','RESPONSE_RECORDED','AFTER_ACTION_RECORDED','CORRECTION_RECORDED','CORRECTION_REVIEW']){await page.locator('#next').selectOption(stage);await scenarioClick('step');}
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Readiness pass reused as correction verification');
+    await page.locator('#pass').click();await page.getByText('correction requires a checker distinct from current after-action/correction recorders',{exact:true}).waitFor();
+    await page.locator('#actor').fill('EXERCISE CHECKER');await scenarioClick('pass');
+    await page.locator('#actor').fill('EXERCISE OPERATOR');
+    for(const stage of ['CORRECTION_RECORDED','CORRECTION_REVIEW']){await page.locator('#next').selectOption(stage);await scenarioClick('step');}
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Revised exercise correction reused old check');
+    await page.locator('#actor').fill('EXERCISE CHECKER');await scenarioClick('pass');
+    await page.locator('#next').selectOption('CLOSED');await scenarioClick('step');
+    let exerciseReport=JSON.parse(await page.locator('#report').textContent());
+    if(exerciseReport.exercise_response_minutes!==60||exerciseReport.correction_revisions!==1||exerciseReport.live_dispatch_enabled||exerciseReport.operational_readiness_certified||exerciseReport.execution_authorized)throw Error('Exercise diagnostic/operational boundary failed');
+    const beforeExerciseRestore=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#snapshot').selectOption(String(exerciseCheckpoint));await page.locator('#restore').click();
+    await page.waitForFunction(n=>JSON.parse(document.querySelector('#snapshot-data').textContent).sequence===n&&!document.querySelector('#refresh').disabled,beforeExerciseRestore+1);
+    if(!(await page.locator('#next option[value="EXERCISE_STARTED"]').count()))throw Error('Checked exercise snapshot not restored');
+    for(const stage of ['DESIGNED','READINESS_RECORDED','READINESS_REVIEW','EXERCISE_STARTED','RESPONSE_RECORDED','AFTER_ACTION_RECORDED','CORRECTION_RECORDED','CORRECTION_REVIEW','CLOSED','CANCELLED','ABORTED']){
+      await page.locator('#preset-stage').selectOption(stage);await scenarioClick('preset');
+      exerciseReport=JSON.parse(await page.locator('#report').textContent());
+      if(exerciseReport.stage!==stage||exerciseReport.live_dispatch_enabled||exerciseReport.operational_readiness_certified)throw Error('Exercise preset failed: '+stage);
+      if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Exercise mobile overflow: '+stage);
+    }
+    await page.reload();await page.locator('#run').selectOption('SYN-EMERGENCY-DEMO');
+    await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "ABORTED"')&&!document.querySelector('#refresh').disabled);
+    await page.screenshot({path:'.local/portfolio-emergency-mobile.png'});
     if(errors.length)throw Error(errors.join('; '));
     console.log('PASS: portfolio and eleven domain labs, connected initiative and scenario controls, evidence/hold safeguards, reports, persistence and mobile layout');
   } catch(error) {
