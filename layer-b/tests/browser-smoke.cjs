@@ -782,7 +782,7 @@ const path = require('node:path');
     await justiceRecord('OBSERVATION',{metric_id:'SYN-JUSTICE-METRIC',numerator:2,denominator:4,missing_reason:null,pins:[justicePin(1)]},'JUSTICE RECORDER',4);
     let justiceReport=JSON.parse(await page.locator('#report').textContent());
     if(justiceReport.metrics[0].value!==0.5||justiceReport.execution_authorized!==false)throw Error('Justice metric or authority boundary failed');
-    await justiceRecord('REVIEW',{role:'RISK_RIGHTS',conclusion:'OPEN_QUESTIONS',disagreement:'Fictional review; legal acceptance still pending',analysis_sequence:justiceReport.analysis_sequence,pins:[justicePin(1)]},'JUSTICE REVIEWER',4);
+    await justiceRecord('REVIEW',{role:'RISK_RIGHTS',conclusion:'OPEN_QUESTIONS',disagreement:'Fictional review; legal acceptance still pending',pins:[justicePin(1)]},'JUSTICE REVIEWER',4);
     await justiceRecord('PHASE',{phase:'BASELINE_1_30',owner:'OWNER',finding:'Fictional baseline only',limitations:'Not an actual 90-day pilot',pins:[justicePin(1)]},'JUSTICE RECORDER',4);
     await justiceRecord('EVIDENCE',{...justiceEvidence,content:'Revised fictional notice evidence'},'JUSTICE RECORDER',4);
     justiceReport=JSON.parse(await page.locator('#report').textContent());
