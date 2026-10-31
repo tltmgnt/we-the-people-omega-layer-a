@@ -96,6 +96,27 @@ class Store:
                   issue_id TEXT NOT NULL REFERENCES sanitation_issues(id), sequence INTEGER NOT NULL,
                   status TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
                   evidence TEXT NOT NULL, PRIMARY KEY(issue_id,sequence));
+                CREATE TABLE IF NOT EXISTS transit_trips (
+                  id TEXT PRIMARY KEY, service TEXT NOT NULL, area TEXT NOT NULL,
+                  scheduled_at TEXT NOT NULL, registered_at TEXT NOT NULL,
+                  actor TEXT NOT NULL, evidence TEXT NOT NULL, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS transit_observations (
+                  trip_id TEXT NOT NULL REFERENCES transit_trips(id), sequence INTEGER NOT NULL,
+                  result TEXT NOT NULL, at TEXT NOT NULL, actual_at TEXT,
+                  actor TEXT NOT NULL, evidence TEXT NOT NULL, passenger_count INTEGER,
+                  passenger_delay REAL, PRIMARY KEY(trip_id,sequence));
+                CREATE TABLE IF NOT EXISTS transit_checks (
+                  trip_id TEXT NOT NULL REFERENCES transit_trips(id), sequence INTEGER NOT NULL,
+                  observation_sequence INTEGER NOT NULL, at TEXT NOT NULL, verifier TEXT NOT NULL,
+                  passed INTEGER NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(trip_id,sequence));
+                CREATE TABLE IF NOT EXISTS transit_findings (
+                  id TEXT PRIMARY KEY, trip_id TEXT NOT NULL REFERENCES transit_trips(id),
+                  access_need TEXT NOT NULL, description TEXT NOT NULL,
+                  excluded_boardings INTEGER, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS transit_finding_events (
+                  finding_id TEXT NOT NULL REFERENCES transit_findings(id), sequence INTEGER NOT NULL,
+                  status TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
+                  evidence TEXT NOT NULL, PRIMARY KEY(finding_id,sequence));
             ''')
             register = json.loads((ROOT / 'portfolio/project-register.json').read_text())
             plans = build()[1]
@@ -199,6 +220,12 @@ class Store:
                         'checks': [dict(r) for r in db.execute('SELECT * FROM sanitation_checks ORDER BY run_id,sequence')],
                         'issues': [dict(r) for r in db.execute('SELECT * FROM sanitation_issues ORDER BY id')],
                         'issue_events': [dict(r) for r in db.execute('SELECT * FROM sanitation_issue_events ORDER BY issue_id,sequence')]},
+                    'synthetic_transit': {
+                        'trips': [dict(r) for r in db.execute('SELECT * FROM transit_trips ORDER BY id')],
+                        'observations': [dict(r) for r in db.execute('SELECT * FROM transit_observations ORDER BY trip_id,sequence')],
+                        'checks': [dict(r) for r in db.execute('SELECT * FROM transit_checks ORDER BY trip_id,sequence')],
+                        'findings': [dict(r) for r in db.execute('SELECT * FROM transit_findings ORDER BY id')],
+                        'finding_events': [dict(r) for r in db.execute('SELECT * FROM transit_finding_events ORDER BY finding_id,sequence')]},
                     'notice': 'Local user assertions; completion does not authorize public-service execution.'}
 
     def update(self, identifier, data):

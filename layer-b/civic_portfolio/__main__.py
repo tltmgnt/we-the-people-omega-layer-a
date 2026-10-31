@@ -11,6 +11,7 @@ from .store import Conflict, MAX_TEXT, Store
 from .permits import Permits
 from .maintenance import Maintenance
 from .sanitation import Sanitation
+from .transit import Transit
 
 STATIC = Path(__file__).parent / 'static'
 
@@ -34,6 +35,7 @@ def server(store, port=8765):
     permits = Permits(store)
     maintenance = Maintenance(store)
     sanitation = Sanitation(store)
+    transit = Transit(store)
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
@@ -72,8 +74,8 @@ def server(store, port=8765):
                 parts = urlsplit(self.path).path.strip('/').split('/')
                 if not mutation:
                     path = urlsplit(self.path).path
-                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js']:
-                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js'}[path]
+                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js']:
+                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js'}[path]
                         kind = 'text/html' if name.endswith('.html') else 'text/javascript' if name.endswith('.js') else 'text/css'
                         self.send(200, (STATIC / name).read_bytes(), kind + '; charset=utf-8')
                     elif path == '/api/bootstrap':
@@ -87,6 +89,11 @@ def server(store, port=8765):
                         self.send(200, {'assets': maintenance.assets(), 'orders': maintenance.orders(), 'token': token})
                     elif path == '/api/sanitation':
                         self.send(200, {'routes': sanitation.routes(), 'runs': sanitation.runs(), 'issues': sanitation.issues(), 'token': token})
+                    elif path == '/api/transit':
+                        self.send(200, {'trips': transit.trips(), 'findings': transit.findings(), 'token': token})
+                    elif path == '/api/transit/report':
+                        query = parse_qs(urlsplit(self.path).query)
+                        self.send(200, transit.report(query.get('as_of', [None])[0], query.get('service', [None])[0], query.get('area', [None])[0], float(query.get('early_minutes', ['1'])[0]), float(query.get('late_minutes', ['5'])[0])))
                     elif path == '/api/sanitation/report':
                         query = parse_qs(urlsplit(self.path).query)
                         self.send(200, sanitation.report(query.get('as_of', [None])[0], query.get('area', [None])[0], query.get('stream', [None])[0]))
@@ -100,6 +107,19 @@ def server(store, port=8765):
                         self.send(200, store.source_content(parts[2]))
                     else:
                         self.send(404, {'error': 'route not found'})
+                elif parts == ['api', 'transit', 'trips']:
+                    self.send(201, transit.create_trip(data))
+                elif parts == ['api', 'transit', 'findings']:
+                    self.send(201, transit.create_finding(data))
+                elif len(parts) == 5 and parts[:3] == ['api', 'transit', 'trips']:
+                    if parts[4] == 'observations':
+                        self.send(200, transit.observe(parts[3], data))
+                    elif parts[4] == 'checks':
+                        self.send(200, transit.verify(parts[3], data))
+                    else:
+                        self.send(404, {'error': 'route not found'})
+                elif len(parts) == 5 and parts[:3] == ['api', 'transit', 'findings'] and parts[4] == 'events':
+                    self.send(200, transit.update_finding(parts[3], data))
                 elif parts == ['api', 'sanitation', 'routes']:
                     self.send(201, sanitation.create_route(data))
                 elif parts == ['api', 'sanitation', 'runs']:

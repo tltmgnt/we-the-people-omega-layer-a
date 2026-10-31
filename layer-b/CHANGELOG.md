@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Implement project 012's synthetic scheduled-trip, arrival/cancellation revision and verification workflow, with configurable on-time windows, explicit verification coverage, measured aggregate passenger delay and separate accessibility response/reopening histories.
+- Add seven transit tests and expand browser CI through window-boundary arrival, correction, cancellation, missing passenger data, access findings, persistence and mobile layout. Keep unread source, actual operating rules and qualified acceptance unresolved.
+
 - Implement project 011's synthetic route/run records, current-record count verification, service recovery revisions and anonymous missed-service response/reopening histories. Separate verified stop-visit rates, recovery intervals and report-response measures; retain explicit missing verification and unknown sample values.
 - Add seven sanitation integration tests and extend browser CI through a shortfall, report response, newly verified recovery, repeat report and persisted mobile workflow. Preserve unread source and institutional acceptance gaps.
 

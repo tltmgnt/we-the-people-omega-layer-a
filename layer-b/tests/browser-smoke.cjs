@@ -204,8 +204,81 @@ const path = require('node:path');
     await page.reload();
     await page.getByRole('heading',{name:'SYN-RUN-UI',exact:true}).waitFor();
     await page.locator('#detail > p').filter({hasText:'VERIFIED_COMPLETE ·'}).waitFor();
+    await page.goto(url+'/transit');
+    await page.getByText('No fictional trips. No service baseline is assumed.',{exact:true}).waitFor();
+    await page.locator('#actor').fill('SYNTHETIC WORKER');
+    await page.locator('#asof').fill('2026-01-02T00:00:00Z');
+    async function scheduleTrip(id,scheduled){
+      await page.locator('#trip-id').fill(id);
+      await page.locator('#trip-service').fill('Demo line · terminal arrival');
+      await page.locator('#trip-area').fill('Demo area');
+      await page.locator('#trip-at').fill('2026-01-01T00:00:00Z');
+      await page.locator('#trip-scheduled').fill(scheduled);
+      await page.locator('#trip-evidence').fill('Synthetic transit schedule');
+      await page.getByRole('button',{name:'Schedule synthetic trip',exact:true}).click();
+      await page.getByRole('heading',{name:id,exact:true}).waitFor();
+    }
+    async function tripObservation(result,at,actual,passengers='',delay=''){
+      await page.getByLabel('Recorded trip outcome',{exact:true}).selectOption(result);
+      await page.getByLabel('Observation/revision timestamp',{exact:true}).fill(at);
+      await page.getByLabel('Actual arrival timestamp (blank for cancellation)',{exact:true}).fill(actual);
+      await page.getByLabel('Aggregate passenger observations (blank = unknown)',{exact:true}).fill(passengers);
+      await page.getByLabel('Aggregate passenger-delay person-minutes (blank = unknown)',{exact:true}).fill(delay);
+      await page.getByLabel('Trip observation and correction evidence',{exact:true}).fill('Synthetic trip observation or correction');
+      await page.getByRole('button',{name:'Record trip observation',exact:true}).click();
+      await page.locator('#detail > p').filter({hasText:'UNVERIFIED_'+result+' ·'}).waitFor();
+    }
+    async function tripCheck(at,result){
+      await page.getByLabel('Distinct trip verifier identifier',{exact:true}).fill('SYNTHETIC VERIFIER');
+      await page.getByLabel('Trip verification timestamp',{exact:true}).fill(at);
+      await page.getByLabel('Trip verification evidence',{exact:true}).fill('Synthetic checked outcome');
+      await page.getByRole('button',{name:'Verify trip observation',exact:true}).click();
+      await page.locator('#detail > p').filter({hasText:new RegExp('^VERIFIED_'+result+' ·')}).waitFor();
+    }
+    await scheduleTrip('SYN-TRIP-UI','2026-01-01T10:00:00Z');
+    await tripObservation('ARRIVED','2026-01-01T11:00:00Z','2026-01-01T10:05:00Z','2','20');
+    await tripCheck('2026-01-01T12:00:00Z','ARRIVED');
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).on_time_arrival_rate===1);
+    let transitReport=JSON.parse(await page.locator('#report-data').textContent());
+    if(transitReport.passenger_delay.mean_minutes_per_passenger_observation!==10)throw Error('Transit passenger delay mismatch');
+    await page.locator('#finding-id').fill('SYN-ACCESS-UI');
+    await page.locator('#finding-trip').selectOption('SYN-TRIP-UI');
+    await page.locator('#finding-excluded').fill('2');
+    await page.locator('#finding-at').fill('2026-01-01T10:10:00Z');
+    await page.locator('#finding-description').fill('Fictional mobility access barrier');
+    await page.locator('#finding-evidence').fill('Synthetic non-identifying finding');
+    await page.getByRole('button',{name:'Record access finding',exact:true}).click();
+    const accessPanel=page.locator('#findings details');
+    await accessPanel.locator('summary').filter({hasText:'SYN-ACCESS-UI · OPEN'}).waitFor();
+    await tripObservation('ARRIVED','2026-01-01T12:00:00Z','2026-01-01T10:06:00Z');
+    await tripCheck('2026-01-01T13:00:00Z','ARRIVED');
+    await scheduleTrip('SYN-CANCEL-UI','2026-01-01T14:00:00Z');
+    await tripObservation('CANCELLED','2026-01-01T13:00:00Z','');
+    await tripCheck('2026-01-01T14:00:00Z','CANCELLED');
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).verified_cancellations===1);
+    transitReport=JSON.parse(await page.locator('#report-data').textContent());
+    if(transitReport.on_time_arrival_rate!==0||transitReport.cancellation_rate_among_verified_outcomes!==.5||transitReport.open_access_findings!==1||transitReport.passenger_delay.mean_minutes_per_passenger_observation!==null)throw Error('Transit denominator/access/missingness mismatch');
+    await accessPanel.locator('summary').click();
+    await accessPanel.getByLabel('Accessibility response timestamp',{exact:true}).fill('2026-01-01T14:00:00Z');
+    await accessPanel.getByLabel('Accessibility response or repeat-finding evidence',{exact:true}).fill('Synthetic access response');
+    await accessPanel.getByRole('button',{name:'Record accessibility response',exact:true}).click();
+    await accessPanel.locator('summary').filter({hasText:'RESOLVED'}).waitFor();
+    await accessPanel.locator('summary').click();
+    await accessPanel.getByLabel('Accessibility response timestamp',{exact:true}).fill('2026-01-01T15:00:00Z');
+    await accessPanel.getByLabel('Accessibility response or repeat-finding evidence',{exact:true}).fill('Synthetic repeated access observation');
+    await accessPanel.getByRole('button',{name:'Reopen access finding',exact:true}).click();
+    await accessPanel.locator('summary').filter({hasText:'OPEN'}).waitFor();
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).reopen_events===1);
+    await page.screenshot({path:'.local/portfolio-transit-mobile.png'});
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Transit mobile overflow');
+    await page.reload();
+    await page.getByRole('heading',{name:'SYN-CANCEL-UI',exact:true}).waitFor();
+    await page.locator('#findings summary').filter({hasText:'SYN-ACCESS-UI · OPEN'}).waitFor();
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: portfolio and permit/maintenance/sanitation workflows, verification safeguards, reports, persistence and mobile layout');
+    console.log('PASS: portfolio and permit/maintenance/sanitation/transit workflows, verification safeguards, reports, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){
