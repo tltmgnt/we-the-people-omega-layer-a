@@ -12,13 +12,14 @@ Layer A defines a foundational review architecture for constitutional, legal and
 - [Reproducible benefits-process pilot](pilots/benefits-process/README.md)
 - [Cross-layer integration](cross-layer-integration.md) and [versioned synthetic exchange](examples/cross-layer/README.md)
 - [Contribution guidance](CONTRIBUTING.md) and [changelog](CHANGELOG.md)
+- [Roadmap](ROADMAP.md) and [0.2.0-alpha release criteria](Docs/Releases/0.2.0-alpha.md)
 - [License selection status](LICENSE-SELECTION.md)
 
 ## Current scope
 
 The example intentionally remains LEGAL_REVIEW_REQUIRED. Structural validation does not determine legal sufficiency, verify reviewer authority or authorize implementation. Qualified human review and any separately required institutional decision remain necessary.
 
-A synthetic intake-to-escalation pilot demonstrates a blocked outcome. A1–A7 checklists provide proposed review prompts and evidence requirements. A jurisdiction-specific pilot with qualified human review, a detailed roadmap and operational integrations remain planned work.
+A synthetic intake-to-escalation pilot demonstrates a blocked outcome. A1–A7 checklists provide proposed review prompts and evidence requirements. The roadmap defines alpha acceptance criteria and subsequent work. A jurisdiction-specific pilot with qualified human review and operational integrations remain planned work.
 
 ## Quick check
 
