@@ -18,6 +18,7 @@ from .public_access import PublicAccess
 from .utilities import Utilities
 from .rights import Rights
 from .justice import Justice, DIMENSIONS, MODULES, ROLES, SCHEMAS, STAGES
+from .initiative import Initiative, METHODS, SAFEGUARDS, STAGES as INITIATIVE_STAGES, SCHEMAS as INITIATIVE_SCHEMAS
 from .finance import Finance
 from .election_services import ElectionServices
 
@@ -48,6 +49,7 @@ def server(store, port=8765):
     public_access = PublicAccess(store)
     utilities = Utilities(store)
     rights = Rights(store)
+    initiative = Initiative(store)
     justice = Justice(store)
     finance = Finance(store)
     election_services = ElectionServices(store)
@@ -89,8 +91,8 @@ def server(store, port=8765):
                 parts = urlsplit(self.path).path.strip('/').split('/')
                 if not mutation:
                     path = urlsplit(self.path).path
-                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js', '/election-services', '/election-services.js', '/finance', '/finance.js', '/justice', '/justice.js']:
-                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js', '/election-services': 'election-services.html', '/election-services.js': 'election-services.js', '/finance': 'finance.html', '/finance.js': 'finance.js', '/justice': 'justice.html', '/justice.js': 'justice.js'}[path]
+                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js', '/election-services', '/election-services.js', '/finance', '/finance.js', '/justice', '/justice.js', '/initiative', '/initiative.js']:
+                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js', '/election-services': 'election-services.html', '/election-services.js': 'election-services.js', '/finance': 'finance.html', '/finance.js': 'finance.js', '/justice': 'justice.html', '/justice.js': 'justice.js', '/initiative': 'initiative.html', '/initiative.js': 'initiative.js'}[path]
                         kind = 'text/html' if name.endswith('.html') else 'text/javascript' if name.endswith('.js') else 'text/css'
                         self.send(200, (STATIC / name).read_bytes(), kind + '; charset=utf-8')
                     elif path == '/api/bootstrap':
@@ -114,6 +116,13 @@ def server(store, port=8765):
                         self.send(200, {'assets': utilities.assets(), 'incidents': utilities.incidents(), 'token': token})
                     elif path == '/api/rights':
                         self.send(200, {'cases': rights.cases(), 'token': token})
+                    elif path == '/api/initiative/specification':
+                        content=(STATIC.parent.parent/'portfolio/sources/initiative-user-specification.md').read_text()
+                        self.send(200,dict(content=content,sha256=hashlib.sha256(content.encode()).hexdigest(),origin='User-supplied portfolio overview, sections II–VI, 2026-10-31; Markdown normalized; linked documents not fetched'))
+                    elif path == '/api/initiative':
+                        self.send(200,dict(projects=initiative.catalog(),programs=initiative.programs(),methods=METHODS,safeguards=SAFEGUARDS,stages=INITIATIVE_STAGES,schemas=INITIATIVE_SCHEMAS,sources=store.sources(),token=token))
+                    elif len(parts)==4 and parts[:2]==['api','initiative'] and parts[3]=='report':
+                        self.send(200,initiative.report(parts[2]))
                     elif path == '/api/justice/specification':
                         content=(STATIC.parent.parent/'portfolio/sources/023-user-specification.md').read_text()
                         self.send(200,dict(content=content,sha256=hashlib.sha256(content.encode()).hexdigest(),origin='User-supplied Project 023 specification, 2026-10-31; Markdown formatting normalized; external claims unverified'))
@@ -164,6 +173,16 @@ def server(store, port=8765):
                         self.send(200, store.source_content(parts[2]))
                     else:
                         self.send(404, {'error': 'route not found'})
+                elif parts == ['api','initiative','import-specification']:
+                    if set(data)!={'actor'} or not isinstance(data.get('actor'),str) or not data['actor'].strip() or len(data['actor'])>200:raise ValueError('actor required, at most 200 characters')
+                    with store.connect() as db:
+                        db.execute("INSERT OR IGNORE INTO sources VALUES ('initiative-overview',NULL,NULL)")
+                    content=(STATIC.parent.parent/'portfolio/sources/initiative-user-specification.md').read_text()
+                    self.send(201,store.import_source('initiative-overview',content,data['actor'],'User-supplied portfolio overview, sections II–VI, 2026-10-31; Markdown normalized; linked documents not fetched'))
+                elif parts == ['api','initiative','programs']:
+                    self.send(201,initiative.create(data))
+                elif len(parts)==4 and parts[:2]==['api','initiative'] and parts[3]=='records':
+                    self.send(200,initiative.record(parts[2],data))
                 elif parts == ['api','justice','import-specification']:
                     if set(data)!={'actor'}:raise ValueError('actor required')
                     content=(STATIC.parent.parent/'portfolio/sources/023-user-specification.md').read_text()

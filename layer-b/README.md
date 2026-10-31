@@ -33,6 +33,9 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 
 ## Start here
 
+- [Explore all 50 connected workstreams and the collaboration rehearsal](portfolio/INITIATIVE-LAB.md)
+- [Read the supplied portfolio overview and source links](portfolio/sources/initiative-user-specification.md)
+
 - [Run the 50-project portfolio application](portfolio/APPLICATION.md)
 - [Try project 009's synthetic permit workflow](portfolio/PERMIT-LAB.md)
 - [Try project 010's synthetic asset-maintenance workflow](portfolio/MAINTENANCE-LAB.md)

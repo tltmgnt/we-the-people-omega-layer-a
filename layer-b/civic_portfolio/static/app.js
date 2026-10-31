@@ -1,5 +1,5 @@
 'use strict';
-let state = {projects: [], sources: [], token: ''}, selected = '009';
+let state = {projects: [], sources: [], token: ''}, selected = /^0(?:0[1-9]|[1-4][0-9]|50)$/.test(new URLSearchParams(location.search).get('project') || '') ? new URLSearchParams(location.search).get('project') : '009';
 const $ = id => document.getElementById(id);
 function el(tag, text, cls) { const n = document.createElement(tag); if (text !== undefined) n.textContent = text; if (cls) n.className = cls; return n; }
 function input(label, value, multiline = false) { const wrap = el('label', label), n = el(multiline ? 'textarea' : 'input'); n.value = value || ''; wrap.append(n); return [wrap, n]; }

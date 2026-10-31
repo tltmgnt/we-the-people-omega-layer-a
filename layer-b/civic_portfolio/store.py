@@ -218,6 +218,9 @@ class Store:
                   question_id TEXT NOT NULL REFERENCES rights_questions(id), sequence INTEGER NOT NULL,
                   status TEXT NOT NULL, evidence_pins TEXT NOT NULL, at TEXT NOT NULL,
                   actor TEXT NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(question_id,sequence));
+                CREATE TABLE IF NOT EXISTS initiative_programs (id TEXT PRIMARY KEY,body TEXT NOT NULL,version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS initiative_events (
+                  program_id TEXT NOT NULL REFERENCES initiative_programs(id),sequence INTEGER NOT NULL,body TEXT NOT NULL,PRIMARY KEY(program_id,sequence));
                 CREATE TABLE IF NOT EXISTS justice_pilots (
                   id TEXT PRIMARY KEY,body TEXT NOT NULL,version INTEGER NOT NULL);
                 CREATE TABLE IF NOT EXISTS justice_events (
@@ -388,6 +391,7 @@ class Store:
                             ('cases','rights_cases','id'),('screenings','rights_screenings','case_id,sequence'),
                             ('evidence','rights_evidence','case_id,evidence_id,revision'),('candidate_authorities','rights_authorities','case_id,authority_id'),
                             ('questions','rights_questions','id'),('question_events','rights_question_events','question_id,sequence')]},
+                    'synthetic_initiative': {'programs':[dict(r) for r in db.execute('SELECT * FROM initiative_programs ORDER BY id')], 'events':[dict(r) for r in db.execute('SELECT * FROM initiative_events ORDER BY program_id,sequence')]},
                     'synthetic_justice': {'pilots':[dict(r) for r in db.execute('SELECT * FROM justice_pilots ORDER BY id')], 'events':[dict(r) for r in db.execute('SELECT * FROM justice_events ORDER BY pilot_id,sequence')]},
                     'synthetic_finance': {'ledgers':[dict(r) for r in db.execute('SELECT * FROM finance_ledgers ORDER BY id')], 'events':[dict(r) for r in db.execute('SELECT * FROM finance_events ORDER BY ledger_id,sequence')]},
                     'synthetic_election_services': {
