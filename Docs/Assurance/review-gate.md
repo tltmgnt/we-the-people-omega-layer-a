@@ -67,4 +67,11 @@ The [benefits-process walkthrough](../../pilots/benefits-process/README.md) pres
 intake and escalation revisions, resolves synthetic evidence references and reproduces a
 blocked outcome. No qualified human legal review has occurred. A jurisdiction-specific
 pilot with applicable legal sources, human review and institutional outcome remains
-future work, along with domain-specific legal guidance.
+future work, along with jurisdiction-specific legal guidance.
+
+## Domain screening
+
+Use the [A1–A7 checklists](../Domains/README.md) to screen all seven domains, record
+relevance and reasons, request evidence and preserve unresolved questions. These proposed
+checklists supplement the workflow; they do not determine applicable law or change status
+automatically. Detailed assessments remain accompanying materials referenced by the record.

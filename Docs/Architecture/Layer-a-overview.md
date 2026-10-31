@@ -7,7 +7,7 @@ Establish constitutional, legal, and democratic conditions for all WE THE PEOPLE
 The U.S. Constitution and amendments, applicable statutes, regulations, treaties, binding judicial decisions, and jurisdiction-specific legal authority inform review. Tribal sovereignty and government-to-government relationships require distinct treatment.
 
 ## Seven domains
-A1 Rights and Liberties; A2 Rule of Law; A3 Elections and Representation; A4 Courts and Justice; A5 Ethics and Integrity; A6 Federalism; A7 Tribal Sovereignty. Individual domain documents are planned; they are not yet included.
+A1 Rights and Liberties; A2 Rule of Law; A3 Elections and Representation; A4 Courts and Justice; A5 Ethics and Integrity; A6 Federalism; A7 Tribal Sovereignty. See the [seven domain checklists](../Domains/README.md) for proposed review questions, evidence requests and escalation triggers.
 
 See the [assurance gate](../Assurance/review-gate.md) for proposed statuses, responsibilities and validation.
 

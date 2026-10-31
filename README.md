@@ -5,6 +5,7 @@ Layer A defines a foundational review architecture for constitutional, legal and
 ## Start here
 
 - [Foundational architecture and seven proposed domains](Docs/Architecture/Layer-a-overview.md)
+- [A1–A7 domain checklists](Docs/Domains/README.md)
 - [Assurance gate, statuses and validation instructions](Docs/Assurance/review-gate.md)
 - [Review JSON Schema v0.1.0](schemas/review-record.schema.json)
 - [Hypothetical review record](example-review.json)
@@ -17,7 +18,7 @@ Layer A defines a foundational review architecture for constitutional, legal and
 
 The example intentionally remains LEGAL_REVIEW_REQUIRED. Structural validation does not determine legal sufficiency, verify reviewer authority or authorize implementation. Qualified human review and any separately required institutional decision remain necessary.
 
-A synthetic intake-to-escalation pilot demonstrates a blocked outcome. Individual A1–A7 domain documents, a jurisdiction-specific pilot with qualified human review, a detailed roadmap and operational integrations remain planned work.
+A synthetic intake-to-escalation pilot demonstrates a blocked outcome. A1–A7 checklists provide proposed review prompts and evidence requirements. A jurisdiction-specific pilot with qualified human review, a detailed roadmap and operational integrations remain planned work.
 
 ## Quick check
 
