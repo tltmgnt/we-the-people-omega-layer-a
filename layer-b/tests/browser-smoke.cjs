@@ -543,8 +543,87 @@ const path = require('node:path');
     await page.getByRole('heading',{name:'SYN-OUTAGE-UI',exact:true}).waitFor();
     await page.locator('#detail > p').filter({hasText:'REOPENED ·'}).waitFor();
     await page.locator('#incidents button').filter({hasText:'SYN-UNKNOWN-OUTAGE-UI'}).waitFor();
+    await page.goto(url+'/rights');
+    await page.getByText('No fictional rights-review cases. No legal finding is assumed.',{exact:true}).waitFor();
+    await page.locator('#actor').fill('SYNTHETIC AUTHOR');
+    await page.locator('#asof').fill('2026-01-01T12:00:00Z');
+    await page.locator('#case-id').fill('SYN-RIGHTS-UI');
+    await page.locator('#proposal-id').fill('SYN-PROPOSAL-UI');
+    await page.locator('#institution').fill('Fictional institution');
+    await page.locator('#jurisdiction').fill('Fictional jurisdiction');
+    await page.locator('#case-at').fill('2026-01-01T00:00:00Z');
+    await page.locator('#case-summary').fill('Fictional bounded service proposal, no actual legal finding');
+    await page.getByRole('button',{name:'Create synthetic rights intake',exact:true}).click();
+    await page.getByRole('heading',{name:'SYN-RIGHTS-UI',exact:true}).waitFor();
+    async function rightsSnapshot(hour,revision){
+      await page.getByLabel('Evidence snapshot ID',{exact:true}).fill('SYN-EVIDENCE-UI');
+      await page.getByLabel('Fictional snapshot origin',{exact:true}).fill('fictional-source.txt');
+      await page.getByLabel('Evidence snapshot timestamp',{exact:true}).fill(`2026-01-01T${hour}:00:00Z`);
+      await page.getByLabel('Full fictional snapshot text',{exact:true}).fill(revision===1?'\nSYNTHETIC evidence <script>window.badRights=true</script>\n':'\nSYNTHETIC revised evidence; no actual legal source.\n');
+      await page.getByRole('button',{name:'Append evidence snapshot',exact:true}).click();
+      await page.locator('#detail > ul > li').filter({hasText:'SYN-EVIDENCE-UI · v'+revision+' ·'}).waitFor();
+    }
+    async function rightsScreen(hour,revision){
+      await page.getByLabel('Rights screening domain',{exact:true}).selectOption('A1');
+      await page.getByLabel('Recorded domain relevance',{exact:true}).selectOption('RELEVANT');
+      await page.getByLabel('Screening timestamp',{exact:true}).fill(`2026-01-01T${hour}:00:00Z`);
+      await page.getByLabel('Screening evidence snapshots',{exact:true}).selectOption(['SYN-EVIDENCE-UI@'+revision]);
+      await page.getByLabel('Screening rationale and uncertainty',{exact:true}).fill('Fictional screening rationale '+hour+'; applicability unassessed');
+      await page.getByRole('button',{name:'Record domain screening',exact:true}).click();
+      await page.locator('#detail > ul > li').filter({hasText:'Fictional screening rationale '+hour}).waitFor();
+    }
+    await rightsSnapshot('01',1);
+    if(await page.evaluate(()=>window.badRights))throw Error('Rights snapshot executed as markup');
+    await rightsScreen('02',1);
+    await page.getByLabel('Candidate authority ID',{exact:true}).fill('SYN-CANDIDATE-UI');
+    await page.getByLabel('Candidate reference label or URL',{exact:true}).fill('Fictional candidate source label');
+    await page.getByLabel('Proposed scope and unassessed applicability',{exact:true}).fill('Applicability not assessed; no actual legal source used');
+    await page.getByLabel('Candidate-reference timestamp',{exact:true}).fill('2026-01-01T02:00:00Z');
+    await page.getByRole('button',{name:'Record authority candidate',exact:true}).click();
+    await page.locator('#detail li').filter({hasText:'SYN-CANDIDATE-UI'}).waitFor();
+    await page.getByLabel('Review question ID',{exact:true}).fill('SYN-QUESTION-UI');
+    await page.getByLabel('Question timestamp',{exact:true}).fill('2026-01-01T03:00:00Z');
+    await page.getByLabel('Fictional review question',{exact:true}).fill('Which procedural condition needs qualified review?');
+    await page.getByLabel('Alternative explanation',{exact:true}).fill('Missing information may explain the apparent gap.');
+    await page.getByLabel('Question scope and evidence limitations',{exact:true}).fill('Fictional scenario; no actual rights or institution assessed.');
+    await page.getByLabel('Question evidence snapshots',{exact:true}).selectOption(['SYN-EVIDENCE-UI@1']);
+    await page.getByRole('button',{name:'Open fictional review question',exact:true}).click();
+    const rightsPanel=page.locator('#question-list details');
+    await rightsPanel.locator('summary').filter({hasText:'SYN-QUESTION-UI · OPEN'}).waitFor();
+    async function rightsResponse(hour,revision,status='RESPONSE_RECORDED'){
+      await rightsPanel.locator('summary').click();
+      await rightsPanel.getByLabel('Local question response status',{exact:true}).selectOption(status);
+      await rightsPanel.getByLabel('Local response timestamp',{exact:true}).fill(`2026-01-01T${hour}:00:00Z`);
+      await rightsPanel.getByLabel('Response evidence snapshots',{exact:true}).selectOption(['SYN-EVIDENCE-UI@'+revision]);
+      await rightsPanel.getByLabel('Local response or challenge rationale',{exact:true}).fill('Synthetic local response/challenge '+hour);
+      await rightsPanel.getByRole('button',{name:'Record local response or challenge',exact:true}).click();
+      await rightsPanel.locator('li').filter({hasText:'Synthetic local response/challenge '+hour}).waitFor({state:'attached'});
+    }
+    await rightsResponse('04',1);
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).current_evidence_responses===1);
+    await rightsSnapshot('05',2);
+    await rightsPanel.locator('summary').filter({hasText:'STALE EVIDENCE'}).waitFor();
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).stale_evidence_questions===1);
+    await rightsResponse('06',2);
+    await rightsScreen('07',2);
+    await rightsResponse('08',2,'OPEN');
+    await rightsPanel.locator('summary').filter({hasText:'SYN-QUESTION-UI · OPEN'}).waitFor();
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).reopen_events===1);
+    const rightsReport=JSON.parse(await page.locator('#report-data').textContent());
+    if(rightsReport.qualified_legal_reviews!==0||rightsReport.review_status!=='LEGAL_REVIEW_REQUIRED'||rightsReport.screened_current_domains!==1||rightsReport.open_or_stale_questions!==1)throw Error('Rights coverage incorrectly implied legal review');
+    const draft=await (await page.request.get(url+'/api/rights/cases/SYN-RIGHTS-UI/layer-a')).json();
+    const bundle=await (await page.request.get(url+'/api/rights/cases/SYN-RIGHTS-UI/bundle')).json();
+    if(draft.review_status!=='LEGAL_REVIEW_REQUIRED'||draft.legal_authorities.length!==0||'reviewer_id' in draft||!draft.conditions.length||!draft.jurisdictional_limitations.length||!draft.unresolved_questions.length||bundle.evidence_manifest.length!==2)throw Error('Layer A draft/companion holds missing');
+    await page.screenshot({path:'.local/portfolio-rights-mobile.png'});
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Rights mobile overflow');
+    await page.reload();
+    await page.getByRole('heading',{name:'SYN-RIGHTS-UI',exact:true}).waitFor();
+    await page.locator('#question-list summary').filter({hasText:'SYN-QUESTION-UI · OPEN'}).waitFor();
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: portfolio and seven domain labs, evidence safeguards, reports, persistence and mobile layout');
+    console.log('PASS: portfolio and eight domain labs, evidence/hold safeguards, reports, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){

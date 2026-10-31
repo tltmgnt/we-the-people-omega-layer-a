@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Implement project 016's synthetic rights-evidence intake with A1–A7 screening histories, exact-text/hash revisions, validated snapshot pins, stale-dependency diagnostics, unassessed authority candidates and question/challenge histories; export a permanently blocked Layer A draft and companion evidence bundle.
+- Add seven rights tests including canonical schema/Layer A readiness validation, stale-source history, pin integrity and backup/export; expand browser CI through revisions, reassessment, challenge reopening, fixed legal-review holds, persistence and mobile layout. Preserve actual applicability and qualified-review gaps.
+
 - Implement project 015's synthetic asset/interruption/work/restoration workflow with event-specific scenario-quality checks, closure/reopening cycles, escalation-route references, separate cycle/original ages and aggregate connection-hour reporting with explicit unknown/overlap limits.
 - Add seven utilities integration tests and expand browser CI through quality holds, checked closure, reopening, unknown connection counts, persistence and mobile layout. Preserve unread source, actual safety/operating rules and qualified-acceptance gaps.
 

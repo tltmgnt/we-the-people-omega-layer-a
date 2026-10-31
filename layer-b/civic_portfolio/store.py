@@ -192,6 +192,32 @@ class Store:
                   restoration_sequence INTEGER NOT NULL, at TEXT NOT NULL, verifier TEXT NOT NULL,
                   passed INTEGER NOT NULL, quality_status TEXT NOT NULL, criteria_reference TEXT NOT NULL,
                   evidence TEXT NOT NULL, PRIMARY KEY(incident_id,sequence));
+                CREATE TABLE IF NOT EXISTS rights_cases (
+                  id TEXT PRIMARY KEY, proposal_id TEXT NOT NULL, summary TEXT NOT NULL,
+                  institution TEXT NOT NULL, jurisdiction TEXT NOT NULL,
+                  created_at TEXT NOT NULL, last_at TEXT NOT NULL, actor TEXT NOT NULL, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS rights_screenings (
+                  case_id TEXT NOT NULL REFERENCES rights_cases(id), sequence INTEGER NOT NULL,
+                  domain TEXT NOT NULL, relevance TEXT NOT NULL, rationale TEXT,
+                  evidence_pins TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
+                  PRIMARY KEY(case_id,sequence));
+                CREATE TABLE IF NOT EXISTS rights_evidence (
+                  case_id TEXT NOT NULL REFERENCES rights_cases(id), evidence_id TEXT NOT NULL,
+                  revision INTEGER NOT NULL, sha256 TEXT NOT NULL, content TEXT NOT NULL,
+                  origin TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
+                  PRIMARY KEY(case_id,evidence_id,revision));
+                CREATE TABLE IF NOT EXISTS rights_authorities (
+                  case_id TEXT NOT NULL REFERENCES rights_cases(id), authority_id TEXT NOT NULL,
+                  reference TEXT NOT NULL, proposed_scope TEXT NOT NULL, source_date TEXT,
+                  at TEXT NOT NULL, actor TEXT NOT NULL, PRIMARY KEY(case_id,authority_id));
+                CREATE TABLE IF NOT EXISTS rights_questions (
+                  id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES rights_cases(id),
+                  domain TEXT NOT NULL, question TEXT NOT NULL, alternative_explanation TEXT NOT NULL,
+                  limitations TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS rights_question_events (
+                  question_id TEXT NOT NULL REFERENCES rights_questions(id), sequence INTEGER NOT NULL,
+                  status TEXT NOT NULL, evidence_pins TEXT NOT NULL, at TEXT NOT NULL,
+                  actor TEXT NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(question_id,sequence));
             ''')
             register = json.loads((ROOT / 'portfolio/project-register.json').read_text())
             plans = build()[1]
@@ -320,6 +346,12 @@ class Store:
                         'incidents': [dict(r) for r in db.execute('SELECT * FROM utility_incidents ORDER BY id')],
                         'events': [dict(r) for r in db.execute('SELECT * FROM utility_events ORDER BY incident_id,sequence')],
                         'checks': [dict(r) for r in db.execute('SELECT * FROM utility_checks ORDER BY incident_id,sequence')]},
+                    'synthetic_rights': {
+                        name: [dict(r) for r in db.execute('SELECT * FROM '+table+' ORDER BY '+order)]
+                        for name,table,order in [
+                            ('cases','rights_cases','id'),('screenings','rights_screenings','case_id,sequence'),
+                            ('evidence','rights_evidence','case_id,evidence_id,revision'),('candidate_authorities','rights_authorities','case_id,authority_id'),
+                            ('questions','rights_questions','id'),('question_events','rights_question_events','question_id,sequence')]},
                     'notice': 'Local user assertions; completion does not authorize public-service execution.'}
 
     def update(self, identifier, data):
