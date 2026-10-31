@@ -1034,6 +1034,50 @@ const path = require('node:path');
     await page.reload();await page.locator('#run').selectOption('SYN-EMERGENCY-DEMO');
     await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "ABORTED"')&&!document.querySelector('#refresh').disabled);
     await page.screenshot({path:'.local/portfolio-emergency-mobile.png'});
+    await page.locator('#workflow').selectOption('justice');
+    await page.locator('#actor').fill('JUSTICE SCENARIO RECORDER');
+    await page.locator('#note').fill('Fictional justice process only; no actual case');
+    await page.locator('#run-id').fill('SYN-JUSTICE-CONTROL-DEMO');
+    await page.getByRole('button',{name:'Create scenario',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('#run').value==='SYN-JUSTICE-CONTROL-DEMO'&&!document.querySelector('#pause').disabled);
+    for(const stage of ['FILED','NOTICE_RECORDED','NOTICE_REVIEW']){await page.locator('#next').selectOption(stage);await scenarioClick('step');}
+    if(await page.locator('#next option[value="HEARING_RECORDED"]').count())throw Error('Justice hearing allowed without notice check');
+    await page.locator('#pass').click();await page.getByText('notice check requires an identifier distinct from current filing/notice recorders',{exact:true}).waitFor();
+    await page.locator('#actor').fill('JUSTICE SCENARIO CHECKER');await scenarioClick('pass');
+    const noticeCheckpoint=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#actor').fill('JUSTICE SCENARIO RECORDER');
+    for(const stage of ['HEARING_RECORDED','DECISION_RECORDED','REVIEW_REQUESTED','REMANDED','NOTICE_RECORDED','NOTICE_REVIEW']){await page.locator('#next').selectOption(stage);await scenarioClick('step');}
+    if(await page.locator('#next option[value="HEARING_RECORDED"]').count())throw Error('Remand reused an earlier notice check');
+    let justiceControlReport=JSON.parse(await page.locator('#report').textContent());
+    if(justiceControlReport.filing_to_latest_decision_minutes!==null||justiceControlReport.remand_cycles!==1)throw Error('Remand censoring/count failed');
+    await page.locator('#actor').fill('JUSTICE SCENARIO CHECKER');await scenarioClick('pass');
+    await page.locator('#actor').fill('JUSTICE SCENARIO RECORDER');
+    for(const stage of ['HEARING_RECORDED','DECISION_RECORDED','REMEDY_RECORDED','REMEDY_REVIEW']){await page.locator('#next').selectOption(stage);await scenarioClick('step');}
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Justice remedy closes without current check');
+    await page.locator('#pass').click();await page.getByText('remedy check requires an identifier distinct from current decision/remedy recorders',{exact:true}).waitFor();
+    await page.locator('#actor').fill('JUSTICE SCENARIO CHECKER');await scenarioClick('pass');
+    await page.locator('#next').selectOption('CLOSED');await scenarioClick('step');
+    justiceControlReport=JSON.parse(await page.locator('#report').textContent());
+    if(justiceControlReport.closure_path!=='REMEDY_RECORD'||justiceControlReport.judicial_outcomes_assessed||justiceControlReport.remedy_effectiveness_verified||justiceControlReport.execution_authorized)throw Error('Justice control boundary failed');
+    const beforeNoticeRestore=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#snapshot').selectOption(String(noticeCheckpoint));await page.locator('#restore').click();
+    await page.waitForFunction(n=>JSON.parse(document.querySelector('#snapshot-data').textContent).sequence===n&&!document.querySelector('#refresh').disabled,beforeNoticeRestore+1);
+    await page.locator('#actor').fill('JUSTICE SCENARIO RECORDER');
+    for(const stage of ['HEARING_RECORDED','DECISION_RECORDED','REENTRY_HANDOFF','FOLLOW_UP_RECORDED','CONTINUITY_REVIEW']){await page.locator('#next').selectOption(stage);await scenarioClick('step');}
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Reentry reused remedy check');
+    await page.locator('#actor').fill('JUSTICE SCENARIO CHECKER');await scenarioClick('pass');
+    await page.locator('#next').selectOption('CLOSED');await scenarioClick('step');
+    justiceControlReport=JSON.parse(await page.locator('#report').textContent());
+    if(justiceControlReport.closure_path!=='REENTRY_RECORD'||justiceControlReport.recidivism_assessed)throw Error('Justice reentry diagnostic failed');
+    for(const stage of ['ACCESS_REQUESTED','FILED','NOTICE_RECORDED','NOTICE_REVIEW','HEARING_RECORDED','DECISION_RECORDED','REVIEW_REQUESTED','REMANDED','REMEDY_RECORDED','REMEDY_REVIEW','REENTRY_HANDOFF','FOLLOW_UP_RECORDED','CONTINUITY_REVIEW','CLOSED','WITHDRAWN']){
+      await page.locator('#preset-stage').selectOption(stage);await scenarioClick('preset');
+      justiceControlReport=JSON.parse(await page.locator('#report').textContent());
+      if(justiceControlReport.stage!==stage||justiceControlReport.execution_authorized)throw Error('Justice control preset failed: '+stage);
+      if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Justice control mobile overflow: '+stage);
+    }
+    await page.reload();await page.locator('#run').selectOption('SYN-JUSTICE-CONTROL-DEMO');
+    await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "WITHDRAWN"')&&!document.querySelector('#refresh').disabled);
+    await page.screenshot({path:'.local/portfolio-justice-controls-mobile.png'});
     if(errors.length)throw Error(errors.join('; '));
     console.log('PASS: portfolio and eleven domain labs, connected initiative and scenario controls, evidence/hold safeguards, reports, persistence and mobile layout');
   } catch(error) {

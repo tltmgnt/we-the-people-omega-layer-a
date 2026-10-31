@@ -33,6 +33,8 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 
 ## Start here
 
+- [Control project 023 justice caseflow, remedies and reentry scenarios](portfolio/JUSTICE-CONTROLS.md)
+
 - [Control project 022 emergency-readiness exercises](portfolio/EMERGENCY-LAB.md)
 
 - [Control project 021 fictional health-service referrals and continuity](portfolio/HEALTH-LAB.md)

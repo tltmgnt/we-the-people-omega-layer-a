@@ -22,5 +22,5 @@ $('reset').onclick=()=>perform(()=>command('PRESET',{stage:configuration().initi
 $('restore').onclick=()=>perform(()=>command('RESTORE',{sequence:Number($('snapshot').value)}));
 $('snapshot').onchange=inspect;$('run').onchange=()=>perform(render);$('refresh').onclick=()=>perform(()=>refresh($('run').value));
 $('preset-stage').onchange=presetQuality;$('workflow').onchange=presetOptions;
-const requestedWorkflow=new URLSearchParams(location.search).get('workflow');if(['permit','procurement','education','health','emergency'].includes(requestedWorkflow))$('workflow').value=requestedWorkflow;
+const requestedWorkflow=new URLSearchParams(location.search).get('workflow');if(['permit','procurement','education','health','emergency','justice'].includes(requestedWorkflow))$('workflow').value=requestedWorkflow;
 perform(()=>refresh());

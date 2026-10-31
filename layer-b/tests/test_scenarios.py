@@ -83,7 +83,7 @@ class ScenarioTests(unittest.TestCase):
         self.addCleanup(app.server_close);self.addCleanup(thread.join,2);self.addCleanup(app.shutdown)
         base='http://127.0.0.1:'+str(app.server_port)
         boot=json.load(urlopen(base+'/api/scenarios'));self.assertEqual(set(boot['stages']),set(STAGES))
-        self.assertIn(b'Permit scenario control console',urlopen(base+'/scenarios').read())
+        self.assertIn(b'Use-case scenario control console',urlopen(base+'/scenarios').read())
         payload=dict(version=1,action='PAUSE',parameters={},actor='TEST',note='Fictional pause')
         with self.assertRaises(HTTPError) as error:urlopen(Request(base+'/api/scenarios/SYN-DEMO/commands',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'}))
         self.assertEqual(error.exception.code,403)
