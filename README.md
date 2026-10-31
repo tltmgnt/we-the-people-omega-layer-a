@@ -4,6 +4,9 @@ Layer A defines a foundational review architecture for constitutional, legal and
 
 ## Start here
 
+- [All 50 workstreams and connected collaboration workspace](layer-b/portfolio/INITIATIVE-LAB.md)
+- [50 numbered project plans](layer-b/portfolio/plans/README.md)
+
 - [Foundational architecture and seven proposed domains](Docs/Architecture/Layer-a-overview.md)
 - [A1–A7 domain checklists](Docs/Domains/README.md)
 - [Assurance gate, statuses and validation instructions](Docs/Assurance/review-gate.md)

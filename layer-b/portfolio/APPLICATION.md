@@ -87,3 +87,7 @@ The readiness command must exit 2 for the supplied synthetic packet. Application
 The [synthetic finance lab for project 018](FINANCE-LAB.md), at `/finance`, preserves category-specific signed entries, comparison histories and outcome notes. No payment, tax calculation or spending authorization occurs.
 
 The [Project 023 justice observatory](JUSTICE-LAB.md), at `/justice`, adds the supplied specification, evidence-pinned gap analysis, caseflow strata, DTI intervals, checked remedies, metric contracts and human-authored research-role reviews. The bundled source can be explicitly imported into the source catalog; source review and real institutional acceptance are never automatic.
+
+## Connected portfolio and collaboration rehearsal
+
+The [connected initiative workspace](INITIATIVE-LAB.md), at `/initiative`, shows all 50 workstreams, source/completion gaps, the eleven existing synthetic prototypes and the shared methods. It adds explicit prerequisite dependencies, documented priorities, version-pinned safeguards and a checked staged pilot rehearsal based on the [supplied portfolio overview](sources/initiative-user-specification.md). It does not implement the outstanding domain services, fetch the linked Google Docs, identify a receiving office or send a collaboration proposal.

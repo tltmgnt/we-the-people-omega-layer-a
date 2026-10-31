@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Add the connected 50-workstream initiative catalog, full supplied overview/provenance, explicit method prerequisites, priority history, eight checked safeguards, challenge/response records and staged collaboration rehearsal with project/source revision invalidation.
+- Add initiative tests and browser coverage for all 50 records, undefined workstreams, overview import, cycle rejection, checked framework review, blocked selection, challenges, persistence and mobile layout. Preserve missing source/domain work and fixed live-authorization holds.
+
 - Implement Project 023 synthetic justice observatory from the user-supplied full specification; preserve source/provenance, ten-dimensional gap analysis, eight module categories, evidence-level/revision history, caseflow strata, temporal decomposition, checked remedies, metric contracts, research-role notes and pilot phases.
 - Add justice unit/integration coverage and browser smoke through source import, evidence revisions, exact-check remedy closure/reopening, persistence and mobile layout. Qualified review, official data integration and the real institutional pilot remain outstanding.
 

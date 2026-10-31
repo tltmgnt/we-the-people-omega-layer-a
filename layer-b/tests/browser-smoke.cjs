@@ -792,8 +792,51 @@ const path = require('node:path');
     await page.waitForFunction(()=>document.querySelector('#history').textContent.includes('Revised fictional notice evidence')&&!document.querySelector('#refresh').disabled);
     if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Justice mobile overflow');
     await page.screenshot({path:'.local/portfolio-justice-mobile.png'});
+    await page.goto(url+'/initiative');
+    await page.locator('#projects details').first().waitFor();
+    if(await page.locator('#projects details').count()!==50)throw Error('Connected initiative missing workstreams');
+    await page.locator('#search').fill('005');
+    if(await page.locator('#projects details').count()!==1||!(await page.locator('#projects').textContent()).includes('Title and scope unresolved'))throw Error('Initiative guessed undefined title');
+    await page.locator('#search').fill('');
+    await page.locator('#actor').fill('INITIATIVE RECORDER');
+    await page.getByRole('button',{name:'Import supplied portfolio overview',exact:true}).click();
+    await page.waitForFunction(()=>!document.querySelector('#import-source').disabled);
+    const initiativeSource=await page.evaluate(async()=>await (await fetch('/api/sources/initiative-overview')).json());
+    if(!initiativeSource.content.includes('VI. Requested Next Step')||initiativeSource.reviewer!==null)throw Error('Initiative overview import/review failed');
+    await page.locator('#program-program_id').fill('SYN-COLLABORATION');
+    await page.locator('#program-project_ids').selectOption(['009']);
+    for(const name of ['label','office_review_question','baseline_plan','success_criteria','resources','continuity_plan','rollback_plan','owner'])await page.locator('#program-'+name).fill('Fictional '+name);
+    await page.getByRole('button',{name:'Create collaboration rehearsal',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('#program').value==='SYN-COLLABORATION'&&!document.querySelector('#record-form button').disabled);
+    async function initiativeRecord(kind,data,actor='INITIATIVE RECORDER'){
+      const before=JSON.parse(await page.locator('#history').textContent()).length;
+      await page.locator('#actor').fill(actor);await page.locator('#kind').selectOption(kind);
+      for(const [name,value] of Object.entries(data)){const input=page.locator('#record-'+name);if(await input.evaluate(x=>x.tagName==='SELECT'))await input.selectOption(String(value));else await input.fill(String(value));}
+      await page.getByRole('button',{name:'Append governance record',exact:true}).click();
+      await page.waitForFunction(n=>JSON.parse(document.querySelector('#history').textContent).length===n&&!document.querySelector('#record-form button').disabled,before+1);
+    }
+    await initiativeRecord('DEPENDENCY',{from_project:'042',to_project:'009',active:true,rationale:'Fictional method prerequisite'});
+    await page.locator('#kind').selectOption('DEPENDENCY');await page.locator('#record-from_project').selectOption('009');await page.locator('#record-to_project').selectOption('042');await page.locator('#record-rationale').fill('Invalid cycle');
+    await page.getByRole('button',{name:'Append governance record',exact:true}).click();await page.getByText('dependency cycle is not permitted',{exact:true}).waitFor();
+    await initiativeRecord('PRIORITY',{project_id:'005',disposition:'REQUIRES_DEFINITION',owner:'OWNER',rationale:'Undefined workstream remains open'});
+    await initiativeRecord('STAGE',{stage:'FRAMEWORK_REVIEW',owner:'OWNER',evidence:'Fictional framework review',limitations:'No institution participated'});
+    await initiativeRecord('STAGE_CHECK',{stage_sequence:3,passed:true,evidence:'Fictional separate review'},'INITIATIVE CHECKER');
+    await page.locator('#kind').selectOption('STAGE');await page.locator('#record-stage').selectOption('PILOT_SELECTED');await page.locator('#record-owner').fill('OWNER');await page.locator('#record-evidence').fill('Attempt before prerequisites');await page.locator('#record-limitations').fill('Fictional only');
+    await page.getByRole('button',{name:'Append governance record',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('#message').textContent.startsWith('Scenario gate blocked:'));
+    await initiativeRecord('SAFEGUARD',{safeguard:'AUTHORITY',status:'GAP',owner:'OWNER',evidence:'Fictional authority not established'});
+    await initiativeRecord('CHALLENGE',{challenge_id:'SYN-ACCESS-QUESTION',question:'Fictional access concern',owner:'OWNER',evidence:'Scenario question'});
+    let initiativeReport=JSON.parse(await page.locator('#report').textContent());
+    if(initiativeReport.execution_authorized||initiativeReport.domain_implementations_complete||!initiativeReport.blockers.some(x=>x.includes('SYN-ACCESS-QUESTION')))throw Error('Initiative falsely ready');
+    await initiativeRecord('RESPONSE',{challenge_id:'SYN-ACCESS-QUESTION',response:'Recorded response is not proof of remedy',evidence:'Fictional response'});
+    await page.reload();await page.locator('#program').selectOption('SYN-COLLABORATION');
+    await page.waitForFunction(()=>document.querySelector('#history').textContent.includes('Recorded response is not proof of remedy')&&!document.querySelector('#refresh').disabled);
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Initiative mobile overflow');
+    await page.screenshot({path:'.local/portfolio-initiative-mobile.png'});
+    await page.goto(url+'/?project=050');
+    await page.getByRole('heading',{name:'Integrated Civic Systems Simulation and Capstone.',exact:true}).waitFor();
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: portfolio and eleven domain labs, evidence/hold safeguards, reports, persistence and mobile layout');
+    console.log('PASS: portfolio and eleven domain labs and connected initiative, evidence/hold safeguards, reports, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){
