@@ -2,6 +2,14 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Add a local SQLite-backed portfolio application for all 50 entries, versioned source-text imports and review, project definitions, delivery evidence, exports and tested backups.
+- Add 50 proposed implementation plans with outcomes, input records, measures, safeguards and acceptance criteria; retain unresolved definitions and distinguish proposals from unread source content.
+- Add application integration tests for persistence, source/scope invalidation, completion gates, concurrent edits and local HTTP boundaries. Full source contents and project-specific domain services remain outstanding.
+
+- Import the starter under `layer-b/` in the public Layer A repository through PR #7.
+- Add a root README entry and active Layer B validation workflow; record passing CI on the merged import.
+- Update setup and validation guidance for the subdirectory layout and remaining owner decisions.
+
 - Align Layer B with the supplied five-layer/50-project initiative goal and add a collaboration/pilot brief; preserve unresolved portfolio entries and unreviewed source links.
 - Organize the supplied Layer B framework into architecture, six domains, methods,
   assurance, governance, sources and a 90-day roadmap.

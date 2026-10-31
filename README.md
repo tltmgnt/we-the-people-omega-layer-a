@@ -45,4 +45,6 @@ These are starting points, not exhaustive controlling authority. Check current, 
 
 ## Layer B — Government Operations
 
+Start the [50-project portfolio application](layer-b/portfolio/APPLICATION.md) locally, or browse the [proposed implementation plans](layer-b/portfolio/plans/README.md). Source-document contents and domain-specific implementations are tracked as outstanding work rather than marked complete.
+
 The [Layer B starter](layer-b/README.md) is imported under `layer-b/` with its documentation, schemas, synthetic permit packet and validation tools. Run its validation commands from that directory. The example remains blocked and does not authorize execution.

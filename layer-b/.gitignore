@@ -2,3 +2,7 @@ __pycache__/
 *.py[cod]
 .venv/
 .pytest_cache/
+.local/
+*.sqlite3
+*.sqlite3-*
+portfolio-export*.json
