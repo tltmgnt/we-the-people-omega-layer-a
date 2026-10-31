@@ -4,11 +4,14 @@ import json
 from .maintenance import fields,identifier
 from .permits import timestamp
 from .store import Conflict,text,ROOT
+from .scenarios import WORKFLOWS
 
 METHODS={'041':'Constitutional and civic foundations','042':'Topological Gap Analysis Ω','043':'Civic systems intelligence and evidence','044':'DTI Ω temporal capacity','045':'HedgeOps Ω benchmarked analysis','046':'Institutional transition management','047':'Rights and human agency assurance','048':'Civic performance and validation','049':'Leadership and institutional adoption','050':'Integrated simulation and capstone'}
 SAFEGUARDS=('AUTHORITY','RIGHTS_ACCESSIBILITY','PRIVACY_SECURITY','HUMAN_ACCOUNTABILITY','INDEPENDENT_CHALLENGE','TRANSPARENCY_CORRECTION','JURISDICTION_TRIBAL_SOVEREIGNTY','SERVICE_CONTINUITY')
 STAGES=('PROPOSED','FRAMEWORK_REVIEW','PILOT_SELECTED','BASELINE_RECORDED','CONTROLLED_TEST_RECORDED','INDEPENDENT_EVALUATION_RECORDED','REPORT_RECORDED')
 LABS={'009':'/permits','010':'/maintenance','011':'/sanitation','012':'/transit','013':'/housing','014':'/public-access','015':'/utilities','016':'/rights','017':'/election-services','018':'/finance','019':'/scenarios?workflow=procurement','020':'/scenarios?workflow=education','021':'/scenarios?workflow=health','022':'/scenarios?workflow=emergency','023':'/justice'}
+CONTROL_PATHS={config['project_id']:'/scenarios?workflow='+key for key,config in WORKFLOWS.items()}
+for project_id,control_path in CONTROL_PATHS.items():LABS.setdefault(project_id,control_path)
 SCHEMAS={'DEPENDENCY':'from_project to_project rationale active','PRIORITY':'project_id disposition owner rationale','SAFEGUARD':'safeguard status owner evidence','SAFEGUARD_CHECK':'assertion_sequence passed evidence','STAGE':'stage owner evidence limitations','STAGE_CHECK':'stage_sequence passed evidence','REOPEN':'reason','CHALLENGE':'challenge_id question owner evidence','RESPONSE':'challenge_id response evidence'}
 
 
@@ -21,7 +24,7 @@ class Initiative:
     def catalog(self):
         with self.store.connect() as db:
             projects=[self.store.project(r['id'],db) for r in db.execute('SELECT id FROM projects ORDER BY id')]
-        return [dict(project_id=p['project_id'],title=p['title'],group='SHARED_METHODS' if int(p['project_id'])>=41 else 'GOVERNANCE_SERVICES',owner=p['owner'],scope=p['scope'],status=p['status'],source=p['source'],blockers=p['blockers'],prototype_path=LABS.get(p['project_id']),institutional_acceptance='NOT_ESTABLISHED',execution_authorized=False) for p in projects]
+        return [dict(project_id=p['project_id'],title=p['title'],group='SHARED_METHODS' if int(p['project_id'])>=41 else 'GOVERNANCE_SERVICES',owner=p['owner'],scope=p['scope'],status=p['status'],source=p['source'],blockers=p['blockers'],prototype_path=LABS.get(p['project_id']),control_path=CONTROL_PATHS.get(p['project_id']),institutional_acceptance='NOT_ESTABLISHED',execution_authorized=False) for p in projects]
 
     def program(self,key,db=None):
         if db is None:

@@ -33,6 +33,9 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 
 ## Start here
 
+- [Control all 44 defined workstreams; inspect six blocked definitions](portfolio/CONTROLLED-PORTFOLIO.md)
+- [All 50 slots: exact scenario coverage and remaining acceptance](portfolio/CONTROL-COVERAGE.md)
+
 - [Control project 023 justice caseflow, remedies and reentry scenarios](portfolio/JUSTICE-CONTROLS.md)
 
 - [Control project 022 emergency-readiness exercises](portfolio/EMERGENCY-LAB.md)

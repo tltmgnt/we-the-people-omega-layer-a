@@ -4,6 +4,9 @@ Layer A defines a foundational review architecture for constitutional, legal and
 
 ## Start here
 
+- [All 44 defined workstreams: controllable synthetic use cases](layer-b/portfolio/CONTROLLED-PORTFOLIO.md)
+- [All 50 slots: coverage and six definition holds](layer-b/portfolio/CONTROL-COVERAGE.md)
+
 - [All 50 workstreams and connected collaboration workspace](layer-b/portfolio/INITIATIVE-LAB.md)
 - [50 numbered project plans](layer-b/portfolio/plans/README.md)
 

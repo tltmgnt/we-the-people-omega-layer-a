@@ -1078,8 +1078,70 @@ const path = require('node:path');
     await page.reload();await page.locator('#run').selectOption('SYN-JUSTICE-CONTROL-DEMO');
     await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "WITHDRAWN"')&&!document.querySelector('#refresh').disabled);
     await page.screenshot({path:'.local/portfolio-justice-controls-mobile.png'});
+    await page.goto(url+'/scenarios');
+    await page.waitForFunction(()=>document.querySelector('#workflow').options.length===44);
+    if(!(await page.locator('#coverage').textContent()).includes('001–006'))throw Error('Undefined project holds disappeared');
+    let portfolioSource=null,portfolioCapstone=null;
+    const portfolioKeys=["p007","p008","p010","p011","p012","p013","p014","p015","p016","p017","p018","p024","p025","p026","p027","p028","p029","p030","p031","p032","p033","p034","p035","p036","p037","p038","p039","p040","p041","p042","p043","p044","p045","p046","p047","p048","p049","p050"];
+    for(const workflow of portfolioKeys){
+      await page.locator('#workflow').selectOption(workflow);
+      await page.locator('#actor').fill('PORTFOLIO RECORDER');
+      await page.locator('#note').fill('Explicitly fictional portfolio-wide control exercise');
+      const runId='SYN-CONTROL-'+workflow.toUpperCase();
+      await page.locator('#run-id').fill(runId);
+      await page.getByRole('button',{name:'Create scenario',exact:true}).click();
+      await page.waitForFunction(id=>document.querySelector('#run').value===id&&!document.querySelector('#pause').disabled,runId);
+      const configuration=await page.evaluate(async workflow=>(await (await fetch('/api/scenarios')).json()).workflows[workflow],workflow);
+      if(workflow==='p050'){
+        portfolioCapstone=runId;
+        await page.locator('#preset-stage').selectOption('CLOSED');await page.locator('#preset').click();
+        await page.getByText('capstone CLOSED preset requires current completed scenario evidence with a known observation',{exact:true}).waitFor();
+      }
+      for(const stage of Object.keys(configuration.stages)){
+        if(workflow==='p050'&&stage==='CLOSED'){
+          if(!portfolioSource)throw Error('Capstone source fixture missing');
+          await page.locator('#source-run').fill(portfolioSource.id);await page.locator('#source-sequence').fill(String(portfolioSource.sequence));await scenarioClick('attach');
+        }
+        await page.locator('#preset-stage').selectOption(stage);await scenarioClick('preset');
+        const report=JSON.parse(await page.locator('#report').textContent());
+        if(report.stage!==stage||report.execution_authorized||report.layer_a_status!=='LEGAL_REVIEW_REQUIRED')throw Error('Portfolio state/hold failed: '+workflow+' '+stage);
+        if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Portfolio mobile overflow: '+workflow+' '+stage);
+      }
+      const metric=configuration.metrics[0];
+      await page.locator('#metric-id').selectOption(metric.id);await page.locator('#metric-missing').fill('');
+      if(metric.kind==='RATIO'){await page.locator('#metric-numerator').fill('1');await page.locator('#metric-denominator').fill('2');}
+      else await page.locator('#metric-value').fill('0');
+      await scenarioClick('observe');
+      let observationReport=JSON.parse(await page.locator('#report').textContent());
+      if(observationReport.observations[0].value!==(metric.kind==='RATIO'?0.5:0)||!observationReport.observations[0].path_current)throw Error('Portfolio metric failed: '+workflow);
+      if(workflow==='p024'){
+        await page.locator('#preset-stage').selectOption('CLOSED');await scenarioClick('preset');
+        await page.locator('#metric-value').fill('15');await page.locator('#metric-missing').fill('');await scenarioClick('observe');
+        portfolioSource={id:runId,sequence:JSON.parse(await page.locator('#snapshot-data').textContent()).sequence};
+      }
+    }
+    await page.locator('#source-run').fill(portfolioSource.id);await page.locator('#source-sequence').fill(String(portfolioSource.sequence));await scenarioClick('attach');
+    await page.locator('#preset-stage').selectOption('CLOSED');await scenarioClick('preset');
+    let capstoneReport=JSON.parse(await page.locator('#report').textContent());
+    if(!capstoneReport.capstone_evidence_current||capstoneReport.execution_authorized||capstoneReport.layer_a_status!=='LEGAL_REVIEW_REQUIRED')throw Error('Capstone evidence/Layer A boundary failed');
+    await page.locator('#run').selectOption(portfolioSource.id);
+    await page.waitForFunction(id=>JSON.parse(document.querySelector('#report').textContent()).run_id===id&&!document.querySelector('#refresh').disabled,portfolioSource.id);
+    await scenarioClick('tick');
+    const advancedSource=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#run').selectOption(portfolioCapstone);
+    await page.waitForFunction(id=>JSON.parse(document.querySelector('#report').textContent()).run_id===id&&!document.querySelector('#refresh').disabled,portfolioCapstone);
+    capstoneReport=JSON.parse(await page.locator('#report').textContent());
+    if(capstoneReport.capstone_evidence_current)throw Error('Capstone did not detect stale source');
+    await page.locator('#preset-stage').selectOption('CLOSED');await page.locator('#preset').click();
+    await page.getByText('capstone CLOSED preset requires current completed scenario evidence with a known observation',{exact:true}).waitFor();
+    await page.locator('#source-run').fill(portfolioSource.id);await page.locator('#source-sequence').fill(String(advancedSource));await scenarioClick('attach');
+    await page.locator('#preset-stage').selectOption('CLOSED');await scenarioClick('preset');
+    await page.reload();await page.locator('#run').selectOption(portfolioCapstone);
+    await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"capstone_evidence_current": true')&&!document.querySelector('#refresh').disabled);
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Capstone mobile overflow');
+    await page.screenshot({path:'.local/portfolio-all-workstreams-mobile.png'});
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: portfolio and eleven domain labs, connected initiative and scenario controls, evidence/hold safeguards, reports, persistence and mobile layout');
+    console.log('PASS: all 44 defined-workstream controls, legacy domain labs, measurements, capstone evidence holds, snapshots, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){

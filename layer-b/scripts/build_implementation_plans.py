@@ -39,6 +39,7 @@ def build():
 
 def main():
     register, plans = build()
+    control_projects={p['project_id'] for p in json.loads((ROOT/'portfolio/scenario-profiles.json').read_text())['profiles']}
     directory = ROOT / 'portfolio/plans'
     directory.mkdir(exist_ok=True)
     index = ['# Project implementation plans', '', 'All plans are editorial proposals pending confirmation against full source documents. These files do not represent completed project implementations.', '', '| ID | Project |', '| --- | --- |']
@@ -82,6 +83,10 @@ def main():
             state = 'A [controllable synthetic emergency-readiness exercise](../EMERGENCY-LAB.md) is implemented with eleven states, separate current-revision readiness and correction gates, response/after-action milestones, abort/cancel paths, explicit preset checks and snapshot restore. Automated tests cover the bounded rehearsal. Live dispatch and readiness certification remain false. The linked full source remains unread; actual safety/operating rules, qualified review and institutional adoption remain outstanding. This project is not marked complete.'
         if identifier == '023':
             state += ' The [controllable justice use case](../JUSTICE-CONTROLS.md) adds fifteen isolated scenario states, current notice/remedy/reentry record checks, remand/rehearing loops, both closure paths, presets and snapshot restoration; it makes no judicial or release decisions.'
+        if identifier in control_projects:
+            if state.startswith('Proposed plan only.'):
+                state = 'Full source import/review, qualified acceptance and institutional adoption remain outstanding.'
+            state += ' A [project-specific controllable synthetic use case](../controlled-use-cases/'+identifier+'.md) adds state controls, checked closure/rework, typed measurements/counter-measures and preserved snapshot history. This does not complete source requirements or institutional acceptance.'
         lines += ['## Source', '', p['source_url'] or 'No assigned source. Confirm the source and project definition before implementation.', '', '## Current delivery state', '', state, '']
         (directory / f'{identifier}.md').write_text('\n'.join(lines))
     (directory / 'README.md').write_text('\n'.join(index)+'\n')

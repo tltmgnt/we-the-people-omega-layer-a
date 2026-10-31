@@ -94,3 +94,7 @@ The [controlled emergency-readiness exercise](EMERGENCY-LAB.md) adds eleven stat
 ## Additional workflow: Project 023
 
 The [justice caseflow/remedy controller](JUSTICE-CONTROLS.md) adds fifteen states and three independent record-check gates. It supports remand/rehearing, revised remedies, reentry handoffs and both closure branches using existing controls. Existing observatory pilots and evidence stay separate. No judicial or release decisions, rights certification, remedy-effectiveness proof or recidivism assessment is performed.
+
+## Portfolio-wide controls
+
+All 44 defined workstreams (007–050) now have [project-specific state controls](CONTROLLED-PORTFOLIO.md), with [individual coverage and handoffs](CONTROL-COVERAGE.md). The six specialized workflows remain compatible; 38 catalog profiles add typed observations and counter-measures. Project 050 pins current completed observed scenario evidence. Projects 001–006 stay definition-blocked and all legal/live-execution holds remain fixed.

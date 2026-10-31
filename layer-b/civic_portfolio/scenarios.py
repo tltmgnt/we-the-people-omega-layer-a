@@ -4,9 +4,10 @@ from copy import deepcopy
 from datetime import timedelta
 import hashlib
 import json
+import math
 from .maintenance import fields, identifier
 from .permits import STAGES, TERMINAL, timestamp
-from .store import Conflict, text
+from .store import Conflict, text, ROOT
 
 ACTIONS={
     'STEP':'stage minutes',
@@ -17,6 +18,8 @@ ACTIONS={
     'REVIEW':'passed',
     'PRESET':'stage quality',
     'RESTORE':'sequence',
+    'OBSERVE':'metric_id value numerator denominator missing_reason',
+    'ATTACH':'source_run_id source_sequence',
 }
 QUALITY=('UNREVIEWED','PASS','FAIL')
 PROCUREMENT_STAGES={
@@ -108,6 +111,35 @@ WORKFLOWS={
                   }),
 }
 
+def load_editorial_profiles():
+    raw=json.loads((ROOT/'portfolio/scenario-profiles.json').read_text())
+    if raw.get('version')!=1 or not isinstance(raw.get('profiles'),list):raise ValueError('invalid scenario profile catalog')
+    ids=set()
+    for original in raw['profiles']:
+        p=deepcopy(original);key=p.pop('workflow')
+        if key in WORKFLOWS or p['project_id'] in ids:raise ValueError('duplicate scenario profile')
+        ids.add(p['project_id'])
+        if p['project_id'] not in {f'{i:03}' for i in range(7,51)}:raise ValueError('unassigned project cannot have a scenario')
+        if not isinstance(p['stages'],dict) or not p['stages']:raise ValueError('profile requires stages')
+        p['stages']={k:set(v) for k,v in p['stages'].items()};p['terminal']=set(p['terminal']);p['review_stages']=set(p['review_stages'])
+        stages=set(p['stages'])
+        if p['initial'] not in stages or p['completion'] not in p['terminal'] or not p['terminal']<=stages or not p['review_stages']<=stages:raise ValueError('invalid profile states')
+        if any(not targets<=stages for targets in p['stages'].values()) or any(p['stages'][t] for t in p['terminal']):raise ValueError('invalid profile edges')
+        reached={p['initial']}
+        while True:
+            expanded=reached|set().union(*(p['stages'][k] for k in reached))
+            if expanded==reached:break
+            reached=expanded
+        if reached!=stages or not set(p['gate_anchors'])<=stages:raise ValueError('unreachable profile state/anchor')
+        metrics=p['metrics']
+        if len({m['id'] for m in metrics})!=len(metrics) or any(m['kind'] not in {'COUNT','MINUTES','RATIO','INTEGER_MINOR_UNITS'} for m in metrics):raise ValueError('invalid metric contract')
+        WORKFLOWS[key]=p
+    for key,project in {'permit':'009','procurement':'019','education':'020','health':'021','emergency':'022','justice':'023'}.items():
+        WORKFLOWS[key]['project_id']=project
+    if {p['project_id'] for p in WORKFLOWS.values()}!={f'{i:03}' for i in range(7,51)}:raise ValueError('defined-project control coverage is incomplete')
+
+load_editorial_profiles()
+
 def configuration(workflow):
     workflow=text(workflow,'workflow',100)
     if workflow not in WORKFLOWS:raise ValueError('unknown scenario workflow')
@@ -138,6 +170,23 @@ def justice_diagnostics(state):
                 notice_revisions=max(0,sum(p['stage']=='NOTICE_RECORDED' for p in path)-1),
                 judicial_outcomes_assessed=False,remedy_effectiveness_verified=False,recidivism_assessed=False,
                 closure_path=('REMEDY_RECORD' if path[-2]['stage']=='REMEDY_REVIEW' else 'REENTRY_RECORD') if state['stage']=='CLOSED' else None)
+
+def observation_value(contract,params):
+    value,num,den=params['value'],params['numerator'],params['denominator']
+    if value is None and num is None and den is None:
+        return None,text(params['missing_reason'],'missing observation reason')
+    if params['missing_reason'] is not None:raise ValueError('known observation must have null missing reason')
+    if contract['kind']=='RATIO':
+        if value is not None:raise ValueError('ratio value is calculated from numerator and denominator')
+        bounded(num,'ratio numerator',0,1000000000);bounded(den,'ratio denominator',1,1000000000)
+        if num>den:raise ValueError('proportion numerator cannot exceed denominator')
+        return num/den,None
+    if num is not None or den is not None:raise ValueError('non-ratio observation has no numerator/denominator')
+    if contract['kind'] in {'COUNT','INTEGER_MINOR_UNITS'}:
+        bounded(value,'observation value',0,1000000000000 if contract['kind']=='INTEGER_MINOR_UNITS' else 1000000000)
+    elif type(value) not in {int,float} or not math.isfinite(value) or not 0<=value<=10000000:
+        raise ValueError('minutes must be a finite bounded nonnegative number')
+    return value,None
 
 def bounded(value,name,minimum=0,maximum=1000000):
     if type(value) is not int or not minimum<=value<=maximum:
@@ -184,6 +233,27 @@ def controls(state,workflow='permit'):
 class Scenarios:
     def __init__(self,store):self.store=store
 
+    def attachment_status(self,state,db):
+        result=[]
+        for ref in state.get('attachments',{}).values():
+            row=db.execute('SELECT body,version FROM scenario_runs WHERE id=?',(ref['source_run_id'],)).fetchone()
+            event=db.execute('SELECT body FROM scenario_events WHERE run_id=? AND sequence=?',(ref['source_run_id'],ref['source_sequence'])).fetchone()
+            valid=False;current=False;completed=False
+            if row and event:
+                source=json.loads(row['body']);snapshot=json.loads(event['body'])['state']
+                valid=fingerprint(snapshot)==ref['state_sha256']
+                current=row['version']==ref['source_sequence'] and fingerprint(source['state'])==ref['state_sha256']
+                config=configuration(source.get('workflow','permit'))
+                contracts={m['id']:m for m in config.get('metrics',[])}
+                measured=any(o['value'] is not None and o['path_index']==len(snapshot['path'])-1 and metric in contracts and o['contract_sha256']==fingerprint(contracts[metric]) for metric,o in snapshot.get('observations',{}).items())
+                completed=snapshot['stage']==config['completion'] and snapshot['quality']=='PASS' and measured
+            result.append({**ref,'snapshot_intact':valid,'source_current':current,'completed_with_current_observation':completed})
+        return result
+
+    def capstone_ready(self,state,db):
+        return any(r['snapshot_intact'] and r['source_current'] and r['completed_with_current_observation'] for r in self.attachment_status(state,db))
+
+
     def run(self,key,db=None):
         if db is None:
             with self.store.connect() as connection:return self.run(key,connection)
@@ -194,6 +264,10 @@ class Scenarios:
         result.update(run_id=key,version=row['version'],controls=controls(state,workflow),state_sha256=fingerprint(state),
                       kind='SYNTHETIC',execution_authorized=False,legal_review='REQUIRED',
                       history=[json.loads(r['body']) for r in db.execute('SELECT body FROM scenario_events WHERE run_id=? ORDER BY sequence',(key,))])
+        if workflow=='p050' and state['stage'] in configuration(workflow)['review_stages'] and not self.capstone_ready(state,db):
+            result['controls']['next_stages']=[x for x in result['controls']['next_stages'] if x!='CLOSED']
+            result['controls']['blocked_next_stages']['CLOSED']='Attach a current completed scenario snapshot with a current known observation.'
+            result['controls']['reason']='Capstone closure requires current linked completed evidence with a known observation.'
         return result
 
     def runs(self):
@@ -236,6 +310,7 @@ class Scenarios:
                     target=text(params['stage'],'next stage',100)
                     if not allowed['step']:raise ValueError(allowed['reason'])
                     if target not in config['stages'][state['stage']]:raise ValueError('invalid workflow transition')
+                    if workflow=='p050' and target=='CLOSED' and not self.capstone_ready(state,db):raise ValueError('capstone closure requires current completed scenario evidence with a known observation')
                     gate=review_gates(config).get(state['stage'])
                     if gate and target==gate['target'] and not acceptance_current(state):raise ValueError('phase transition requires a passing check for the current '+gate['label']+' revision')
                     state['clock_minutes']+=minutes;state['stage']=target
@@ -266,7 +341,10 @@ class Scenarios:
                 target=text(params['stage'],'preset stage',100);quality=text(params['quality'],'preset quality',100)
                 if quality not in QUALITY or (target not in config['review_stages'] and target!=config['completion'] and quality!='UNREVIEWED'):raise ValueError('quality outcomes are unavailable for this preset')
                 if config.get('gate_anchors') and target=='CLOSED' and quality!='PASS':raise ValueError('CLOSED preset requires PASS quality; use the review state for unchecked/failed outcomes')
+                refs=deepcopy(state.get('attachments',{}))
+                if workflow=='p050' and target=='CLOSED' and not self.capstone_ready(state,db):raise ValueError('capstone CLOSED preset requires current completed scenario evidence with a known observation')
                 path=route(target,workflow);state=initial(state['start_at'],workflow)
+                if workflow=='p050' and target=='CLOSED':state['attachments']=refs
                 for stage in path[1:]:
                     gate=review_gates(config).get(state['stage'])
                     if gate and stage==gate['target']:
@@ -279,6 +357,24 @@ class Scenarios:
                 if quality!='UNREVIEWED' and not (config.get('gate_anchors') and target=='CLOSED'):
                     state['quality']=quality;state['review_path_index']=len(state['path'])-1
                     state['reviews'].append(dict(passed=quality=='PASS',minute=state['clock_minutes'],actor='SYN-PRESET-CHECKER',note='Fictional preset outcome: '+note))
+            elif action=='OBSERVE':
+                metric_id=text(params['metric_id'],'metric ID',100)
+                contract=next((m for m in config.get('metrics',[]) if m['id']==metric_id),None)
+                if not contract:raise ValueError('unknown metric contract for this workflow')
+                value,missing=observation_value(contract,params)
+                state.setdefault('observations',{})[metric_id]=dict(value=value,numerator=params['numerator'],denominator=params['denominator'],missing_reason=missing,
+                    contract_sha256=fingerprint(contract),path_index=len(state['path'])-1,actor=actor,note=note)
+            elif action=='ATTACH':
+                if workflow!='p050':raise ValueError('snapshot attachment is available only in the capstone workflow')
+                source_id=identifier(params['source_run_id']);seq=bounded(params['source_sequence'],'source sequence',1,10000)
+                if source_id==key:raise ValueError('capstone cannot attach itself')
+                source=self.run(source_id,db)
+                if source['workflow']=='p050':raise ValueError('nested capstone attachments are not supported')
+                item=next((e for e in source['history'] if e['sequence']==seq),None)
+                if not item:raise ValueError('source snapshot not found')
+                if fingerprint(item['state'])!=item['state_sha256']:raise ValueError('source snapshot hash mismatch')
+                state.setdefault('attachments',{})[source_id]=dict(source_run_id=source_id,source_sequence=seq,source_workflow=source['workflow'],state_sha256=item['state_sha256'])
+                state.update(quality='UNREVIEWED',review_path_index=None)
             elif action=='RESTORE':
                 seq=bounded(params['sequence'],'snapshot sequence',1,10000)
                 previous=next((e for e in run['history'] if e['sequence']==seq),None)
@@ -300,7 +396,20 @@ class Scenarios:
         for i,event in enumerate(state['path']):
             end=state['path'][i+1]['minute'] if i+1<len(state['path']) else state['clock_minutes']
             if event['stage'] not in config['terminal']:durations[event['stage']]+=end-event['minute']
-        return dict(justice_diagnostics(state) if workflow=='justice' else {},run_id=key,kind='SYNTHETIC',workflow=workflow,completion_elapsed_minutes=last['minute'] if state['stage']==config['completion'] else None,stage=state['stage'],execution=state['execution'],quality=state['quality'],
+        observations=[]
+        for contract in config.get('metrics',[]):
+            item=state.get('observations',{}).get(contract['id'])
+            observations.append(dict(contract=contract,value=item['value'] if item else None,numerator=item['numerator'] if item else None,
+                denominator=item['denominator'] if item else None,missing_reason=item['missing_reason'] if item else 'No observation',
+                path_current=bool(item and item['path_index']==len(state['path'])-1),contract_current=bool(item and item['contract_sha256']==fingerprint(contract))))
+        with self.store.connect() as db:
+            attachments=self.attachment_status(state,db)
+            capstone_ready=self.capstone_ready(state,db) if workflow=='p050' else None
+        return dict(justice_diagnostics(state) if workflow=='justice' else {},project_id=config['project_id'],
+                    observations=observations,attachments=attachments,capstone_evidence_current=capstone_ready,
+                    layer_a_status='LEGAL_REVIEW_REQUIRED',source_basis=config.get('source_basis','Existing bounded synthetic prototype; qualified acceptance remains pending'),
+                    scope=config.get('scope',config['label']),safeguard=config.get('safeguard','Synthetic-only controlled rehearsal; real authority is not established'),
+                    run_id=key,kind='SYNTHETIC',workflow=workflow,completion_elapsed_minutes=last['minute'] if state['stage']==config['completion'] else None,stage=state['stage'],execution=state['execution'],quality=state['quality'],
                     scenario_time=(timestamp(state['start_at'])+timedelta(minutes=state['clock_minutes'])).isoformat(),
                     clock_minutes=state['clock_minutes'],decision_elapsed_minutes=last['minute'] if state['stage']=='DECIDED' else None,
                     open_age_minutes=None if terminal else state['clock_minutes'],stage_minutes=durations,
@@ -318,4 +427,4 @@ class Scenarios:
                     live_dispatch_enabled=False if workflow=='emergency' else None,
                     operational_readiness_certified=False if workflow=='emergency' else None,
                     history_events=len(run['history']),execution_authorized=False,legal_review='REQUIRED',
-                    method='Manual deterministic scenario clock; no background automation. TICK advances fictional time even while paused/stopped or terminal. PAUSE/STOP freeze workflow transitions until RESUME, not the manual clock. PRESET replays a shortest valid path at 60 minutes per edge; RESTORE copies a prior snapshot into a new append-only event. Neither deletes history. Quality outcomes and preset reviews are fictional assertions. Procurement, education and health-referral closure require a distinct-recorder check pinned to the current path revision; changed delivery, follow-up, interruptions or corrections invalidate it. Education and health-referral check identifiers must differ from both current service and follow-up recorders. Health consent records are fictional assertions; no clinical outcomes, triage, diagnosis or actual referrals are assessed or performed. Emergency phase gates require separate current readiness/correction checks, not operational certification; there is no live dispatch. Justice notice/remedy/reentry checks are fictional record checks, never judicial rulings, rights certification, remedy-effectiveness proof or release decisions. No learning, eligibility or ranking inference is made. CLOSED presets include an explicit fictional check. This isolated controller does not issue awards, payments, permit approvals, project/source completion, government actions or Layer A holds.')
+                    method='Manual deterministic scenario clock; no background automation. TICK advances fictional time even while paused/stopped or terminal. PAUSE/STOP freeze workflow transitions until RESUME, not the manual clock. PRESET replays a shortest valid path at 60 minutes per edge; RESTORE copies a prior snapshot into a new append-only event. Neither deletes history. Quality outcomes and preset reviews are fictional assertions. Procurement, education and health-referral closure require a distinct-recorder check pinned to the current path revision; changed delivery, follow-up, interruptions or corrections invalidate it. Education and health-referral check identifiers must differ from both current service and follow-up recorders. Health consent records are fictional assertions; no clinical outcomes, triage, diagnosis or actual referrals are assessed or performed. Emergency phase gates require separate current readiness/correction checks, not operational certification; there is no live dispatch. Justice notice/remedy/reentry checks are fictional record checks, never judicial rulings, rights certification, remedy-effectiveness proof or release decisions. Metric observations are supplied fictional values, with path/contract freshness and missingness explicit. Capstone links immutable scenario snapshots but requires current completed observed evidence before closure; Layer A remains LEGAL_REVIEW_REQUIRED. No learning, eligibility or ranking inference is made. CLOSED presets include an explicit fictional check. This isolated controller does not issue awards, payments, permit approvals, project/source completion, government actions or Layer A holds.')
