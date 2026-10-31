@@ -174,6 +174,24 @@ class Store:
                   meeting_id TEXT NOT NULL REFERENCES public_meetings(id), sequence INTEGER NOT NULL,
                   notice_sequence INTEGER NOT NULL, at TEXT NOT NULL, verifier TEXT NOT NULL,
                   passed INTEGER NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(meeting_id,sequence));
+                CREATE TABLE IF NOT EXISTS utility_assets (
+                  id TEXT PRIMARY KEY, utility TEXT NOT NULL, area TEXT NOT NULL,
+                  connection_count INTEGER, registered_at TEXT NOT NULL,
+                  actor TEXT NOT NULL, evidence TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS utility_incidents (
+                  id TEXT PRIMARY KEY, asset_id TEXT NOT NULL REFERENCES utility_assets(id),
+                  started_at TEXT NOT NULL, severity TEXT NOT NULL, escalation_reference TEXT,
+                  version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS utility_events (
+                  incident_id TEXT NOT NULL REFERENCES utility_incidents(id), sequence INTEGER NOT NULL,
+                  stage TEXT NOT NULL, at TEXT NOT NULL, affected_connections INTEGER,
+                  work_order_reference TEXT, escalation_reference TEXT, actor TEXT NOT NULL, evidence TEXT NOT NULL,
+                  PRIMARY KEY(incident_id,sequence));
+                CREATE TABLE IF NOT EXISTS utility_checks (
+                  incident_id TEXT NOT NULL REFERENCES utility_incidents(id), sequence INTEGER NOT NULL,
+                  restoration_sequence INTEGER NOT NULL, at TEXT NOT NULL, verifier TEXT NOT NULL,
+                  passed INTEGER NOT NULL, quality_status TEXT NOT NULL, criteria_reference TEXT NOT NULL,
+                  evidence TEXT NOT NULL, PRIMARY KEY(incident_id,sequence));
             ''')
             register = json.loads((ROOT / 'portfolio/project-register.json').read_text())
             plans = build()[1]
@@ -297,6 +315,11 @@ class Store:
                             ('deadlines','public_deadlines','case_id,sequence'),('responses','public_responses','case_id,sequence'),
                             ('response_checks','public_response_checks','case_id,sequence'),('meetings','public_meetings','id'),
                             ('notices','public_notices','meeting_id,sequence'),('notice_checks','public_notice_checks','meeting_id,sequence')]},
+                    'synthetic_utilities': {
+                        'assets': [dict(r) for r in db.execute('SELECT * FROM utility_assets ORDER BY id')],
+                        'incidents': [dict(r) for r in db.execute('SELECT * FROM utility_incidents ORDER BY id')],
+                        'events': [dict(r) for r in db.execute('SELECT * FROM utility_events ORDER BY incident_id,sequence')],
+                        'checks': [dict(r) for r in db.execute('SELECT * FROM utility_checks ORDER BY incident_id,sequence')]},
                     'notice': 'Local user assertions; completion does not authorize public-service execution.'}
 
     def update(self, identifier, data):

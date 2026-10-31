@@ -470,8 +470,81 @@ const path = require('node:path');
     await page.reload();
     await page.getByRole('heading',{name:'SYN-COMPLAINT-UI',exact:true}).waitFor();
     await page.locator('#meetings summary').filter({hasText:'SYN-MEETING-UI'}).waitFor();
+    await page.goto(url+'/utilities');
+    await page.getByText('No fictional utility assets registered.',{exact:true}).waitFor();
+    await page.locator('#actor').fill('SYNTHETIC RECORDER');
+    await page.locator('#asof').fill('2026-01-01T12:00:00Z');
+    await page.locator('#asset-id').fill('SYN-UTILITY-UI');
+    await page.locator('#asset-area').fill('Demo area');
+    await page.locator('#asset-connections').fill('20');
+    await page.locator('#asset-at').fill('2026-01-01T00:00:00Z');
+    await page.locator('#asset-evidence').fill('Synthetic utility asset');
+    await page.getByRole('button',{name:'Register synthetic utility asset',exact:true}).click();
+    await page.locator('#asset-list').filter({hasText:'SYN-UTILITY-UI'}).waitFor();
+    async function utilityIncident(id,start,reported,affected,severity){
+      await page.locator('#incident-id').fill(id);
+      await page.locator('#incident-asset').selectOption('SYN-UTILITY-UI');
+      await page.locator('#incident-start').fill(start);
+      await page.locator('#incident-at').fill(reported);
+      await page.locator('#incident-affected').fill(affected);
+      await page.locator('#incident-severity').selectOption(severity);
+      await page.locator('#incident-evidence').fill('Synthetic interruption and initial-count assertion');
+      await page.getByRole('button',{name:'Report synthetic interruption',exact:true}).click();
+      await page.getByRole('heading',{name:id,exact:true}).waitFor();
+    }
+    async function utilityStage(stage,at,affected,failure=false){
+      const previous=await page.locator('#detail > ol > li').count();
+      await page.getByLabel('Next utility stage',{exact:true}).selectOption(stage);
+      await page.getByLabel('Utility event timestamp',{exact:true}).fill(at);
+      await page.getByLabel('Current affected connections (blank = unknown)',{exact:true}).fill(affected);
+      if(stage==='WORK_IN_PROGRESS')await page.getByLabel('Fictional work-order reference (WORK_IN_PROGRESS only)',{exact:true}).fill('Synthetic work-order label');
+      if(stage==='ASSESSED')await page.getByLabel('Fictional escalation-route update (ASSESSED only)',{exact:true}).fill('Synthetic accountable-process label');
+      await page.getByLabel('Utility stage and count evidence',{exact:true}).fill('Synthetic utility stage '+at);
+      await page.getByRole('button',{name:'Record utility stage',exact:true}).click();
+      if(!failure)await page.waitForFunction(n=>document.querySelectorAll('#detail > ol > li').length===n+1,previous);
+    }
+    async function utilityCheck(at,quality){
+      await page.getByLabel('Distinct utility verifier identifier',{exact:true}).fill('SYNTHETIC VERIFIER');
+      await page.getByLabel('Quality-check timestamp',{exact:true}).fill(at);
+      await page.getByLabel('Declared scenario-quality status',{exact:true}).selectOption(quality);
+      await page.getByLabel('Fictional criteria reference',{exact:true}).fill('SYNTHETIC CRITERIA ONLY');
+      await page.getByLabel('Quality-evidence verification record',{exact:true}).fill('Synthetic utility check '+at);
+      await page.getByRole('button',{name:'Record utility quality check',exact:true}).click();
+      await page.locator('#detail li').filter({hasText:'Synthetic utility check '+at}).waitFor();
+    }
+    await utilityIncident('SYN-OUTAGE-UI','2026-01-01T01:00:00Z','2026-01-01T02:00:00Z','10','SAFETY_REVIEW');
+    await utilityStage('ASSESSED','2026-01-01T03:00:00Z','8');
+    await utilityStage('WORK_IN_PROGRESS','2026-01-01T04:00:00Z','8');
+    await utilityStage('RESTORATION_RECORDED','2026-01-01T06:00:00Z','0');
+    await utilityStage('CLOSED','2026-01-01T07:00:00Z','0',true);
+    await page.locator('#message').filter({hasText:'closure requires a passing quality-evidence check'}).waitFor();
+    await utilityCheck('2026-01-01T07:00:00Z','UNKNOWN');
+    await utilityStage('CLOSED','2026-01-01T08:00:00Z','0',true);
+    await page.locator('#message').filter({hasText:'closure requires a passing quality-evidence check'}).waitFor();
+    await utilityCheck('2026-01-01T07:30:00Z','MEETS_SCENARIO');
+    await utilityStage('CLOSED','2026-01-01T08:00:00Z','0');
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).closed_restoration_cycles===1);
+    let utilityReport=JSON.parse(await page.locator('#report-data').textContent());
+    if(utilityReport.checked_restoration_cycle_hours.median!==5||utilityReport.quality_verification_lag_hours.median!==1.5||utilityReport.reported_incident_connection_hours!==44)throw Error('Utility restoration/burden report mismatch');
+    await utilityStage('REOPENED','2026-01-01T10:00:00Z','5');
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).reopen_events===1);
+    utilityReport=JSON.parse(await page.locator('#report-data').textContent());
+    if(utilityReport.open_cycle_age_hours.median!==2||utilityReport.open_incident_original_age_hours.median!==11||utilityReport.reported_incident_connection_hours!==54||utilityReport.closed_restoration_cycles!==1)throw Error('Utility reopening report mismatch');
+    await utilityIncident('SYN-UNKNOWN-OUTAGE-UI','2026-01-01T11:00:00Z','2026-01-01T11:00:00Z','','ROUTINE');
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).unknown_burden_intervals===1);
+    utilityReport=JSON.parse(await page.locator('#report-data').textContent());
+    if(utilityReport.reported_incident_connection_hours!==null||utilityReport.known_interval_connection_hours!==54)throw Error('Utility unknown intervals were treated as zero');
+    await page.screenshot({path:'.local/portfolio-utilities-mobile.png'});
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Utilities mobile overflow');
+    await page.reload();
+    await page.getByRole('heading',{name:'SYN-OUTAGE-UI',exact:true}).waitFor();
+    await page.locator('#detail > p').filter({hasText:'REOPENED ·'}).waitFor();
+    await page.locator('#incidents button').filter({hasText:'SYN-UNKNOWN-OUTAGE-UI'}).waitFor();
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: portfolio and six domain labs, verification/consent/completeness safeguards, reports, persistence and mobile layout');
+    console.log('PASS: portfolio and seven domain labs, evidence safeguards, reports, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){
