@@ -1,5 +1,6 @@
 """Run with python -m civic_portfolio --help."""
 import argparse
+import hashlib
 import json
 import secrets
 import sys
@@ -16,6 +17,7 @@ from .housing import Housing
 from .public_access import PublicAccess
 from .utilities import Utilities
 from .rights import Rights
+from .justice import Justice, DIMENSIONS, MODULES, ROLES, SCHEMAS, STAGES
 from .finance import Finance
 from .election_services import ElectionServices
 
@@ -46,6 +48,7 @@ def server(store, port=8765):
     public_access = PublicAccess(store)
     utilities = Utilities(store)
     rights = Rights(store)
+    justice = Justice(store)
     finance = Finance(store)
     election_services = ElectionServices(store)
 
@@ -86,8 +89,8 @@ def server(store, port=8765):
                 parts = urlsplit(self.path).path.strip('/').split('/')
                 if not mutation:
                     path = urlsplit(self.path).path
-                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js', '/election-services', '/election-services.js', '/finance', '/finance.js']:
-                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js', '/election-services': 'election-services.html', '/election-services.js': 'election-services.js', '/finance': 'finance.html', '/finance.js': 'finance.js'}[path]
+                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js', '/rights', '/rights.js', '/election-services', '/election-services.js', '/finance', '/finance.js', '/justice', '/justice.js']:
+                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js', '/rights': 'rights.html', '/rights.js': 'rights.js', '/election-services': 'election-services.html', '/election-services.js': 'election-services.js', '/finance': 'finance.html', '/finance.js': 'finance.js', '/justice': 'justice.html', '/justice.js': 'justice.js'}[path]
                         kind = 'text/html' if name.endswith('.html') else 'text/javascript' if name.endswith('.js') else 'text/css'
                         self.send(200, (STATIC / name).read_bytes(), kind + '; charset=utf-8')
                     elif path == '/api/bootstrap':
@@ -111,6 +114,14 @@ def server(store, port=8765):
                         self.send(200, {'assets': utilities.assets(), 'incidents': utilities.incidents(), 'token': token})
                     elif path == '/api/rights':
                         self.send(200, {'cases': rights.cases(), 'token': token})
+                    elif path == '/api/justice/specification':
+                        content=(STATIC.parent.parent/'portfolio/sources/023-user-specification.md').read_text()
+                        self.send(200,dict(content=content,sha256=hashlib.sha256(content.encode()).hexdigest(),origin='User-supplied Project 023 specification, 2026-10-31; Markdown formatting normalized; external claims unverified'))
+                    elif path == '/api/justice':
+                        self.send(200,dict(pilots=justice.pilots(),token=token,dimensions=DIMENSIONS,modules=MODULES,roles=ROLES,schemas=SCHEMAS,stages=list(STAGES)))
+                    elif len(parts)==4 and parts[:2]==['api','justice'] and parts[3]=='report':
+                        query=parse_qs(urlsplit(self.path).query)
+                        self.send(200,justice.report(parts[2],query.get('as_of',[now()])[0]))
                     elif path == '/api/finance':
                         self.send(200, {'ledgers': finance.ledgers(), 'token': token})
                     elif len(parts)==4 and parts[:2]==['api','finance'] and parts[3]=='report':
@@ -153,6 +164,14 @@ def server(store, port=8765):
                         self.send(200, store.source_content(parts[2]))
                     else:
                         self.send(404, {'error': 'route not found'})
+                elif parts == ['api','justice','import-specification']:
+                    if set(data)!={'actor'}:raise ValueError('actor required')
+                    content=(STATIC.parent.parent/'portfolio/sources/023-user-specification.md').read_text()
+                    self.send(201,store.import_source('project-023',content,data['actor'],'User-supplied Project 023 specification, 2026-10-31; Markdown formatting normalized; external claims unverified'))
+                elif parts == ['api','justice','pilots']:
+                    self.send(201,justice.create(data))
+                elif len(parts)==4 and parts[:2]==['api','justice'] and parts[3]=='records':
+                    self.send(200,justice.record(parts[2],data))
                 elif parts == ['api','finance','ledgers']:
                     self.send(201,finance.create(data))
                 elif len(parts)==4 and parts[:2]==['api','finance'] and parts[3]=='records':
