@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Implement project 013's synthetic consent-assertion, referral/handoff, service-start/follow-up and interruption workflow with event-specific checks, non-resetting referral clocks and independent review-request response/reopening history.
+- Add seven housing tests and extend browser CI through consent holds, verified service/follow-up, withdrawal, interruption, closure, review requests, persistence and mobile layout. Preserve unread source, actual consent/eligibility requirements and qualified acceptance gaps.
+
 - Implement project 012's synthetic scheduled-trip, arrival/cancellation revision and verification workflow, with configurable on-time windows, explicit verification coverage, measured aggregate passenger delay and separate accessibility response/reopening histories.
 - Add seven transit tests and expand browser CI through window-boundary arrival, correction, cancellation, missing passenger data, access findings, persistence and mobile layout. Keep unread source, actual operating rules and qualified acceptance unresolved.
 

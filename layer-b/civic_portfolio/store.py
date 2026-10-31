@@ -117,6 +117,29 @@ class Store:
                   finding_id TEXT NOT NULL REFERENCES transit_findings(id), sequence INTEGER NOT NULL,
                   status TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
                   evidence TEXT NOT NULL, PRIMARY KEY(finding_id,sequence));
+                CREATE TABLE IF NOT EXISTS housing_cases (
+                  id TEXT PRIMARY KEY, program TEXT NOT NULL, area TEXT NOT NULL,
+                  notice_reference TEXT, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS housing_events (
+                  case_id TEXT NOT NULL REFERENCES housing_cases(id), sequence INTEGER NOT NULL,
+                  stage TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
+                  evidence TEXT NOT NULL, continuity TEXT, follow_up_due_at TEXT,
+                  PRIMARY KEY(case_id,sequence));
+                CREATE TABLE IF NOT EXISTS housing_consents (
+                  case_id TEXT NOT NULL REFERENCES housing_cases(id), sequence INTEGER NOT NULL,
+                  status TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
+                  evidence TEXT NOT NULL, PRIMARY KEY(case_id,sequence));
+                CREATE TABLE IF NOT EXISTS housing_checks (
+                  case_id TEXT NOT NULL REFERENCES housing_cases(id), sequence INTEGER NOT NULL,
+                  event_sequence INTEGER NOT NULL, at TEXT NOT NULL, verifier TEXT NOT NULL,
+                  passed INTEGER NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(case_id,sequence));
+                CREATE TABLE IF NOT EXISTS housing_requests (
+                  id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES housing_cases(id),
+                  description TEXT NOT NULL, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS housing_request_events (
+                  request_id TEXT NOT NULL REFERENCES housing_requests(id), sequence INTEGER NOT NULL,
+                  status TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
+                  evidence TEXT NOT NULL, PRIMARY KEY(request_id,sequence));
             ''')
             register = json.loads((ROOT / 'portfolio/project-register.json').read_text())
             plans = build()[1]
@@ -226,6 +249,13 @@ class Store:
                         'checks': [dict(r) for r in db.execute('SELECT * FROM transit_checks ORDER BY trip_id,sequence')],
                         'findings': [dict(r) for r in db.execute('SELECT * FROM transit_findings ORDER BY id')],
                         'finding_events': [dict(r) for r in db.execute('SELECT * FROM transit_finding_events ORDER BY finding_id,sequence')]},
+                    'synthetic_housing': {
+                        'cases': [dict(r) for r in db.execute('SELECT * FROM housing_cases ORDER BY id')],
+                        'events': [dict(r) for r in db.execute('SELECT * FROM housing_events ORDER BY case_id,sequence')],
+                        'consents': [dict(r) for r in db.execute('SELECT * FROM housing_consents ORDER BY case_id,sequence')],
+                        'checks': [dict(r) for r in db.execute('SELECT * FROM housing_checks ORDER BY case_id,sequence')],
+                        'requests': [dict(r) for r in db.execute('SELECT * FROM housing_requests ORDER BY id')],
+                        'request_events': [dict(r) for r in db.execute('SELECT * FROM housing_request_events ORDER BY request_id,sequence')]},
                     'notice': 'Local user assertions; completion does not authorize public-service execution.'}
 
     def update(self, identifier, data):

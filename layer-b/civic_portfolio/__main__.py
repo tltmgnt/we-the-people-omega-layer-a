@@ -12,6 +12,7 @@ from .permits import Permits
 from .maintenance import Maintenance
 from .sanitation import Sanitation
 from .transit import Transit
+from .housing import Housing
 
 STATIC = Path(__file__).parent / 'static'
 
@@ -36,6 +37,7 @@ def server(store, port=8765):
     maintenance = Maintenance(store)
     sanitation = Sanitation(store)
     transit = Transit(store)
+    housing = Housing(store)
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
@@ -74,8 +76,8 @@ def server(store, port=8765):
                 parts = urlsplit(self.path).path.strip('/').split('/')
                 if not mutation:
                     path = urlsplit(self.path).path
-                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js']:
-                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js'}[path]
+                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js']:
+                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js'}[path]
                         kind = 'text/html' if name.endswith('.html') else 'text/javascript' if name.endswith('.js') else 'text/css'
                         self.send(200, (STATIC / name).read_bytes(), kind + '; charset=utf-8')
                     elif path == '/api/bootstrap':
@@ -91,6 +93,11 @@ def server(store, port=8765):
                         self.send(200, {'routes': sanitation.routes(), 'runs': sanitation.runs(), 'issues': sanitation.issues(), 'token': token})
                     elif path == '/api/transit':
                         self.send(200, {'trips': transit.trips(), 'findings': transit.findings(), 'token': token})
+                    elif path == '/api/housing':
+                        self.send(200, {'cases': housing.cases(), 'requests': housing.requests(), 'token': token})
+                    elif path == '/api/housing/report':
+                        query = parse_qs(urlsplit(self.path).query)
+                        self.send(200, housing.report(query.get('as_of', [None])[0], query.get('program', [None])[0], query.get('area', [None])[0]))
                     elif path == '/api/transit/report':
                         query = parse_qs(urlsplit(self.path).query)
                         self.send(200, transit.report(query.get('as_of', [None])[0], query.get('service', [None])[0], query.get('area', [None])[0], float(query.get('early_minutes', ['1'])[0]), float(query.get('late_minutes', ['5'])[0])))
@@ -107,6 +114,21 @@ def server(store, port=8765):
                         self.send(200, store.source_content(parts[2]))
                     else:
                         self.send(404, {'error': 'route not found'})
+                elif parts == ['api', 'housing', 'cases']:
+                    self.send(201, housing.create_case(data))
+                elif parts == ['api', 'housing', 'requests']:
+                    self.send(201, housing.create_request(data))
+                elif len(parts) == 5 and parts[:3] == ['api', 'housing', 'cases']:
+                    if parts[4] == 'events':
+                        self.send(200, housing.advance(parts[3], data))
+                    elif parts[4] == 'consents':
+                        self.send(200, housing.consent(parts[3], data))
+                    elif parts[4] == 'checks':
+                        self.send(200, housing.verify(parts[3], data))
+                    else:
+                        self.send(404, {'error': 'route not found'})
+                elif len(parts) == 5 and parts[:3] == ['api', 'housing', 'requests'] and parts[4] == 'events':
+                    self.send(200, housing.respond(parts[3], data))
                 elif parts == ['api', 'transit', 'trips']:
                     self.send(201, transit.create_trip(data))
                 elif parts == ['api', 'transit', 'findings']:
