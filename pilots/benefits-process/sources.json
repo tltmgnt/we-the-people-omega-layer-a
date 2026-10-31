@@ -1,0 +1,23 @@
+{
+  "pilot_id": "PILOT-A-BENEFITS-001",
+  "sources": [
+    {
+      "evidence_id": "PILOT-PROPOSAL-001",
+      "path": "README.md",
+      "anchor": "synthetic-proposal",
+      "source_date": "2026-10-31",
+      "kind": "synthetic_proposal",
+      "applicability": "Only the hypothetical proposal in this pilot; no legal authority."
+    },
+    {
+      "evidence_id": "PILOT-TRIAGE-001",
+      "path": "README.md",
+      "anchor": "triage-and-recorded-outcome",
+      "source_date": "2026-10-31",
+      "kind": "synthetic_triage",
+      "applicability": "Documents missing information and escalation; not a human legal opinion."
+    }
+  ],
+  "legal_sources": [],
+  "legal_source_status": "Not identified; jurisdiction and governing benefits program remain unknown."
+}
