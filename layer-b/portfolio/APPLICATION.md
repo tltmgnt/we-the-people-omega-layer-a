@@ -22,7 +22,7 @@ The [synthetic rights-evidence lab for project 016](RIGHTS-LAB.md), at `/rights`
 
 The [synthetic election-service lab for project 017](ELECTION-SERVICES-LAB.md), at `/election-services`, records scenario readiness, anonymous administrative-access observations and checked correction/reopening histories. It processes no voter-level records, ballots or results and makes no election-validity or representation judgment.
 
-The [50 individual plans](plans/README.md) define proposed outcomes, input records, measurement and counter-metrics, safeguards, eight delivery steps and acceptance criteria. Plans 001–006 retain unresolved titles and source mapping. Plans 007–050 use the supplied titles and explicitly labeled editorial proposals. None is represented as a transcription of the linked document or a completed domain service.
+The [50 individual plans](plans/README.md) define proposed outcomes, input records, measurement and counter-metrics, safeguards, eight delivery steps and acceptance criteria. Plans 001–006 retain unresolved titles and source mapping. Plans 007–050 use the supplied titles and explicitly labeled editorial proposals, except project 023 now also has a full user-supplied specification and implementation traceability. None is represented as a transcription of the linked document or a completed domain service.
 
 ## Run locally
 
@@ -41,7 +41,7 @@ Enter your name or identifier before making changes. That identifier is a local 
 
 The source catalog includes 50 project slots, four unassigned foundational documents, five layer documents and two additional sources. Fifty-four slots have supplied URLs. Seven project slots (001–007) have no assigned URL. Source URLs are preserved as references; source content is not fetched automatically.
 
-The Google Docs retrieval attempts for the permit source and first foundational source were unsuccessful in the preparation environment. No Google Drive connection was selected. Therefore **the linked documents' full contents are not included**. The application supports importing complete UTF-8 text, Markdown or JSON exports supplied by the owner. It does not convert PDF, Word or native Google Docs files.
+The Google Docs retrieval attempts for the permit source and first foundational source were unsuccessful in the preparation environment. No Google Drive connection was selected. Therefore **the linked documents’ full contents are not included**, except that project 023’s full text was subsequently supplied directly by the user and is bundled under `portfolio/sources/023-user-specification.md`. It is not an authenticated fetch of the linked Google Doc. The application supports importing complete UTF-8 text, Markdown or JSON exports supplied by the owner. It does not convert PDF, Word or native Google Docs files.
 
 In a source panel, choose the full text export or paste its content, record its original document URL or export identity, and import. Read the imported version before recording a review. Every import gets a timestamp, SHA-256 and revision; previous versions remain in the workspace. Importing a new project source clears that project's scope confirmation and completion evidence. Importing shared foundation/layer sources does not automatically invalidate dependent projects because those dependencies have not been confirmed; assess that impact explicitly.
 
@@ -60,7 +60,7 @@ Each plan requires source review, confirmed scope, a data contract, baseline/cou
 
 A project reports `COMPLETE_AS_RECORDED` only when it has a title, accountable owner, confirmed scope, an imported and reviewed current source, and completion evidence for all eight steps. Unknown source data and unperformed work remain open. The application never grants execution authorization, and the original packet validator continues to enforce the Layer A hold.
 
-**Outstanding project-specific work:** import and review the real source documents; confirm 001–006; replace or accept the proposed requirements; implement and test each confirmed domain workflow beyond the bounded project 009–018 simulations; obtain qualified acceptance and resolve licensing. This shared delivery application and synthetic labs are not substitutes for those 50 accepted domain implementations.
+**Outstanding project-specific work:** import and review the real source documents; confirm 001–006; replace or accept the proposed requirements; implement and test each confirmed domain workflow beyond the bounded project 009–018 and 023 simulations; obtain qualified acceptance and resolve licensing. This shared delivery application and synthetic labs are not substitutes for those 50 accepted domain implementations.
 
 ## Export, backup and restore
 
@@ -85,3 +85,5 @@ python -m scripts.validate_packet --require-ready examples/permit/operational-re
 The readiness command must exit 2 for the supplied synthetic packet. Application tests cover all 50 IDs, generated-plan consistency, source hashes/version history, persistence, stale edits/reviews, invalid inputs, evidence requirements, source/scope invalidation, backup restoration, HTTP writes/exports and local-origin protections. Run `python -m scripts.build_implementation_plans` to regenerate plans from the proposed profiles; runtime edits remain in SQLite and do not rewrite the source register or generated plans.
 
 The [synthetic finance lab for project 018](FINANCE-LAB.md), at `/finance`, preserves category-specific signed entries, comparison histories and outcome notes. No payment, tax calculation or spending authorization occurs.
+
+The [Project 023 justice observatory](JUSTICE-LAB.md), at `/justice`, adds the supplied specification, evidence-pinned gap analysis, caseflow strata, DTI intervals, checked remedies, metric contracts and human-authored research-role reviews. The bundled source can be explicitly imported into the source catalog; source review and real institutional acceptance are never automatic.

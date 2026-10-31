@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Implement Project 023 synthetic justice observatory from the user-supplied full specification; preserve source/provenance, ten-dimensional gap analysis, eight module categories, evidence-level/revision history, caseflow strata, temporal decomposition, checked remedies, metric contracts, research-role notes and pilot phases.
+- Add justice unit/integration coverage and browser smoke through source import, evidence revisions, exact-check remedy closure/reopening, persistence and mobile layout. Qualified review, official data integration and the real institutional pilot remain outstanding.
+
 - Add project 018 synthetic finance ledgers with bounded integer minor units, separate accounting categories, append-only signed adjustments, revision-specific comparisons, explicit discrepancies and separate outcome notes.
 - Add seven finance tests and browser coverage for discrepancy correction, stale reconciliation, outcomes, persistence and mobile layout. Source review and real accounting acceptance remain pending.
 

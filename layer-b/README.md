@@ -42,6 +42,7 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 - [Try project 014's synthetic records/complaints/meetings workflow](portfolio/PUBLIC-ACCESS-LAB.md)
 - [Try project 015's synthetic utilities-continuity workflow](portfolio/UTILITIES-LAB.md)
 - [Try project 016's synthetic rights-evidence/Layer A intake workflow](portfolio/RIGHTS-LAB.md)
+- [Run project 023's Courts, Justice & Corrections Observatory](portfolio/JUSTICE-LAB.md)
 - [Try project 018's synthetic finance reconciliation workflow](portfolio/FINANCE-LAB.md)
 - [Try project 017's synthetic election-service administration workflow](portfolio/ELECTION-SERVICES-LAB.md)
 - [All 50 proposed implementation plans](portfolio/plans/README.md)

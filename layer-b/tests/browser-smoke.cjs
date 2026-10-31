@@ -737,8 +737,63 @@ const path = require('node:path');
     await page.waitForFunction(()=>document.querySelector('#history').textContent.includes('Fictional service quality unknown'));
     if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Finance mobile overflow');
     await page.screenshot({path:'.local/portfolio-finance-mobile.png'});
+    await page.goto(url+'/justice');
+    await page.locator('#actor').fill('JUSTICE RECORDER');
+    await page.locator('#pilot-pilot_id').fill('SYN-JUSTICE-BROWSER');
+    for(const name of ['label','jurisdiction','process_owner','data_steward','authority','privacy_rules','challenge_route'])await page.locator('#pilot-'+name).fill('Fictional '+name);
+    await page.getByRole('button',{name:'Create synthetic justice pilot',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('#pilot').value==='SYN-JUSTICE-BROWSER'&&!document.querySelector('#record-form button').disabled);
+    await page.getByRole('button',{name:'Import supplied Project 023 specification',exact:true}).click();
+    await page.waitForFunction(()=>!document.querySelector('#import-source').disabled);
+    const justiceSource=await page.evaluate(async()=>{const x=await (await fetch('/api/sources/project-023')).json();return {content:x.content,reviewer:x.reviewer};});
+    if(!justiceSource.content.includes('11. Definition of success')||justiceSource.reviewer!==null)throw Error('Justice source import/review boundary failed');
+    const justicePin=revision=>JSON.stringify({evidence_id:'SYN-JUSTICE-EVIDENCE',revision});
+    async function justiceRecord(kind,data,actor='JUSTICE RECORDER',hour=1){
+      const before=JSON.parse(await page.locator('#history').textContent()).length;
+      await page.locator('#actor').fill(actor);await page.locator('#kind').selectOption(kind);
+      for(const [name,value] of Object.entries(data)){
+        const input=page.locator('#record-'+name);
+        if(await input.evaluate(x=>x.tagName==='SELECT'))await input.selectOption(Array.isArray(value)?value:String(value));
+        else await input.fill(value===null?'':String(value));
+      }
+      await page.locator('#record-at').fill('2026-01-01T'+String(hour).padStart(2,'0')+':00:00Z');
+      await page.getByRole('button',{name:'Append justice record',exact:true}).click();
+      await page.waitForFunction(n=>JSON.parse(document.querySelector('#history').textContent).length===n&&!document.querySelector('#record-form button').disabled,before+1);
+    }
+    const justiceEvidence={evidence_id:'SYN-JUSTICE-EVIDENCE',content:'Fictional notice observation <script>window.badJustice=true</script>',origin:'SYNTHETIC SOURCE',level:'C',corroborating_sources:'',verification_reference:null,limitations:'Unverified fictional exercise'};
+    await justiceRecord('EVIDENCE',justiceEvidence);
+    await justiceRecord('GAP',{gap_id:'SYN-JUSTICE-GAP',dimension:'INFORMATION',module:'ACCESS',question:'Is the fictional notice understandable?',owner:'OWNER',authority:'Scenario authority',review_route:'Scenario reviewer',alternative_explanation:'Scenario complexity',pins:[justicePin(1)]});
+    await justiceRecord('REMEDY',{remedy_id:'SYN-JUSTICE-REMEDY',gap_id:'SYN-JUSTICE-GAP',status:'OPEN',owner:'OWNER',description:'Fictional clearer notice',pins:[justicePin(1)]});
+    await justiceRecord('REMEDY_STATUS',{remedy_id:'SYN-JUSTICE-REMEDY',status:'IMPLEMENTED',description:'Fictional notice implementation',pins:[justicePin(1)]});
+    await page.locator('#kind').selectOption('REMEDY_STATUS');
+    await page.locator('#record-remedy_id').selectOption('SYN-JUSTICE-REMEDY');await page.locator('#record-status').selectOption('CLOSED');
+    await page.locator('#record-description').fill('Attempt without a check');await page.locator('#record-pins').selectOption([justicePin(1)]);
+    await page.getByRole('button',{name:'Append justice record',exact:true}).click();
+    await page.getByText('closure requires a passing current implementation check and current evidence',{exact:true}).waitFor();
+    await justiceRecord('REMEDY_CHECK',{remedy_id:'SYN-JUSTICE-REMEDY',passed:true,implementation_sequence:4,pins:[justicePin(1)]},'JUSTICE CHECKER');
+    await justiceRecord('REMEDY_STATUS',{remedy_id:'SYN-JUSTICE-REMEDY',status:'CLOSED',description:'Scenario checked closure',pins:[justicePin(1)]});
+    await justiceRecord('REMEDY_STATUS',{remedy_id:'SYN-JUSTICE-REMEDY',status:'REOPENED',description:'Scenario recurrent notice barrier',pins:[justicePin(1)]});
+    await justiceRecord('CASE',{case_id:'SYN-JUSTICE-PATH',case_type:'Fictional civil',complexity:'SIMPLE',urgency:'ROUTINE',stage:'ACCESS',pins:[justicePin(1)]});
+    for(const [stage,hour] of [['FILED',2],['FIRST_ACTION',3],['RESOLVED',4]])await justiceRecord('TRANSITION',{case_id:'SYN-JUSTICE-PATH',stage,owner:'OWNER',authority:'Scenario authority',review_route:'Scenario review',waiting_minutes:30,active_minutes:10,cause:'Fictional preparation',classification:'NECESSARY_SAFEGUARD',pins:[justicePin(1)]},'JUSTICE RECORDER',hour);
+    const justiceTiming=JSON.parse(await page.locator('#caseflow').textContent());
+    if(justiceTiming.strata[0].filing_to_latest_resolution_hours.median!==2||justiceTiming.intervals[0].unclassified_minutes!==20)throw Error('Justice DTI timing failed');
+    const justiceMetric={metric_id:'SYN-JUSTICE-METRIC',module:'ACCESS',definition:'Fictional understood / observed notices',unit:'ratio',measure:'RATIO',numerator_definition:'Understood',denominator_definition:'Observed',period:'Fictional baseline',owner:'STEWARD',exclusions:'Unknown responses',uncertainty:'Small synthetic sample',subgroup:'No subgroup claims',correction_process:'Append corrected observation with new evidence',counter_metric:'Preparation time',pins:[justicePin(1)]};
+    await justiceRecord('METRIC',justiceMetric,'JUSTICE RECORDER',4);
+    await justiceRecord('OBSERVATION',{metric_id:'SYN-JUSTICE-METRIC',numerator:2,denominator:4,missing_reason:null,pins:[justicePin(1)]},'JUSTICE RECORDER',4);
+    let justiceReport=JSON.parse(await page.locator('#report').textContent());
+    if(justiceReport.metrics[0].value!==0.5||justiceReport.execution_authorized!==false)throw Error('Justice metric or authority boundary failed');
+    await justiceRecord('REVIEW',{role:'RISK_RIGHTS',conclusion:'OPEN_QUESTIONS',disagreement:'Fictional review; legal acceptance still pending',analysis_sequence:justiceReport.analysis_sequence,pins:[justicePin(1)]},'JUSTICE REVIEWER',4);
+    await justiceRecord('PHASE',{phase:'BASELINE_1_30',owner:'OWNER',finding:'Fictional baseline only',limitations:'Not an actual 90-day pilot',pins:[justicePin(1)]},'JUSTICE RECORDER',4);
+    await justiceRecord('EVIDENCE',{...justiceEvidence,content:'Revised fictional notice evidence'},'JUSTICE RECORDER',4);
+    justiceReport=JSON.parse(await page.locator('#report').textContent());
+    if(!justiceReport.stale_records.length||justiceReport.review_roles.RISK_RIGHTS.current||!justiceReport.metrics[0].stale_evidence)throw Error('Justice stale evidence/review detection failed');
+    if(await page.evaluate(()=>!!window.badJustice))throw Error('Justice evidence executed markup');
+    await page.reload();await page.locator('#pilot').selectOption('SYN-JUSTICE-BROWSER');
+    await page.waitForFunction(()=>document.querySelector('#history').textContent.includes('Revised fictional notice evidence')&&!document.querySelector('#refresh').disabled);
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Justice mobile overflow');
+    await page.screenshot({path:'.local/portfolio-justice-mobile.png'});
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: portfolio and ten domain labs, evidence/hold safeguards, reports, persistence and mobile layout');
+    console.log('PASS: portfolio and eleven domain labs, evidence/hold safeguards, reports, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){

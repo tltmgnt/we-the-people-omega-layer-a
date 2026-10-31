@@ -33,6 +33,7 @@ def build():
         ]
         plans[identifier] = {'basis': 'EDITORIAL DRAFT from registered title; linked source content has not been reviewed. Confirm or replace after source import.', **profile,
             'steps': [dict(id=i, title=t, deliverable=d, acceptance=a) for i,t,d,a in steps]}
+    plans['023']['basis'] = 'User-supplied full specification available in portfolio/sources/023-user-specification.md (2026-10-31); source wording is Markdown-normalized. Linked Google Doc identity and external claims are not independently verified. See JUSTICE-LAB.md for implementation traceability and outstanding institutional acceptance.'
     return register, plans
 
 
@@ -69,6 +70,8 @@ def main():
             state = 'A [synthetic election-service administration prototype](../ELECTION-SERVICES-LAB.md) is implemented with automated tests based on the proposed plan. It records scenario readiness, anonymous access observations, revision-specific checks and correction/reopening histories. It does not assess election validity or representation. The linked source remains unread; actual requirements, qualified acceptance and institutional adoption remain outstanding. This project is not marked complete.'
         if identifier == '018':
             state = 'A [synthetic finance reconciliation prototype](../FINANCE-LAB.md) is implemented with automated tests. It keeps accounting categories distinct, preserves signed entry history and records revision-specific comparison totals, discrepancies and separate outcome notes. The source remains unread; actual accounting requirements, qualified acceptance and institutional adoption remain outstanding. This project is not marked complete.'
+        if identifier == '023':
+            state = 'The [Project 023 justice-observatory implementation](../JUSTICE-LAB.md) delivers a synthetic local workspace based on the [user-supplied full specification](../sources/023-user-specification.md): ten dimensions, eight modules, evidence revisions, caseflow/remand/reentry timing, remedy checks, metric contracts, role reviews and pilot phase records. Automated software tests cover the bounded workflow. External data ingestion, qualified legal/practitioner review, institutional deployment and the real 90-day pilot remain outstanding; this is not a claim of institutional project completion.'
         lines += ['## Source', '', p['source_url'] or 'No assigned source. Confirm the source and project definition before implementation.', '', '## Current delivery state', '', state, '']
         (directory / f'{identifier}.md').write_text('\n'.join(lines))
     (directory / 'README.md').write_text('\n'.join(index)+'\n')
