@@ -83,6 +83,14 @@ const path = require('node:path');
     await page.getByRole('heading',{name:'Synthetic quality review',exact:true}).waitFor();
     if(errors.length)throw Error(errors.join('; '));
     console.log('PASS: portfolio and synthetic permit lifecycle, reports, persisted records and mobile layout');
+  } catch(error) {
+    const page=browser?.contexts()[0]?.pages()[0];
+    if(page){
+      await mkdir('.local',{recursive:true});
+      await page.screenshot({path:'.local/portfolio-failure.png'}).catch(()=>{});
+      console.error('Application status:',await page.locator('#message').textContent().catch(()=>''));
+    }
+    throw error;
   } finally {
     if(browser)await browser.close();
     child.kill();

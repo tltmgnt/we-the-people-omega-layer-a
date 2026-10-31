@@ -47,3 +47,4 @@ jobs:
           name: portfolio-browser-previews
           path: layer-b/.local/portfolio-*.png
           if-no-files-found: ignore
+          include-hidden-files: true
