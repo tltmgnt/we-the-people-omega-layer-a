@@ -7,7 +7,7 @@ import json
 import math
 from .maintenance import fields, identifier
 from .permits import STAGES, TERMINAL, timestamp
-from .store import Conflict, text, ROOT
+from .store import Conflict, text, ROOT, now
 
 ACTIONS={
     'STEP':'stage minutes',
@@ -273,121 +273,190 @@ class Scenarios:
     def runs(self):
         with self.store.connect() as db:return [self.run(r['id'],db) for r in db.execute('SELECT id FROM scenario_runs ORDER BY id')]
 
-    def create(self,data):
+    def create(self,data,_db=None):
+        if _db is None:
+            with self.store.connect() as db:
+                db.execute('BEGIN IMMEDIATE')
+                return self.create(data,_db=db)
+        db=_db
         if not isinstance(data,dict):raise ValueError('scenario requires an object')
         data=dict(data);workflow=data.pop('workflow','permit');configuration(workflow)
         fields(data,'run_id label start_at actor note')
         key=identifier(data['run_id']);label=text(data['label'],'fictional scenario label',200)
         actor=text(data['actor'],'actor',200);note=text(data['note'],'scenario rationale')
         start=timestamp(data['start_at']).isoformat();state=initial(start,workflow)
-        with self.store.connect() as db:
-            db.execute('BEGIN IMMEDIATE')
-            if db.execute('SELECT id FROM scenario_runs WHERE id=?',(key,)).fetchone():raise Conflict('scenario ID exists')
-            event=dict(sequence=1,action='CREATE',actor=actor,note=note,parameters={},state=state,state_sha256=fingerprint(state),restored_from=None)
-            db.execute('INSERT INTO scenario_runs VALUES (?,?,1)',(key,json.dumps(dict(label=label,workflow=workflow,state=state))))
-            db.execute('INSERT INTO scenario_events VALUES (?,1,?)',(key,json.dumps(event)))
-            self.store.log(db,actor,'create_synthetic_scenario',key,event)
-            return self.run(key,db)
+        if db.execute('SELECT id FROM scenario_runs WHERE id=?',(key,)).fetchone():raise Conflict('scenario ID exists')
+        event=dict(sequence=1,action='CREATE',actor=actor,note=note,parameters={},state=state,state_sha256=fingerprint(state),restored_from=None)
+        db.execute('INSERT INTO scenario_runs VALUES (?,?,1)',(key,json.dumps(dict(label=label,workflow=workflow,state=state))))
+        db.execute('INSERT INTO scenario_events VALUES (?,1,?)',(key,json.dumps(event)))
+        self.store.log(db,actor,'create_synthetic_scenario',key,event)
+        return self.run(key,db)
 
-    def command(self,key,data):
+    def command(self,key,data,_db=None):
+        if _db is None:
+            with self.store.connect() as db:
+                db.execute('BEGIN IMMEDIATE')
+                return self.command(key,data,_db=db)
+        db=_db
         fields(data,'version action actor note parameters')
         action=text(data['action'],'scenario action',100)
         if action not in ACTIONS:raise ValueError('unknown scenario action')
         fields(data['parameters'],ACTIONS[action])
         params=deepcopy(data['parameters'])
         actor=text(data['actor'],'actor',200);note=text(data['note'],'reason/evidence for scenario command')
-        with self.store.connect() as db:
-            db.execute('BEGIN IMMEDIATE');run=self.run(key,db)
-            if type(data['version']) is not int:raise ValueError('integer version required')
-            if data['version']!=run['version']:raise Conflict('Scenario changed. Reload before controlling it.')
-            if len(run['history'])>=10000:raise ValueError('scenario history limit reached; create another scenario')
-            state=deepcopy(run['state']);workflow=run['workflow'];config=configuration(workflow)
-            allowed=controls(state,workflow);restored_from=None
-            if action in {'STEP','TICK'}:
-                minutes=bounded(params['minutes'],'elapsed minutes',1)
-                if state['clock_minutes']+minutes>10000000:raise ValueError('scenario clock limit exceeded')
-                if action=='STEP':
-                    target=text(params['stage'],'next stage',100)
-                    if not allowed['step']:raise ValueError(allowed['reason'])
-                    if target not in config['stages'][state['stage']]:raise ValueError('invalid workflow transition')
-                    if workflow=='p050' and target=='CLOSED' and not self.capstone_ready(state,db):raise ValueError('capstone closure requires current completed scenario evidence with a known observation')
-                    gate=review_gates(config).get(state['stage'])
-                    if gate and target==gate['target'] and not acceptance_current(state):raise ValueError('phase transition requires a passing check for the current '+gate['label']+' revision')
-                    state['clock_minutes']+=minutes;state['stage']=target
-                    state['path'].append(dict(stage=target,minute=state['clock_minutes'],actor=actor))
-                    if config.get('gate_anchors') and target!='CLOSED':state.update(quality='UNREVIEWED',review_path_index=None)
-                    if target in config['terminal']:state['execution']='COMPLETED'
-                else:state['clock_minutes']+=minutes
-            elif action=='PAUSE':
-                if not allowed['pause']:raise ValueError('pause is unavailable in this state')
-                state['execution']='PAUSED'
-            elif action=='RESUME':
-                if not allowed['resume']:raise ValueError('resume is unavailable in this state')
-                state['execution']='RUNNING'
-            elif action=='STOP':
-                if not allowed['stop']:raise ValueError('stop is unavailable in this state')
-                state['execution']='STOPPED'
-            elif action=='REVIEW':
-                if not allowed['review']:raise ValueError('review is unavailable in this workflow/execution state')
-                if type(params['passed']) is not bool:raise ValueError('passed requires boolean')
-                if config.get('gate_anchors'):
-                    gate=review_gates(config)[state['stage']]
-                    anchors=[next((p for p in reversed(state['path']) if p['stage']==stage),None) for stage in gate['anchors']]
-                    if any(p is None or p.get('actor')==actor for p in anchors):raise ValueError(gate['error'])
-                    state['review_path_index']=len(state['path'])-1
-                state['quality']='PASS' if params['passed'] else 'FAIL'
-                state['reviews'].append(dict(passed=params['passed'],minute=state['clock_minutes'],actor=actor,note=note,path_index=len(state['path'])-1,stage=state['stage']))
-            elif action=='PRESET':
-                target=text(params['stage'],'preset stage',100);quality=text(params['quality'],'preset quality',100)
-                if quality not in QUALITY or (target not in config['review_stages'] and target!=config['completion'] and quality!='UNREVIEWED'):raise ValueError('quality outcomes are unavailable for this preset')
-                if config.get('gate_anchors') and target=='CLOSED' and quality!='PASS':raise ValueError('CLOSED preset requires PASS quality; use the review state for unchecked/failed outcomes')
-                refs=deepcopy(state.get('attachments',{}))
-                if workflow=='p050' and target=='CLOSED' and not self.capstone_ready(state,db):raise ValueError('capstone CLOSED preset requires current completed scenario evidence with a known observation')
-                path=route(target,workflow);state=initial(state['start_at'],workflow)
-                if workflow=='p050' and target=='CLOSED':state['attachments']=refs
-                for stage in path[1:]:
-                    gate=review_gates(config).get(state['stage'])
-                    if gate and stage==gate['target']:
-                        state['quality']='PASS';state['review_path_index']=len(state['path'])-1
-                        state['reviews'].append(dict(passed=True,minute=state['clock_minutes'],actor='SYN-PRESET-CHECKER',note='Explicit fictional '+gate['label']+' check before '+stage+' preset',path_index=len(state['path'])-1,stage=state['stage']))
-                    state['clock_minutes']+=60;state['stage']=stage
-                    state['path'].append(dict(stage=stage,minute=state['clock_minutes'],actor='SYN-PRESET-RECORDER'))
-                    if config.get('gate_anchors') and stage!='CLOSED':state.update(quality='UNREVIEWED',review_path_index=None)
+        run=self.run(key,db)
+        if type(data['version']) is not int:raise ValueError('integer version required')
+        if data['version']!=run['version']:raise Conflict('Scenario changed. Reload before controlling it.')
+        if len(run['history'])>=10000:raise ValueError('scenario history limit reached; create another scenario')
+        state=deepcopy(run['state']);workflow=run['workflow'];config=configuration(workflow)
+        allowed=controls(state,workflow);restored_from=None
+        if action in {'STEP','TICK'}:
+            minutes=bounded(params['minutes'],'elapsed minutes',1)
+            if state['clock_minutes']+minutes>10000000:raise ValueError('scenario clock limit exceeded')
+            if action=='STEP':
+                target=text(params['stage'],'next stage',100)
+                if not allowed['step']:raise ValueError(allowed['reason'])
+                if target not in config['stages'][state['stage']]:raise ValueError('invalid workflow transition')
+                if workflow=='p050' and target=='CLOSED' and not self.capstone_ready(state,db):raise ValueError('capstone closure requires current completed scenario evidence with a known observation')
+                gate=review_gates(config).get(state['stage'])
+                if gate and target==gate['target'] and not acceptance_current(state):raise ValueError('phase transition requires a passing check for the current '+gate['label']+' revision')
+                state['clock_minutes']+=minutes;state['stage']=target
+                state['path'].append(dict(stage=target,minute=state['clock_minutes'],actor=actor))
+                if config.get('gate_anchors') and target!='CLOSED':state.update(quality='UNREVIEWED',review_path_index=None)
                 if target in config['terminal']:state['execution']='COMPLETED'
-                if quality!='UNREVIEWED' and not (config.get('gate_anchors') and target=='CLOSED'):
-                    state['quality']=quality;state['review_path_index']=len(state['path'])-1
-                    state['reviews'].append(dict(passed=quality=='PASS',minute=state['clock_minutes'],actor='SYN-PRESET-CHECKER',note='Fictional preset outcome: '+note))
-            elif action=='OBSERVE':
-                metric_id=text(params['metric_id'],'metric ID',100)
-                contract=next((m for m in config.get('metrics',[]) if m['id']==metric_id),None)
-                if not contract:raise ValueError('unknown metric contract for this workflow')
-                value,missing=observation_value(contract,params)
-                state.setdefault('observations',{})[metric_id]=dict(value=value,numerator=params['numerator'],denominator=params['denominator'],missing_reason=missing,
-                    contract_sha256=fingerprint(contract),path_index=len(state['path'])-1,actor=actor,note=note)
-            elif action=='ATTACH':
-                if workflow!='p050':raise ValueError('snapshot attachment is available only in the capstone workflow')
-                source_id=identifier(params['source_run_id']);seq=bounded(params['source_sequence'],'source sequence',1,10000)
-                if source_id==key:raise ValueError('capstone cannot attach itself')
-                source=self.run(source_id,db)
-                if source['workflow']=='p050':raise ValueError('nested capstone attachments are not supported')
-                item=next((e for e in source['history'] if e['sequence']==seq),None)
-                if not item:raise ValueError('source snapshot not found')
-                if fingerprint(item['state'])!=item['state_sha256']:raise ValueError('source snapshot hash mismatch')
-                state.setdefault('attachments',{})[source_id]=dict(source_run_id=source_id,source_sequence=seq,source_workflow=source['workflow'],state_sha256=item['state_sha256'])
-                state.update(quality='UNREVIEWED',review_path_index=None)
-            elif action=='RESTORE':
-                seq=bounded(params['sequence'],'snapshot sequence',1,10000)
-                previous=next((e for e in run['history'] if e['sequence']==seq),None)
-                if not previous:raise ValueError('snapshot not found in this scenario')
-                state=deepcopy(previous['state']);restored_from=seq
-            try:timestamp(state['start_at'])+timedelta(minutes=state['clock_minutes'])
-            except OverflowError:raise ValueError('scenario time exceeds supported calendar')
-            event=dict(sequence=len(run['history'])+1,action=action,actor=actor,note=note,parameters=params,
-                       before_sha256=fingerprint(run['state']),state=state,state_sha256=fingerprint(state),restored_from=restored_from)
-            db.execute('INSERT INTO scenario_events VALUES (?,?,?)',(key,event['sequence'],json.dumps(event)))
-            db.execute('UPDATE scenario_runs SET body=?,version=version+1 WHERE id=?',(json.dumps(dict(label=run['label'],workflow=workflow,state=state)),key))
-            self.store.log(db,actor,'control_synthetic_scenario',key,event)
-            return self.run(key,db)
+            else:state['clock_minutes']+=minutes
+        elif action=='PAUSE':
+            if not allowed['pause']:raise ValueError('pause is unavailable in this state')
+            state['execution']='PAUSED'
+        elif action=='RESUME':
+            if not allowed['resume']:raise ValueError('resume is unavailable in this state')
+            state['execution']='RUNNING'
+        elif action=='STOP':
+            if not allowed['stop']:raise ValueError('stop is unavailable in this state')
+            state['execution']='STOPPED'
+        elif action=='REVIEW':
+            if not allowed['review']:raise ValueError('review is unavailable in this workflow/execution state')
+            if type(params['passed']) is not bool:raise ValueError('passed requires boolean')
+            if config.get('gate_anchors'):
+                gate=review_gates(config)[state['stage']]
+                anchors=[next((p for p in reversed(state['path']) if p['stage']==stage),None) for stage in gate['anchors']]
+                if any(p is None or p.get('actor')==actor for p in anchors):raise ValueError(gate['error'])
+                state['review_path_index']=len(state['path'])-1
+            state['quality']='PASS' if params['passed'] else 'FAIL'
+            state['reviews'].append(dict(passed=params['passed'],minute=state['clock_minutes'],actor=actor,note=note,path_index=len(state['path'])-1,stage=state['stage']))
+        elif action=='PRESET':
+            target=text(params['stage'],'preset stage',100);quality=text(params['quality'],'preset quality',100)
+            if quality not in QUALITY or (target not in config['review_stages'] and target!=config['completion'] and quality!='UNREVIEWED'):raise ValueError('quality outcomes are unavailable for this preset')
+            if config.get('gate_anchors') and target=='CLOSED' and quality!='PASS':raise ValueError('CLOSED preset requires PASS quality; use the review state for unchecked/failed outcomes')
+            refs=deepcopy(state.get('attachments',{}))
+            if workflow=='p050' and target=='CLOSED' and not self.capstone_ready(state,db):raise ValueError('capstone CLOSED preset requires current completed scenario evidence with a known observation')
+            path=route(target,workflow);state=initial(state['start_at'],workflow)
+            if workflow=='p050' and target=='CLOSED':state['attachments']=refs
+            for stage in path[1:]:
+                gate=review_gates(config).get(state['stage'])
+                if gate and stage==gate['target']:
+                    state['quality']='PASS';state['review_path_index']=len(state['path'])-1
+                    state['reviews'].append(dict(passed=True,minute=state['clock_minutes'],actor='SYN-PRESET-CHECKER',note='Explicit fictional '+gate['label']+' check before '+stage+' preset',path_index=len(state['path'])-1,stage=state['stage']))
+                state['clock_minutes']+=60;state['stage']=stage
+                state['path'].append(dict(stage=stage,minute=state['clock_minutes'],actor='SYN-PRESET-RECORDER'))
+                if config.get('gate_anchors') and stage!='CLOSED':state.update(quality='UNREVIEWED',review_path_index=None)
+            if target in config['terminal']:state['execution']='COMPLETED'
+            if quality!='UNREVIEWED' and not (config.get('gate_anchors') and target=='CLOSED'):
+                state['quality']=quality;state['review_path_index']=len(state['path'])-1
+                state['reviews'].append(dict(passed=quality=='PASS',minute=state['clock_minutes'],actor='SYN-PRESET-CHECKER',note='Fictional preset outcome: '+note))
+        elif action=='OBSERVE':
+            metric_id=text(params['metric_id'],'metric ID',100)
+            contract=next((m for m in config.get('metrics',[]) if m['id']==metric_id),None)
+            if not contract:raise ValueError('unknown metric contract for this workflow')
+            value,missing=observation_value(contract,params)
+            state.setdefault('observations',{})[metric_id]=dict(value=value,numerator=params['numerator'],denominator=params['denominator'],missing_reason=missing,
+                contract_sha256=fingerprint(contract),path_index=len(state['path'])-1,actor=actor,note=note)
+        elif action=='ATTACH':
+            if workflow!='p050':raise ValueError('snapshot attachment is available only in the capstone workflow')
+            source_id=identifier(params['source_run_id']);seq=bounded(params['source_sequence'],'source sequence',1,10000)
+            if source_id==key:raise ValueError('capstone cannot attach itself')
+            source=self.run(source_id,db)
+            if source['workflow']=='p050':raise ValueError('nested capstone attachments are not supported')
+            item=next((e for e in source['history'] if e['sequence']==seq),None)
+            if not item:raise ValueError('source snapshot not found')
+            if fingerprint(item['state'])!=item['state_sha256']:raise ValueError('source snapshot hash mismatch')
+            state.setdefault('attachments',{})[source_id]=dict(source_run_id=source_id,source_sequence=seq,source_workflow=source['workflow'],state_sha256=item['state_sha256'])
+            state.update(quality='UNREVIEWED',review_path_index=None)
+        elif action=='RESTORE':
+            seq=bounded(params['sequence'],'snapshot sequence',1,10000)
+            previous=next((e for e in run['history'] if e['sequence']==seq),None)
+            if not previous:raise ValueError('snapshot not found in this scenario')
+            state=deepcopy(previous['state']);restored_from=seq
+        try:timestamp(state['start_at'])+timedelta(minutes=state['clock_minutes'])
+        except OverflowError:raise ValueError('scenario time exceeds supported calendar')
+        event=dict(sequence=len(run['history'])+1,action=action,actor=actor,note=note,parameters=params,
+                   before_sha256=fingerprint(run['state']),state=state,state_sha256=fingerprint(state),restored_from=restored_from)
+        db.execute('INSERT INTO scenario_events VALUES (?,?,?)',(key,event['sequence'],json.dumps(event)))
+        db.execute('UPDATE scenario_runs SET body=?,version=version+1 WHERE id=?',(json.dumps(dict(label=run['label'],workflow=workflow,state=state)),key))
+        self.store.log(db,actor,'control_synthetic_scenario',key,event)
+        return self.run(key,db)
+
+    def demo_receipt(self,batch_id,db=None):
+        if db is None:
+            with self.store.connect() as connection:return self.demo_receipt(batch_id,connection)
+        row=db.execute('SELECT body FROM scenario_demo_batches WHERE id=?',(batch_id,)).fetchone()
+        if not row:raise KeyError('demo batch not found')
+        result=json.loads(row['body']);changed=[];missing=[]
+        for item in result['runs']:
+            current=db.execute('SELECT body,version FROM scenario_runs WHERE id=?',(item['run_id'],)).fetchone()
+            if not current:missing.append(item['run_id'])
+            elif current['version']!=item['seed_version'] or fingerprint(json.loads(current['body'])['state'])!=item['state_sha256']:changed.append(item['run_id'])
+        result.update(changed_since_seed=changed,missing_since_seed=missing,catalog_changed=result['catalog_sha256']!=fingerprint(catalog()),execution_authorized=False,layer_a_status='LEGAL_REVIEW_REQUIRED')
+        return result
+
+    def demo_batches(self):
+        with self.store.connect() as db:
+            return [self.demo_receipt(row['id'],db) for row in db.execute('SELECT id FROM scenario_demo_batches ORDER BY id')]
+
+    def load_demo(self,data):
+        fields(data,'batch_id actor')
+        batch_id=identifier(data['batch_id']);actor=text(data['actor'],'demo loader actor',200)
+        if len(batch_id)>55:raise ValueError('batch ID must be at most 55 characters to reserve run suffixes')
+        ordered=sorted(WORKFLOWS.items(),key=lambda pair:pair[1]['project_id'])
+        with self.store.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            if db.execute('SELECT id FROM scenario_demo_batches WHERE id=?',(batch_id,)).fetchone():
+                receipt=self.demo_receipt(batch_id,db)
+                if receipt['missing_since_seed']:raise Conflict('demo batch has missing runs; use a new batch ID')
+                return {**receipt,'created':False}
+            planned={workflow:batch_id+'-'+config['project_id'] for workflow,config in ordered}
+            collisions=[key for key in planned.values() if db.execute('SELECT id FROM scenario_runs WHERE id=?',(key,)).fetchone()]
+            if collisions:raise Conflict('demo run IDs already exist; use a new batch ID: '+', '.join(collisions))
+            records=[]
+            def command(key,action,parameters,who='SYN-DEMO-RECORDER'):
+                version=self.run(key,db)['version']
+                return self.command(key,dict(version=version,action=action,parameters=parameters,actor=who,note='FICTIONAL DEMO V1: supplied scenario evidence, not actual services or acceptance'),_db=db)
+            for workflow,config in ordered:
+                key=planned[workflow]
+                self.create(dict(run_id=key,workflow=workflow,label='FICTIONAL DEMO — '+config['label'],start_at='2026-01-01T00:00:00Z',actor='SYN-DEMO-RECORDER',note='FICTIONAL DEMO V1: no real institutional, personal or operational data'),_db=db)
+                if workflow=='p050':
+                    source_id=planned['p024'];source=self.run(source_id,db)
+                    command(key,'ATTACH',dict(source_run_id=source_id,source_sequence=source['version']))
+                for target in route(config['completion'],workflow)[1:]:
+                    state=self.run(key,db)['state'];gate=review_gates(config).get(state['stage'])
+                    if gate and target==gate['target']:
+                        command(key,'REVIEW',dict(passed=True),'SYN-DEMO-CHECKER')
+                    command(key,'STEP',dict(stage=target,minutes=60))
+                if workflow=='permit':command(key,'REVIEW',dict(passed=True),'SYN-DEMO-CHECKER')
+                for index,metric in enumerate(config.get('metrics',[])):
+                    if metric['kind']=='RATIO':
+                        parameters=dict(metric_id=metric['id'],value=None,numerator=3,denominator=4,missing_reason=None)
+                    else:
+                        value=(30 if metric['kind']=='MINUTES' else 2500 if metric['kind']=='INTEGER_MINOR_UNITS' else 1) if index==0 else 0
+                        parameters=dict(metric_id=metric['id'],value=value,numerator=None,denominator=None,missing_reason=None)
+                    command(key,'OBSERVE',parameters)
+                run=self.run(key,db)
+                records.append(dict(project_id=config['project_id'],workflow=workflow,run_id=key,seed_version=run['version'],state_sha256=run['state_sha256']))
+            receipt=dict(batch_id=batch_id,fixture_version=1,created_at=now(),initiating_actor=actor,catalog_sha256=fingerprint(catalog()),runs=records,
+                         defined_projects=44,definition_blocked=[f'{i:03}' for i in range(1,7)],kind='SYNTHETIC',notice='Fictional demo records and measured assertions only; no actual service, source acceptance or legal authorization')
+            db.execute('INSERT INTO scenario_demo_batches VALUES (?,?)',(batch_id,json.dumps(receipt)))
+            self.store.log(db,actor,'load_synthetic_portfolio_demo',batch_id,receipt)
+            return {**self.demo_receipt(batch_id,db),'created':True}
 
     def report(self,key):
         run=self.run(key);state=run['state'];workflow=run['workflow'];config=configuration(workflow)

@@ -2,6 +2,10 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Add one-action/CLI loading of all 44 fictional examples with checked paths, sample observations, linked capstone and persisted batch receipts. Seed through the normal controls in one transaction; reject collisions, preserve operator changes and flag older/missing/catalog-changed batches.
+- Add demo rollback/idempotency/isolation/backup/API/CLI tests and browser coverage for loading, non-overwriting reload, stale capstone preservation, persistence and mobile layout. Real source acceptance and live authority remain unchanged.
+
+
 - Complete synthetic state-control coverage for all 44 defined workstreams (007–050) with 38 project-specific catalog profiles and individual handoffs. Retain undefined 001–006 and all source/institutional acceptance gaps.
 - Add typed observations, missingness, path/contract freshness and separate counter-measures; add Project 050 snapshot attachments with current completed measured-evidence checks and stale-dependency holds. Layer A remains LEGAL_REVIEW_REQUIRED.
 - Add catalog-wide profile/state/gate tests and browser coverage, capstone rejection/recovery, metrics, snapshots, persistence, mobile layout and coverage documentation. These controls do not execute real services, analytical agents or institutional transitions.

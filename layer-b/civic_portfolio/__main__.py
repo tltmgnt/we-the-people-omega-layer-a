@@ -103,7 +103,9 @@ def server(store, port=8765):
                     elif path == '/api/export':
                         self.send(200, store.export())
                     elif path == '/api/scenarios':
-                        self.send(200,dict(runs=scenarios.runs(),token=token,stages={k:sorted(v) for k,v in PERMIT_STAGES.items()},quality=SCENARIO_QUALITY,actions=SCENARIO_ACTIONS,workflows=scenario_catalog()))
+                        self.send(200,dict(runs=scenarios.runs(),token=token,stages={k:sorted(v) for k,v in PERMIT_STAGES.items()},quality=SCENARIO_QUALITY,actions=SCENARIO_ACTIONS,workflows=scenario_catalog(),demo_batches=scenarios.demo_batches()))
+                    elif len(parts)==4 and parts[:3]==['api','scenarios','demo']:
+                        self.send(200,scenarios.demo_receipt(parts[3]))
                     elif len(parts)==4 and parts[:2]==['api','scenarios'] and parts[3]=='report':
                         self.send(200,scenarios.report(parts[2]))
                     elif path == '/api/permits':
@@ -179,6 +181,8 @@ def server(store, port=8765):
                         self.send(200, store.source_content(parts[2]))
                     else:
                         self.send(404, {'error': 'route not found'})
+                elif parts == ['api','scenarios','demo']:
+                    self.send(201,scenarios.load_demo(data))
                 elif parts == ['api','scenarios']:
                     self.send(201,scenarios.create(data))
                 elif len(parts)==4 and parts[:2]==['api','scenarios'] and parts[3]=='commands':
@@ -367,6 +371,9 @@ def main(argv=None):
     sub = parser.add_subparsers(dest='command', required=True)
     sub.add_parser('init')
     sub.add_parser('report')
+    demo = sub.add_parser('demo-scenarios')
+    demo.add_argument('--batch-id',default='SYN-DEMO-V1')
+    demo.add_argument('--actor',required=True)
     export = sub.add_parser('export')
     export.add_argument('--output', type=Path, required=True)
     backup = sub.add_parser('backup')
@@ -390,6 +397,8 @@ def main(argv=None):
         elif args.command == 'report':
             for p in store.export()['projects']:
                 print(f"{p['project_id']} {p['status']:20} {p['completed_steps']}/{p['total_steps']} {p['title'] or '[title to confirm]'}")
+        elif args.command == 'demo-scenarios':
+            print(json.dumps(Scenarios(store).load_demo(dict(batch_id=args.batch_id,actor=args.actor)),indent=2))
         elif args.command == 'export':
             args.output.write_text(json.dumps(store.export(), indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
             print(args.output)
