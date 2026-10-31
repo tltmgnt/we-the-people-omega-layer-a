@@ -51,6 +51,8 @@ def main():
         state = 'Proposed plan only. No source import, project-specific executable workflow, completed tests, reviewer approval or institutional adoption is claimed.'
         if identifier == '009':
             state = 'A [synthetic permit lifecycle and measurement prototype](../PERMIT-LAB.md) is implemented with automated tests. It is based on the supplied starter scenario. The linked full source document, real program scope, qualified acceptance and live institutional adoption remain outstanding; this project is not marked complete.'
+        if identifier == '010':
+            state = 'A [synthetic asset-maintenance and verification prototype](../MAINTENANCE-LAB.md) is implemented with automated tests based on the proposed plan and Layer B public-works prompts. The linked source document remains unread. Actual process rules, safety controls, qualified acceptance and institutional adoption are outstanding; this project is not marked complete.'
         lines += ['## Source', '', p['source_url'] or 'No assigned source. Confirm the source and project definition before implementation.', '', '## Current delivery state', '', state, '']
         (directory / f'{identifier}.md').write_text('\n'.join(lines))
     (directory / 'README.md').write_text('\n'.join(index)+'\n')
