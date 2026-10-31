@@ -875,6 +875,7 @@ const path = require('node:path');
       await scenarioClick('preset');
       const report=JSON.parse(await page.locator('#report').textContent());
       if(report.stage!==stage||report.execution_authorized)throw Error('Scenario state preset failed: '+stage);
+      if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Scenario preset mobile overflow: '+stage);
     }
     await page.reload();await page.locator('#run').selectOption('SYN-CONTROL-DEMO');
     await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "WITHDRAWN"')&&!document.querySelector('#refresh').disabled);
