@@ -2,6 +2,10 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Extend Project 023 with fifteen controllable justice-caseflow states, current notice/remedy/reentry record gates, remand/rehearing loops, censored pending decision timing, both closure paths and snapshot restore. Keep observatory data and legal/live holds separate.
+- Add ten justice-control tests and browser coverage for notice holds, remand, both closure branches, all presets, restore, persistence and mobile layout. Qualified review, real remedies and the institutional pilot remain pending.
+
+
 - Add Project 022 controlled emergency-readiness exercise with eleven states, separate readiness/correction gates, exact-revision distinct-recorder checks, explicit preset gate records, abort/cancel and snapshot restore. Preserve prior workflow semantics.
 - Add ten exercise tests and browser coverage for both phase holds, revised corrections, all states, restore, persistence and mobile layout. Live dispatch/readiness certification remain false; source/safety/operational review remains pending.
 

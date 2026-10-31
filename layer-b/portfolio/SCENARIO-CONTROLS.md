@@ -90,3 +90,7 @@ The [fictional health-referral use case](HEALTH-LAB.md) adds eleven states for c
 ## Additional workflow: Project 022
 
 The [controlled emergency-readiness exercise](EMERGENCY-LAB.md) adds eleven states, readiness checks before a simulated start and separate corrective-action checks before closure. Presets explicitly replay each gated check. Abort/cancel, all shared controls and snapshot restoration apply. No dispatch, emergency operations or readiness certification is performed.
+
+## Additional workflow: Project 023
+
+The [justice caseflow/remedy controller](JUSTICE-CONTROLS.md) adds fifteen states and three independent record-check gates. It supports remand/rehearing, revised remedies, reentry handoffs and both closure branches using existing controls. Existing observatory pilots and evidence stay separate. No judicial or release decisions, rights certification, remedy-effectiveness proof or recidivism assessment is performed.

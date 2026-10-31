@@ -70,3 +70,7 @@ python -m civic_portfolio --db justice-backup.sqlite3 serve --port 8766
 The shared browser smoke tests use a disposable synthetic database. Export includes `synthetic_justice` pilot/event bodies plus the shared source and audit history. SQLite backup/restore is tested. Stop the app and retain an untouched backup before upgrades; restore a copy of the backup with the previous application version to roll back. API history is append-only but the local database itself is editable, not tamper-proof.
 
 The app is loopback-only and single-workspace, with unauthenticated asserted identifiers. Do not expose it to the internet or enter real justice records. Retention is locally controlled: stop the app and delete the disposable database and exports when no longer needed; no automatic retention schedule is claimed. The original Layer A packet remains blocked. This software does not implement a production court/corrections system or complete the institutional success criteria.
+
+## Controllable caseflow and remedy scenarios
+
+A separate [justice state-control console](JUSTICE-CONTROLS.md), at `/scenarios?workflow=justice`, now provides fifteen isolated states, notice/remedy/reentry checks, remand/rehearing loops, both closure branches, presets and snapshot restoration. It leaves observatory evidence/pilots unchanged and makes no judicial, sentencing, bail or release decisions.

@@ -111,3 +111,7 @@ The [health-service referral and continuity use case](HEALTH-LAB.md), at `/scena
 ## Project 022 readiness-exercise scenario
 
 The [controlled readiness-exercise use case](EMERGENCY-LAB.md), at `/scenarios?workflow=emergency`, adds eleven states with separate readiness and corrective-action checks, response milestones, abort/cancel paths and replay/restore. Live dispatch and readiness certification remain false. There are now fifteen bounded synthetic domain prototypes (009–023); actual source review, safety rules and institutional acceptance remain outstanding.
+
+## Project 023 scenario controls
+
+The existing justice observatory now links an isolated [justice control use case](JUSTICE-CONTROLS.md), at `/scenarios?workflow=justice`, with fifteen states, separate notice/remedy/reentry checks, remand/rehearing loops and both remedy/reentry closure paths. No judicial, sentencing, bail or release decisions are made. This extends an existing prototype; the portfolio still has fifteen bounded synthetic domain prototypes, not institutionally accepted projects.

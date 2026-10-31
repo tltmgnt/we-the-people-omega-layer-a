@@ -61,6 +61,22 @@ EMERGENCY_STAGES={
     'CORRECTION_REVIEW':{'CLOSED','CORRECTION_RECORDED','CANCELLED'},
     'CLOSED':set(),'CANCELLED':set(),'ABORTED':set(),
 }
+JUSTICE_STAGES={
+    'ACCESS_REQUESTED':{'FILED','WITHDRAWN'},
+    'FILED':{'NOTICE_RECORDED','WITHDRAWN'},
+    'NOTICE_RECORDED':{'NOTICE_REVIEW','WITHDRAWN'},
+    'NOTICE_REVIEW':{'HEARING_RECORDED','NOTICE_RECORDED','WITHDRAWN'},
+    'HEARING_RECORDED':{'DECISION_RECORDED','NOTICE_RECORDED','WITHDRAWN'},
+    'DECISION_RECORDED':{'REVIEW_REQUESTED','REMEDY_RECORDED','REENTRY_HANDOFF'},
+    'REVIEW_REQUESTED':{'REMANDED','REMEDY_RECORDED','WITHDRAWN'},
+    'REMANDED':{'NOTICE_RECORDED','WITHDRAWN'},
+    'REMEDY_RECORDED':{'REMEDY_REVIEW','WITHDRAWN'},
+    'REMEDY_REVIEW':{'CLOSED','REMEDY_RECORDED','REVIEW_REQUESTED'},
+    'REENTRY_HANDOFF':{'FOLLOW_UP_RECORDED','WITHDRAWN'},
+    'FOLLOW_UP_RECORDED':{'CONTINUITY_REVIEW','REENTRY_HANDOFF','WITHDRAWN'},
+    'CONTINUITY_REVIEW':{'CLOSED','REENTRY_HANDOFF','WITHDRAWN'},
+    'CLOSED':set(),'WITHDRAWN':set(),
+}
 WORKFLOWS={
     'permit':dict(label='Project 009 — fictional permit',initial='RECEIVED',stages=STAGES,
                   terminal=TERMINAL,review_stages={'DECIDED'},completion='DECIDED',correction='AWAITING_CORRECTION'),
@@ -80,6 +96,15 @@ WORKFLOWS={
                   phase_gates={
                     'READINESS_REVIEW':dict(target='EXERCISE_STARTED',anchors=['READINESS_RECORDED'],label='exercise readiness',error='readiness requires a checker distinct from the current readiness recorder'),
                     'CORRECTION_REVIEW':dict(target='CLOSED',anchors=['AFTER_ACTION_RECORDED','CORRECTION_RECORDED'],label='exercise correction',error='correction requires a checker distinct from current after-action/correction recorders'),
+                  }),
+    'justice':dict(label='Project 023 — fictional justice caseflow and remedies',initial='ACCESS_REQUESTED',stages=JUSTICE_STAGES,
+                  terminal={'CLOSED','WITHDRAWN'},review_stages={'NOTICE_REVIEW','REMEDY_REVIEW','CONTINUITY_REVIEW'},completion='CLOSED',correction='REMANDED',
+                  gate_anchors=['DECISION_RECORDED','REMEDY_RECORDED'],gate_label='remedy record',
+                  gate_error='remedy check requires an identifier distinct from current decision/remedy recorders',
+                  phase_gates={
+                    'NOTICE_REVIEW':dict(target='HEARING_RECORDED',anchors=['FILED','NOTICE_RECORDED'],label='notice record',error='notice check requires an identifier distinct from current filing/notice recorders'),
+                    'REMEDY_REVIEW':dict(target='CLOSED',anchors=['DECISION_RECORDED','REMEDY_RECORDED'],label='remedy record',error='remedy check requires an identifier distinct from current decision/remedy recorders'),
+                    'CONTINUITY_REVIEW':dict(target='CLOSED',anchors=['REENTRY_HANDOFF','FOLLOW_UP_RECORDED'],label='reentry continuity',error='reentry check requires an identifier distinct from current handoff/follow-up recorders'),
                   }),
 }
 
@@ -102,6 +127,17 @@ def review_gates(config):
 def acceptance_current(state):
     return state['quality']=='PASS' and state.get('review_path_index')==len(state['path'])-1
 
+
+def justice_diagnostics(state):
+    path=state['path'];filed=next((p for p in path if p['stage']=='FILED'),None)
+    decisions=[p for p in path if p['stage']=='DECISION_RECORDED']
+    pending=state['stage'] in {'ACCESS_REQUESTED','FILED','NOTICE_RECORDED','NOTICE_REVIEW','HEARING_RECORDED','REVIEW_REQUESTED','REMANDED'}
+    return dict(justice_review_pending=pending,
+                filing_to_latest_decision_minutes=decisions[-1]['minute']-filed['minute'] if filed and decisions and not pending and state['stage']!='WITHDRAWN' else None,
+                remand_cycles=sum(p['stage']=='REMANDED' for p in path),
+                notice_revisions=max(0,sum(p['stage']=='NOTICE_RECORDED' for p in path)-1),
+                judicial_outcomes_assessed=False,remedy_effectiveness_verified=False,recidivism_assessed=False,
+                closure_path=('REMEDY_RECORD' if path[-2]['stage']=='REMEDY_REVIEW' else 'REENTRY_RECORD') if state['stage']=='CLOSED' else None)
 
 def bounded(value,name,minimum=0,maximum=1000000):
     if type(value) is not int or not minimum<=value<=maximum:
@@ -264,7 +300,7 @@ class Scenarios:
         for i,event in enumerate(state['path']):
             end=state['path'][i+1]['minute'] if i+1<len(state['path']) else state['clock_minutes']
             if event['stage'] not in config['terminal']:durations[event['stage']]+=end-event['minute']
-        return dict(run_id=key,kind='SYNTHETIC',workflow=workflow,completion_elapsed_minutes=last['minute'] if state['stage']==config['completion'] else None,stage=state['stage'],execution=state['execution'],quality=state['quality'],
+        return dict(justice_diagnostics(state) if workflow=='justice' else {},run_id=key,kind='SYNTHETIC',workflow=workflow,completion_elapsed_minutes=last['minute'] if state['stage']==config['completion'] else None,stage=state['stage'],execution=state['execution'],quality=state['quality'],
                     scenario_time=(timestamp(state['start_at'])+timedelta(minutes=state['clock_minutes'])).isoformat(),
                     clock_minutes=state['clock_minutes'],decision_elapsed_minutes=last['minute'] if state['stage']=='DECIDED' else None,
                     open_age_minutes=None if terminal else state['clock_minutes'],stage_minutes=durations,
@@ -282,4 +318,4 @@ class Scenarios:
                     live_dispatch_enabled=False if workflow=='emergency' else None,
                     operational_readiness_certified=False if workflow=='emergency' else None,
                     history_events=len(run['history']),execution_authorized=False,legal_review='REQUIRED',
-                    method='Manual deterministic scenario clock; no background automation. TICK advances fictional time even while paused/stopped or terminal. PAUSE/STOP freeze workflow transitions until RESUME, not the manual clock. PRESET replays a shortest valid path at 60 minutes per edge; RESTORE copies a prior snapshot into a new append-only event. Neither deletes history. Quality outcomes and preset reviews are fictional assertions. Procurement, education and health-referral closure require a distinct-recorder check pinned to the current path revision; changed delivery, follow-up, interruptions or corrections invalidate it. Education and health-referral check identifiers must differ from both current service and follow-up recorders. Health consent records are fictional assertions; no clinical outcomes, triage, diagnosis or actual referrals are assessed or performed. Emergency phase gates require separate current readiness/correction checks, not operational certification; there is no live dispatch. No learning, eligibility or ranking inference is made. CLOSED presets include an explicit fictional check. This isolated controller does not issue awards, payments, permit approvals, project/source completion, government actions or Layer A holds.')
+                    method='Manual deterministic scenario clock; no background automation. TICK advances fictional time even while paused/stopped or terminal. PAUSE/STOP freeze workflow transitions until RESUME, not the manual clock. PRESET replays a shortest valid path at 60 minutes per edge; RESTORE copies a prior snapshot into a new append-only event. Neither deletes history. Quality outcomes and preset reviews are fictional assertions. Procurement, education and health-referral closure require a distinct-recorder check pinned to the current path revision; changed delivery, follow-up, interruptions or corrections invalidate it. Education and health-referral check identifiers must differ from both current service and follow-up recorders. Health consent records are fictional assertions; no clinical outcomes, triage, diagnosis or actual referrals are assessed or performed. Emergency phase gates require separate current readiness/correction checks, not operational certification; there is no live dispatch. Justice notice/remedy/reentry checks are fictional record checks, never judicial rulings, rights certification, remedy-effectiveness proof or release decisions. No learning, eligibility or ranking inference is made. CLOSED presets include an explicit fictional check. This isolated controller does not issue awards, payments, permit approvals, project/source completion, government actions or Layer A holds.')
