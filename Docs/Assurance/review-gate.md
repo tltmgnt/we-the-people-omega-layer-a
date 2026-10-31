@@ -61,9 +61,10 @@ schema-invalid input; with multiple inputs it takes precedence over exit 2.
 Even exit 0 with --require-ready means readiness for human decision only.
 CI checks structure and tests; passing CI is never an approval gate for implementation.
 
-## Next pilot
+## Synthetic pilot
 
-Use the hypothetical benefits-process proposal to document intake, applicable sources,
-human review and a versioned outcome. Its current unknown jurisdiction, empty authority
-and evidence lists, and unresolved questions must keep it blocked. A completed pilot and
-domain-specific legal guidance remain future work.
+The [benefits-process walkthrough](../../pilots/benefits-process/README.md) preserves
+intake and escalation revisions, resolves synthetic evidence references and reproduces a
+blocked outcome. No qualified human legal review has occurred. A jurisdiction-specific
+pilot with applicable legal sources, human review and institutional outcome remains
+future work, along with domain-specific legal guidance.

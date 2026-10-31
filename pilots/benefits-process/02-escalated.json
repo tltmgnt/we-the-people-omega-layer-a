@@ -1,0 +1,37 @@
+{
+  "review_id": "PILOT-A-BENEFITS-001",
+  "schema_version": "0.1.0",
+  "proposal_id": "HYPOTHETICAL-BENEFITS-001",
+  "proposal_summary": "Hypothetical digital benefits process change",
+  "responsible_institution": "Hypothetical public agency",
+  "jurisdictions": [
+    "To be determined"
+  ],
+  "legal_authorities": [],
+  "rights_affected": [
+    "Potential procedural due process interests; applicability requires legal review"
+  ],
+  "procedural_requirements": [
+    "Determine applicable notice and appeal requirements"
+  ],
+  "jurisdictional_limitations": [
+    "Responsible authority and applicable law not yet identified"
+  ],
+  "accountability_mechanisms": [
+    "Proposed human appeal pathway; not verified"
+  ],
+  "unresolved_questions": [
+    "Which law governs eligibility and review?",
+    "What procedures are required?"
+  ],
+  "review_status": "LEGAL_REVIEW_REQUIRED",
+  "reviewer_role": "Qualified authorized legal reviewer required",
+  "conditions": [
+    "Do not implement until authority and rights questions are resolved"
+  ],
+  "evidence_ids": [
+    "PILOT-PROPOSAL-001",
+    "PILOT-TRIAGE-001"
+  ],
+  "revision": 2
+}

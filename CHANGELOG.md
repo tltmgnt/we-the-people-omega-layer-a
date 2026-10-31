@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Add a reproducible synthetic benefits-process pilot with preserved intake and escalation revisions, source manifest, blocked outcome and integration tests.
 - Add versioned review-record JSON Schema 0.1.0 and Python structural validator.
 - Add tests and CI for required fields, statuses, readiness blockers and CLI exit codes.
 - Document assurance responsibilities, status transitions, escalation and revision handling.

@@ -8,6 +8,7 @@ Layer A defines a foundational review architecture for constitutional, legal and
 - [Assurance gate, statuses and validation instructions](Docs/Assurance/review-gate.md)
 - [Review JSON Schema v0.1.0](schemas/review-record.schema.json)
 - [Hypothetical review record](example-review.json)
+- [Reproducible benefits-process pilot](pilots/benefits-process/README.md)
 - [Cross-layer integration](cross-layer-integration.md)
 - [Contribution guidance](CONTRIBUTING.md) and [changelog](CHANGELOG.md)
 - [License selection status](LICENSE-SELECTION.md)
@@ -16,7 +17,7 @@ Layer A defines a foundational review architecture for constitutional, legal and
 
 The example intentionally remains LEGAL_REVIEW_REQUIRED. Structural validation does not determine legal sufficiency, verify reviewer authority or authorize implementation. Qualified human review and any separately required institutional decision remain necessary.
 
-Individual A1–A7 domain documents, a completed pilot, a detailed roadmap and operational integrations are planned work; they are not delivered by the initial alpha.
+A synthetic intake-to-escalation pilot demonstrates a blocked outcome. Individual A1–A7 domain documents, a jurisdiction-specific pilot with qualified human review, a detailed roadmap and operational integrations remain planned work.
 
 ## Quick check
 

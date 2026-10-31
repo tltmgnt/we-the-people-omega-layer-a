@@ -13,3 +13,4 @@ jobs:
       - run: python -m pip install -r requirements-dev.txt
       - run: python -m unittest discover -s tests -v
       - run: python scripts/validate_review.py example-review.json
+      - run: python scripts/validate_review.py pilots/benefits-process/01-intake.json pilots/benefits-process/02-escalated.json
