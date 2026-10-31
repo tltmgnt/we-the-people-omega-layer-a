@@ -57,6 +57,8 @@ def main():
             state = 'A [synthetic sanitation-service prototype](../SANITATION-LAB.md) is implemented with automated tests based on the proposed plan. It records aggregate route runs, verification, recovery and anonymous service-report histories. The linked source remains unread; actual requirements, qualified acceptance and institutional adoption are outstanding. This project is not marked complete.'
         if identifier == '012':
             state = 'A [synthetic transit reliability/accessibility prototype](../TRANSIT-LAB.md) is implemented with automated tests based on the proposed plan. It records scheduled arrival boundaries, verified outcomes, measured aggregate passenger delay and separate accessibility findings. The linked source remains unread; actual requirements, qualified acceptance and institutional adoption remain outstanding. This project is not marked complete.'
+        if identifier == '013':
+            state = 'A [synthetic housing referral/follow-up prototype](../HOUSING-LAB.md) is implemented with automated tests based on the proposed plan. It records consent assertions, referral/handoff history, event-specific service/follow-up checks, interruptions and review-request responses. The linked source remains unread; actual requirements, qualified acceptance and institutional adoption remain outstanding. This project is not marked complete.'
         lines += ['## Source', '', p['source_url'] or 'No assigned source. Confirm the source and project definition before implementation.', '', '## Current delivery state', '', state, '']
         (directory / f'{identifier}.md').write_text('\n'.join(lines))
     (directory / 'README.md').write_text('\n'.join(index)+'\n')
