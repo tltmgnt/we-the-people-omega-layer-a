@@ -1,0 +1,157 @@
+{
+  "schema_version": "0.1.0",
+  "record_id": "SYNTHETIC-B-PERMIT-001",
+  "proposal_id": "HYPOTHETICAL-PERMIT-001",
+  "summary": "Prepare a bounded diagnosis of a fictional permit backlog without presuming blame",
+  "institution": "Fictional permitting office; no authorized participating institution",
+  "jurisdictions": [
+    "Undetermined fictional local jurisdiction"
+  ],
+  "kind": "SYNTHETIC",
+  "scope": "Design a permit-process study; no real records, personnel actions, funding commitments or service changes",
+  "lifecycle_stage": "PLANNING",
+  "owners": {
+    "operational": "UNASSIGNED \u2014 fictional permitting office",
+    "assurance": "UNASSIGNED \u2014 independent evidence reviewer",
+    "public_accountability": "UNASSIGNED \u2014 authorized oversight and complaint role"
+  },
+  "domain_screening": {
+    "B1": {
+      "relevance": "RELEVANT",
+      "reason": "Service ownership, delegation and handoffs require mapping"
+    },
+    "B2": {
+      "relevance": "POTENTIALLY_RELEVANT",
+      "reason": "Resource and funding constraints may affect capacity; no spending finding"
+    },
+    "B3": {
+      "relevance": "NOT_APPLICABLE",
+      "reason": "No purchase or contract action is proposed in this diagnostic scope; rescreen if tools/services are procured"
+    },
+    "B4": {
+      "relevance": "RELEVANT",
+      "reason": "Qualified capacity and workload are competing explanations"
+    },
+    "B5": {
+      "relevance": "RELEVANT",
+      "reason": "Timestamp provenance, records and lawful access require verification"
+    },
+    "B6": {
+      "relevance": "NOT_APPLICABLE",
+      "reason": "This scenario concerns office processing, not infrastructure delivery; rescreen asset or continuity implications if scope changes"
+    }
+  },
+  "layer_a_ref": {
+    "path": "examples/permit/layer-a-review.json",
+    "sha256": "9e1225cfb7496a8b8ede72a12d685c5a2cbf04a4f9e72a07b4ad75266c9b724d",
+    "review_id": "SYNTHETIC-A-PERMIT-001",
+    "revision": 1,
+    "schema_version": "0.1.0"
+  },
+  "evidence": [
+    {
+      "evidence_id": "SYNTHETIC-PERMIT-NOTES-001",
+      "path": "examples/permit/README.md",
+      "sha256": "0579debbd0598584af058a6cf237333ca5f173be5d9cce4bcf6474a3aac75e89"
+    }
+  ],
+  "metrics": [
+    {
+      "metric_id": "PERMIT-ELAPSED",
+      "definition": "Median calendar hours from defined receipt to final decision; define pauses and open cases before observing",
+      "unit": "calendar hours",
+      "value": null,
+      "sample_size": 0,
+      "numerator": "Not applicable: statistic defined in metric description; no observations",
+      "denominator": "Not applicable: no measured ratio or observation set yet",
+      "reporting_period": "Not yet observed; synthetic design only",
+      "source_id": "SYNTHETIC-PERMIT-NOTES-001",
+      "exclusions": [
+        "Actual case population, open-case handling and permit categories not yet defined"
+      ],
+      "uncertainty": [
+        "No measured baseline; source describes a hypothetical scenario only"
+      ],
+      "owner": "UNASSIGNED \u2014 hypothetical service/assurance owners",
+      "revision": 1,
+      "counter_metric": "PERMIT-ACCURACY plus access, appeals and safety"
+    },
+    {
+      "metric_id": "PERMIT-PUBLIC-EFFORT",
+      "definition": "Median reported person-hours of public effort across preparation, submission and correction; design authorized collection first",
+      "unit": "person-hours",
+      "value": null,
+      "sample_size": 0,
+      "numerator": "Not applicable: statistic defined in metric description; no observations",
+      "denominator": "Not applicable: no measured ratio or observation set yet",
+      "reporting_period": "Not yet observed; synthetic design only",
+      "source_id": "SYNTHETIC-PERMIT-NOTES-001",
+      "exclusions": [
+        "Actual case population, open-case handling and permit categories not yet defined"
+      ],
+      "uncertainty": [
+        "No measured baseline; source describes a hypothetical scenario only"
+      ],
+      "owner": "UNASSIGNED \u2014 hypothetical service/assurance owners",
+      "revision": 1,
+      "counter_metric": "Access, abandonment and distribution of burden"
+    },
+    {
+      "metric_id": "PERMIT-ACCURACY",
+      "definition": "Share of independently reviewed comparable completed cases meeting specified decision-quality criteria; define numerator/denominator before observation",
+      "unit": "proportion",
+      "value": null,
+      "sample_size": 0,
+      "numerator": "Number of independently reviewed cases meeting defined quality criteria; no measurements yet",
+      "denominator": "Number of comparable cases independently reviewed in the same period; currently zero observations",
+      "reporting_period": "Not yet observed; synthetic design only",
+      "source_id": "SYNTHETIC-PERMIT-NOTES-001",
+      "exclusions": [
+        "Actual case population, open-case handling and permit categories not yet defined"
+      ],
+      "uncertainty": [
+        "No measured baseline; source describes a hypothetical scenario only"
+      ],
+      "owner": "UNASSIGNED \u2014 hypothetical service/assurance owners",
+      "revision": 1,
+      "counter_metric": "PERMIT-ELAPSED and lawful-review/safety checks"
+    }
+  ],
+  "gaps": [
+    {
+      "gap_id": "GAP-PERMIT-001",
+      "dimension": "Information",
+      "severity": "MODERATE",
+      "assessment_basis": "Preparation triage: no measured baseline or verified authority yet; not an allegation or real harm estimate",
+      "affected_services": [
+        "Hypothetical permit intake, review and status communication"
+      ],
+      "owner": "UNASSIGNED \u2014 operational and assurance owners",
+      "dependencies": [
+        "Selected jurisdiction/program",
+        "Qualified Layer A review",
+        "Authorized data access and measurement definitions"
+      ],
+      "evidence_ids": [
+        "SYNTHETIC-PERMIT-NOTES-001"
+      ],
+      "hypotheses": [
+        "Incomplete applications cause rework",
+        "Specialist capacity or tools constrain throughput",
+        "Sequential handoffs create queue time",
+        "Demand exceeds planning assumptions",
+        "Necessary legal and safety tasks explain some elapsed time"
+      ],
+      "proposed_remedy": "Define lawful scope and measurement before testing bounded alternatives",
+      "validation_plan": "Map comparable cases, queues, workload and safeguards; test competing explanations with independent evidence and continuity scenarios",
+      "status": "OPEN"
+    }
+  ],
+  "unresolved_questions": [
+    "Who is the accountable participating institution and authorized decision maker?",
+    "What authority, access, safeguards and qualified legal review apply?",
+    "What do baseline data and competing-hypothesis tests actually show?"
+  ],
+  "review_status": "LEGAL_REVIEW_REQUIRED",
+  "revision": 1
+}

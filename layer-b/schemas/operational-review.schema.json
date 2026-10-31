@@ -1,0 +1,577 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Layer B proposed operational review 0.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_id",
+    "proposal_id",
+    "summary",
+    "institution",
+    "jurisdictions",
+    "kind",
+    "scope",
+    "lifecycle_stage",
+    "owners",
+    "domain_screening",
+    "layer_a_ref",
+    "evidence",
+    "metrics",
+    "gaps",
+    "unresolved_questions",
+    "review_status",
+    "revision"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "record_id": {
+      "$ref": "#/$defs/text"
+    },
+    "proposal_id": {
+      "$ref": "#/$defs/text"
+    },
+    "summary": {
+      "$ref": "#/$defs/text"
+    },
+    "institution": {
+      "$ref": "#/$defs/text"
+    },
+    "jurisdictions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "kind": {
+      "enum": [
+        "SYNTHETIC",
+        "RESEARCH"
+      ]
+    },
+    "scope": {
+      "$ref": "#/$defs/text"
+    },
+    "lifecycle_stage": {
+      "enum": [
+        "MANDATE",
+        "PLANNING",
+        "READINESS",
+        "DELIVERY",
+        "VERIFICATION",
+        "CORRECTION",
+        "LEARNING"
+      ]
+    },
+    "owners": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operational",
+        "assurance",
+        "public_accountability"
+      ],
+      "properties": {
+        "operational": {
+          "$ref": "#/$defs/text"
+        },
+        "assurance": {
+          "$ref": "#/$defs/text"
+        },
+        "public_accountability": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "domain_screening": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6"
+      ],
+      "properties": {
+        "B1": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "relevance",
+            "reason"
+          ],
+          "properties": {
+            "relevance": {
+              "enum": [
+                "RELEVANT",
+                "POTENTIALLY_RELEVANT",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "reason": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "B2": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "relevance",
+            "reason"
+          ],
+          "properties": {
+            "relevance": {
+              "enum": [
+                "RELEVANT",
+                "POTENTIALLY_RELEVANT",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "reason": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "B3": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "relevance",
+            "reason"
+          ],
+          "properties": {
+            "relevance": {
+              "enum": [
+                "RELEVANT",
+                "POTENTIALLY_RELEVANT",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "reason": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "B4": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "relevance",
+            "reason"
+          ],
+          "properties": {
+            "relevance": {
+              "enum": [
+                "RELEVANT",
+                "POTENTIALLY_RELEVANT",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "reason": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "B5": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "relevance",
+            "reason"
+          ],
+          "properties": {
+            "relevance": {
+              "enum": [
+                "RELEVANT",
+                "POTENTIALLY_RELEVANT",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "reason": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "B6": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "relevance",
+            "reason"
+          ],
+          "properties": {
+            "relevance": {
+              "enum": [
+                "RELEVANT",
+                "POTENTIALLY_RELEVANT",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "reason": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        }
+      }
+    },
+    "layer_a_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "review_id",
+        "revision",
+        "schema_version"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/text"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "review_id": {
+          "$ref": "#/$defs/text"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "schema_version": {
+          "const": "0.1.0"
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "evidence_id",
+          "path",
+          "sha256"
+        ],
+        "properties": {
+          "evidence_id": {
+            "$ref": "#/$defs/text"
+          },
+          "path": {
+            "$ref": "#/$defs/text"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "metric_id",
+          "definition",
+          "unit",
+          "value",
+          "sample_size",
+          "numerator",
+          "denominator",
+          "reporting_period",
+          "source_id",
+          "exclusions",
+          "uncertainty",
+          "owner",
+          "revision",
+          "counter_metric"
+        ],
+        "properties": {
+          "metric_id": {
+            "$ref": "#/$defs/text"
+          },
+          "definition": {
+            "$ref": "#/$defs/text"
+          },
+          "unit": {
+            "$ref": "#/$defs/text"
+          },
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "sample_size": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "numerator": {
+            "$ref": "#/$defs/text"
+          },
+          "denominator": {
+            "$ref": "#/$defs/text"
+          },
+          "reporting_period": {
+            "$ref": "#/$defs/text"
+          },
+          "source_id": {
+            "$ref": "#/$defs/text"
+          },
+          "exclusions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/text"
+            },
+            "uniqueItems": true
+          },
+          "uncertainty": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/text"
+            },
+            "uniqueItems": true
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "counter_metric": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "sample_size": {
+                  "const": 0
+                }
+              },
+              "required": [
+                "sample_size"
+              ]
+            },
+            "then": {
+              "properties": {
+                "value": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "gap_id",
+          "dimension",
+          "severity",
+          "assessment_basis",
+          "affected_services",
+          "owner",
+          "dependencies",
+          "evidence_ids",
+          "hypotheses",
+          "proposed_remedy",
+          "validation_plan",
+          "status"
+        ],
+        "properties": {
+          "gap_id": {
+            "$ref": "#/$defs/text"
+          },
+          "dimension": {
+            "enum": [
+              "Topology",
+              "Power",
+              "Boundaries",
+              "Information",
+              "Incentives",
+              "Control",
+              "Resilience",
+              "Legitimacy",
+              "Transition",
+              "Institutionalization"
+            ]
+          },
+          "severity": {
+            "enum": [
+              "LOW",
+              "MODERATE",
+              "HIGH",
+              "CRITICAL"
+            ]
+          },
+          "assessment_basis": {
+            "$ref": "#/$defs/text"
+          },
+          "affected_services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/text"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/text"
+            },
+            "uniqueItems": true
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/text"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "hypotheses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/text"
+            },
+            "uniqueItems": true,
+            "minItems": 2
+          },
+          "proposed_remedy": {
+            "$ref": "#/$defs/text"
+          },
+          "validation_plan": {
+            "$ref": "#/$defs/text"
+          },
+          "status": {
+            "enum": [
+              "OPEN",
+              "UNDER_REVIEW",
+              "RESOLVED"
+            ]
+          },
+          "verification_evidence_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/text"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "verifier_id": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "RESOLVED"
+                }
+              },
+              "required": [
+                "status"
+              ]
+            },
+            "then": {
+              "required": [
+                "verification_evidence_ids",
+                "verifier_id"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "unresolved_questions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true
+    },
+    "review_status": {
+      "enum": [
+        "DRAFT",
+        "ANALYSIS_REQUIRED",
+        "LEGAL_REVIEW_REQUIRED",
+        "READY_FOR_HUMAN_DECISION"
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "reviewer_id": {
+      "$ref": "#/$defs/text"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "pattern": "\\S"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "review_status": {
+            "const": "READY_FOR_HUMAN_DECISION"
+          }
+        },
+        "required": [
+          "review_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "reviewer_id",
+          "reviewed_at"
+        ],
+        "properties": {
+          "unresolved_questions": {
+            "maxItems": 0
+          },
+          "gaps": {
+            "items": {
+              "properties": {
+                "status": {
+                  "const": "RESOLVED"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

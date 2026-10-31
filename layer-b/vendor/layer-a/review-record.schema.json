@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Layer A Constitutional Legitimacy Review Record",
+  "description": "Structural review contract. Validation does not establish legal sufficiency or authorize implementation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "review_id",
+    "schema_version",
+    "proposal_id",
+    "proposal_summary",
+    "responsible_institution",
+    "jurisdictions",
+    "legal_authorities",
+    "rights_affected",
+    "procedural_requirements",
+    "jurisdictional_limitations",
+    "accountability_mechanisms",
+    "unresolved_questions",
+    "review_status",
+    "reviewer_role",
+    "conditions",
+    "evidence_ids",
+    "revision"
+  ],
+  "properties": {
+    "review_id": {
+      "$ref": "#/$defs/text"
+    },
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "proposal_id": {
+      "$ref": "#/$defs/text"
+    },
+    "proposal_summary": {
+      "$ref": "#/$defs/text"
+    },
+    "responsible_institution": {
+      "$ref": "#/$defs/text"
+    },
+    "jurisdictions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "legal_authorities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true
+    },
+    "rights_affected": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "procedural_requirements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "jurisdictional_limitations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true
+    },
+    "accountability_mechanisms": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "unresolved_questions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true
+    },
+    "review_status": {
+      "enum": [
+        "DRAFT",
+        "LEGAL_REVIEW_REQUIRED",
+        "CHANGES_REQUIRED",
+        "READY_FOR_HUMAN_DECISION",
+        "REJECTED"
+      ]
+    },
+    "reviewer_role": {
+      "$ref": "#/$defs/text"
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "uniqueItems": true
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "reviewer_id": {
+      "$ref": "#/$defs/text"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "pattern": "\\S"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "review_status": {
+            "const": "READY_FOR_HUMAN_DECISION"
+          }
+        },
+        "required": [
+          "review_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "reviewer_id",
+          "reviewed_at"
+        ],
+        "properties": {
+          "unresolved_questions": {
+            "maxItems": 0
+          },
+          "conditions": {
+            "maxItems": 0
+          },
+          "jurisdictional_limitations": {
+            "maxItems": 0
+          },
+          "legal_authorities": {
+            "minItems": 1
+          },
+          "evidence_ids": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

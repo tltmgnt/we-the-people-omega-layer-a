@@ -42,3 +42,7 @@ The example passes structural validation and prints BLOCKED. See the assurance g
 - Bureau of Indian Affairs: https://www.bia.gov/
 
 These are starting points, not exhaustive controlling authority. Check current, applicable constitutional text, statutes, treaties, Tribal law, judicial decisions, and jurisdiction-specific requirements before relying on any legal conclusion.
+
+## Layer B — Government Operations
+
+The [Layer B starter](layer-b/README.md) is imported under `layer-b/` with its documentation, schemas, synthetic permit packet and validation tools. Run its validation commands from that directory. The example remains blocked and does not authorize execution.

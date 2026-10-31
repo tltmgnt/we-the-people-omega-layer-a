@@ -1,0 +1,25 @@
+name: Validate Layer B
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  validate-layer-b:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: layer-b
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m unittest discover -s tests -v
+      - run: python -m scripts.validate_packet examples/permit/operational-review.json
+      - name: Confirm synthetic packet remains blocked
+        shell: bash
+        run: |
+          set +e
+          python -m scripts.validate_packet --require-ready examples/permit/operational-review.json
+          result=$?
+          test "$result" -eq 2
