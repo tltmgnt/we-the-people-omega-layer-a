@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Implement project 015's synthetic asset/interruption/work/restoration workflow with event-specific scenario-quality checks, closure/reopening cycles, escalation-route references, separate cycle/original ages and aggregate connection-hour reporting with explicit unknown/overlap limits.
+- Add seven utilities integration tests and expand browser CI through quality holds, checked closure, reopening, unknown connection counts, persistence and mobile layout. Preserve unread source, actual safety/operating rules and qualified-acceptance gaps.
+
 - Implement project 014's synthetic records/complaint workflow with response-scope checks, immutable deadline-assertion capture, non-resetting handoff/reopening clocks and current-cycle closure evidence; add meeting-notice revision/access checks with optional supplied lead-time comparisons.
 - Add seven public-access integration tests and expand browser CI through partial-scope rejection, deadline changes, reopening, complaints, meeting notices, fresh checks, persistence and mobile layout. Keep source, legal-rule and qualified-acceptance gaps explicit.
 

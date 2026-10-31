@@ -14,6 +14,7 @@ from .sanitation import Sanitation
 from .transit import Transit
 from .housing import Housing
 from .public_access import PublicAccess
+from .utilities import Utilities
 
 STATIC = Path(__file__).parent / 'static'
 
@@ -40,6 +41,7 @@ def server(store, port=8765):
     transit = Transit(store)
     housing = Housing(store)
     public_access = PublicAccess(store)
+    utilities = Utilities(store)
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
@@ -78,8 +80,8 @@ def server(store, port=8765):
                 parts = urlsplit(self.path).path.strip('/').split('/')
                 if not mutation:
                     path = urlsplit(self.path).path
-                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js']:
-                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js'}[path]
+                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js', '/sanitation', '/sanitation.js', '/transit', '/transit.js', '/housing', '/housing.js', '/public-access', '/public-access.js', '/utilities', '/utilities.js']:
+                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js', '/sanitation': 'sanitation.html', '/sanitation.js': 'sanitation.js', '/transit': 'transit.html', '/transit.js': 'transit.js', '/housing': 'housing.html', '/housing.js': 'housing.js', '/public-access': 'public-access.html', '/public-access.js': 'public-access.js', '/utilities': 'utilities.html', '/utilities.js': 'utilities.js'}[path]
                         kind = 'text/html' if name.endswith('.html') else 'text/javascript' if name.endswith('.js') else 'text/css'
                         self.send(200, (STATIC / name).read_bytes(), kind + '; charset=utf-8')
                     elif path == '/api/bootstrap':
@@ -99,6 +101,11 @@ def server(store, port=8765):
                         self.send(200, {'cases': housing.cases(), 'requests': housing.requests(), 'token': token})
                     elif path == '/api/public-access':
                         self.send(200, {'cases': public_access.cases(), 'meetings': public_access.meetings(), 'token': token})
+                    elif path == '/api/utilities':
+                        self.send(200, {'assets': utilities.assets(), 'incidents': utilities.incidents(), 'token': token})
+                    elif path == '/api/utilities/report':
+                        query = parse_qs(urlsplit(self.path).query)
+                        self.send(200, utilities.report(query.get('as_of', [None])[0], query.get('area', [None])[0], query.get('utility', [None])[0]))
                     elif path == '/api/public-access/report':
                         query = parse_qs(urlsplit(self.path).query)
                         threshold=query.get('min_notice_hours', [None])[0]
@@ -120,6 +127,17 @@ def server(store, port=8765):
                         self.send(200, permits.report(query.get('as_of', [None])[0], query.get('category', [None])[0]))
                     elif len(parts) == 3 and parts[:2] == ['api', 'sources']:
                         self.send(200, store.source_content(parts[2]))
+                    else:
+                        self.send(404, {'error': 'route not found'})
+                elif parts == ['api', 'utilities', 'assets']:
+                    self.send(201, utilities.create_asset(data))
+                elif parts == ['api', 'utilities', 'incidents']:
+                    self.send(201, utilities.create_incident(data))
+                elif len(parts) == 5 and parts[:3] == ['api', 'utilities', 'incidents']:
+                    if parts[4] == 'events':
+                        self.send(200, utilities.advance(parts[3], data))
+                    elif parts[4] == 'checks':
+                        self.send(200, utilities.verify(parts[3], data))
                     else:
                         self.send(404, {'error': 'route not found'})
                 elif parts == ['api', 'public-access', 'cases']:
