@@ -39,6 +39,7 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 - [Try project 011's synthetic sanitation-service workflow](portfolio/SANITATION-LAB.md)
 - [Try project 012's synthetic transit reliability/accessibility workflow](portfolio/TRANSIT-LAB.md)
 - [Try project 013's synthetic housing referral/follow-up workflow](portfolio/HOUSING-LAB.md)
+- [Try project 014's synthetic records/complaints/meetings workflow](portfolio/PUBLIC-ACCESS-LAB.md)
 - [All 50 proposed implementation plans](portfolio/plans/README.md)
 
 - [Architecture, mission and lifecycle](docs/Architecture/layer-b-overview.md)

@@ -140,6 +140,40 @@ class Store:
                   request_id TEXT NOT NULL REFERENCES housing_requests(id), sequence INTEGER NOT NULL,
                   status TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
                   evidence TEXT NOT NULL, PRIMARY KEY(request_id,sequence));
+                CREATE TABLE IF NOT EXISTS public_cases (
+                  id TEXT PRIMARY KEY, kind TEXT NOT NULL, area TEXT NOT NULL,
+                  generation INTEGER NOT NULL, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS public_case_events (
+                  case_id TEXT NOT NULL REFERENCES public_cases(id), sequence INTEGER NOT NULL,
+                  action TEXT NOT NULL, generation INTEGER NOT NULL, at TEXT NOT NULL,
+                  actor TEXT NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(case_id,sequence));
+                CREATE TABLE IF NOT EXISTS public_deadlines (
+                  case_id TEXT NOT NULL REFERENCES public_cases(id), sequence INTEGER NOT NULL,
+                  at TEXT NOT NULL, due_at TEXT, actor TEXT NOT NULL, evidence TEXT NOT NULL,
+                  PRIMARY KEY(case_id,sequence));
+                CREATE TABLE IF NOT EXISTS public_responses (
+                  case_id TEXT NOT NULL REFERENCES public_cases(id), sequence INTEGER NOT NULL,
+                  generation INTEGER NOT NULL, deadline_sequence INTEGER, at TEXT NOT NULL, sent_at TEXT NOT NULL,
+                  completeness TEXT NOT NULL, response_reference TEXT NOT NULL,
+                  review_route_reference TEXT, restriction_reference TEXT,
+                  actor TEXT NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(case_id,sequence));
+                CREATE TABLE IF NOT EXISTS public_response_checks (
+                  case_id TEXT NOT NULL REFERENCES public_cases(id), sequence INTEGER NOT NULL,
+                  response_sequence INTEGER NOT NULL, at TEXT NOT NULL, verifier TEXT NOT NULL,
+                  passed INTEGER NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(case_id,sequence));
+                CREATE TABLE IF NOT EXISTS public_meetings (
+                  id TEXT PRIMARY KEY, title TEXT NOT NULL, area TEXT NOT NULL,
+                  starts_at TEXT NOT NULL, registered_at TEXT NOT NULL,
+                  actor TEXT NOT NULL, evidence TEXT NOT NULL, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS public_notices (
+                  meeting_id TEXT NOT NULL REFERENCES public_meetings(id), sequence INTEGER NOT NULL,
+                  at TEXT NOT NULL, published_at TEXT NOT NULL, accessibility TEXT NOT NULL,
+                  participation_reference TEXT, agenda_reference TEXT, actor TEXT NOT NULL,
+                  evidence TEXT NOT NULL, PRIMARY KEY(meeting_id,sequence));
+                CREATE TABLE IF NOT EXISTS public_notice_checks (
+                  meeting_id TEXT NOT NULL REFERENCES public_meetings(id), sequence INTEGER NOT NULL,
+                  notice_sequence INTEGER NOT NULL, at TEXT NOT NULL, verifier TEXT NOT NULL,
+                  passed INTEGER NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(meeting_id,sequence));
             ''')
             register = json.loads((ROOT / 'portfolio/project-register.json').read_text())
             plans = build()[1]
@@ -256,6 +290,13 @@ class Store:
                         'checks': [dict(r) for r in db.execute('SELECT * FROM housing_checks ORDER BY case_id,sequence')],
                         'requests': [dict(r) for r in db.execute('SELECT * FROM housing_requests ORDER BY id')],
                         'request_events': [dict(r) for r in db.execute('SELECT * FROM housing_request_events ORDER BY request_id,sequence')]},
+                    'synthetic_public_access': {
+                        name: [dict(r) for r in db.execute('SELECT * FROM '+table+' ORDER BY '+order)]
+                        for name,table,order in [
+                            ('cases','public_cases','id'),('case_events','public_case_events','case_id,sequence'),
+                            ('deadlines','public_deadlines','case_id,sequence'),('responses','public_responses','case_id,sequence'),
+                            ('response_checks','public_response_checks','case_id,sequence'),('meetings','public_meetings','id'),
+                            ('notices','public_notices','meeting_id,sequence'),('notice_checks','public_notice_checks','meeting_id,sequence')]},
                     'notice': 'Local user assertions; completion does not authorize public-service execution.'}
 
     def update(self, identifier, data):
