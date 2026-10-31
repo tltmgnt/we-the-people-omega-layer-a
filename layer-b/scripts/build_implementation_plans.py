@@ -48,7 +48,10 @@ def main():
         lines = [f'# {identifier} — {title}', '', plan['basis'], '', '## Proposed outcome', '', plan['outcome'], '', '## Input records', '', plan['records'], '', '## Measurement and counter-metric', '', plan['metric'], '', '## Safeguard', '', plan['safeguard'], '', '## Implementation and acceptance', '']
         for step in plan['steps']:
             lines += [f"### {step['title']}", '', step['deliverable'], '', '**Acceptance:** '+step['acceptance'], '']
-        lines += ['## Source', '', p['source_url'] or 'No assigned source. Confirm the source and project definition before implementation.', '', '## Current delivery state', '', 'Proposed plan only. No source import, project-specific executable workflow, completed tests, reviewer approval or institutional adoption is claimed.', '']
+        state = 'Proposed plan only. No source import, project-specific executable workflow, completed tests, reviewer approval or institutional adoption is claimed.'
+        if identifier == '009':
+            state = 'A [synthetic permit lifecycle and measurement prototype](../PERMIT-LAB.md) is implemented with automated tests. It is based on the supplied starter scenario. The linked full source document, real program scope, qualified acceptance and live institutional adoption remain outstanding; this project is not marked complete.'
+        lines += ['## Source', '', p['source_url'] or 'No assigned source. Confirm the source and project definition before implementation.', '', '## Current delivery state', '', state, '']
         (directory / f'{identifier}.md').write_text('\n'.join(lines))
     (directory / 'README.md').write_text('\n'.join(index)+'\n')
 

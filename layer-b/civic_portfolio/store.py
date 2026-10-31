@@ -49,6 +49,17 @@ class Store:
                   sequence INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT NOT NULL,
                   actor TEXT NOT NULL, action TEXT NOT NULL, target TEXT NOT NULL,
                   detail TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS permit_cases (
+                  id TEXT PRIMARY KEY, category TEXT NOT NULL, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS permit_events (
+                  case_id TEXT NOT NULL REFERENCES permit_cases(id), sequence INTEGER NOT NULL,
+                  stage TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
+                  evidence TEXT NOT NULL, staff_hours REAL, public_hours REAL,
+                  PRIMARY KEY(case_id,sequence));
+                CREATE TABLE IF NOT EXISTS permit_quality (
+                  case_id TEXT NOT NULL REFERENCES permit_cases(id), sequence INTEGER NOT NULL,
+                  at TEXT NOT NULL, reviewer TEXT NOT NULL, passed INTEGER NOT NULL,
+                  evidence TEXT NOT NULL, PRIMARY KEY(case_id,sequence));
             ''')
             register = json.loads((ROOT / 'portfolio/project-register.json').read_text())
             plans = build()[1]
@@ -136,6 +147,10 @@ class Store:
                     'sources': self.sources(db), 'snapshots': [dict(r) for r in db.execute(
                         'SELECT * FROM snapshots ORDER BY source_id, revision')],
                     'audit': [dict(r) for r in db.execute('SELECT * FROM audit ORDER BY sequence')],
+                    'synthetic_permits': {
+                        'cases': [dict(r) for r in db.execute('SELECT * FROM permit_cases ORDER BY id')],
+                        'events': [dict(r) for r in db.execute('SELECT * FROM permit_events ORDER BY case_id,sequence')],
+                        'quality': [dict(r) for r in db.execute('SELECT * FROM permit_quality ORDER BY case_id,sequence')]},
                     'notice': 'Local user assertions; completion does not authorize public-service execution.'}
 
     def update(self, identifier, data):

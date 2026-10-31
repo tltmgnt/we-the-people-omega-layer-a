@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Implement project 009's synthetic permit lifecycle with append-only stage histories, correction loops, version-checked writes, quality reviews, persisted exports/backups and cutoff/category-based time/effort reports. Preserve the original blocked permit packet and do not claim live permit authority or completed project acceptance.
+- Add seven permit integration tests and extend browser CI through a complete fictional decision and quality-review workflow.
+
 - Add a local SQLite-backed portfolio application for all 50 entries, versioned source-text imports and review, project definitions, delivery evidence, exports and tested backups.
 - Add 50 proposed implementation plans with outcomes, input records, measures, safeguards and acceptance criteria; retain unresolved definitions and distinguish proposals from unread source content.
 - Add application integration tests for persistence, source/scope invalidation, completion gates, concurrent edits and local HTTP boundaries. Full source contents and project-specific domain services remain outstanding.
