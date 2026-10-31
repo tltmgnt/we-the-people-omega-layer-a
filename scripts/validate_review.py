@@ -9,8 +9,25 @@ from jsonschema import Draft202012Validator, FormatChecker
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def load_json(text):
+    """Reject ambiguous objects and numeric constants outside the JSON standard."""
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError(f"duplicate JSON key: {key}")
+            result[key] = value
+        return result
+
+    def invalid_constant(value):
+        raise ValueError(f"invalid JSON numeric constant: {value}")
+
+    return json.loads(text, object_pairs_hook=unique_object,
+                      parse_constant=invalid_constant)
+
+
 def validator():
-    schema = json.loads((ROOT / "schemas/review-record.schema.json").read_text())
+    schema = load_json((ROOT / "schemas/review-record.schema.json").read_text())
     Draft202012Validator.check_schema(schema)
     return Draft202012Validator(schema, format_checker=FormatChecker())
 
@@ -26,7 +43,7 @@ def main(argv=None):
     blocked = False
     for path in args.records:
         try:
-            record = json.loads(path.read_text(encoding="utf-8"))
+            record = load_json(path.read_text(encoding="utf-8"))
         except (OSError, ValueError) as exc:
             print(f"{path}: INVALID: {exc}", file=sys.stderr)
             invalid = True

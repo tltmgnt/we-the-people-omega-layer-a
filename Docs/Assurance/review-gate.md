@@ -14,6 +14,8 @@ Source references must resolve in the accompanying review materials and include 
 dates and applicability; the validator checks strings, not the truth or sufficiency of sources.
 Empty authority and evidence arrays are permitted during intake so uncertainty is explicit.
 Unknown fields, blank strings, invalid types and unsupported versions or statuses fail validation.
+Duplicate JSON object keys at any depth and nonstandard NaN/Infinity constants are rejected
+before schema validation; input must be unambiguous JSON.
 
 All entries in unresolved_questions, conditions and jurisdictional_limitations are
 treated as blockers for readiness. Record resolved matters and nonblocking scope

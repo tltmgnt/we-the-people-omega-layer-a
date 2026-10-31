@@ -1,13 +1,12 @@
 """Validate a proposed synthetic exchange and its pinned local references."""
 import argparse
 import hashlib
-import json
 from pathlib import Path
 import sys
 
 from jsonschema import Draft202012Validator
 
-from scripts.validate_review import ROOT, validator as review_validator
+from scripts.validate_review import ROOT, load_json, validator as review_validator
 
 
 class ExchangeError(ValueError):
@@ -25,11 +24,11 @@ def read_pinned(reference, root):
     raw = path.read_bytes()
     if hashlib.sha256(raw).hexdigest() != reference["sha256"]:
         raise ExchangeError(f"pinned content changed: {reference['path']}")
-    return json.loads(raw)
+    return load_json(raw.decode("utf-8"))
 
 
 def check_exchange(exchange, root=ROOT):
-    schema = json.loads((ROOT / "schemas/cross-layer-exchange.schema.json").read_text())
+    schema = load_json((ROOT / "schemas/cross-layer-exchange.schema.json").read_text())
     Draft202012Validator.check_schema(schema)
     errors = list(Draft202012Validator(schema).iter_errors(exchange))
     if errors:
@@ -77,7 +76,7 @@ def main(argv=None):
                         help="exit 2 for this deliberately blocked synthetic exchange")
     args = parser.parse_args(argv)
     try:
-        exchange = json.loads(args.exchange.read_text(encoding="utf-8"))
+        exchange = load_json(args.exchange.read_text(encoding="utf-8"))
         status = check_exchange(exchange)
     except (OSError, ValueError) as exc:
         print(f"INVALID EXCHANGE: {exc}", file=sys.stderr)
