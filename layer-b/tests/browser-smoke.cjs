@@ -358,8 +358,120 @@ const path = require('node:path');
     await page.getByRole('heading',{name:'SYN-HOUSING-UI',exact:true}).waitFor();
     await page.locator('#detail > p').filter({hasText:'CLOSED_NO_SERVICE ·'}).waitFor();
     await page.locator('#requests summary').filter({hasText:'SYN-REVIEW-UI · OPEN'}).waitFor();
+    await page.goto(url+'/public-access');
+    await page.getByText('No fictional requests or complaints. No baseline is assumed.',{exact:true}).waitFor();
+    await page.locator('#actor').fill('SYNTHETIC RECORDER');
+    await page.locator('#asof').fill('2026-01-02T12:00:00Z');
+    async function publicCase(id,kind,due=''){
+      await page.locator('#case-id').fill(id);
+      await page.locator('#case-kind').selectOption(kind);
+      await page.locator('#case-area').fill('Demo area');
+      await page.locator('#case-at').fill('2026-01-01T00:00:00Z');
+      await page.locator('#case-due').fill(due);
+      await page.locator('#case-evidence').fill('Synthetic receipt and externally stated date');
+      await page.getByRole('button',{name:'Receive synthetic case',exact:true}).click();
+      await page.getByRole('heading',{name:id,exact:true}).waitFor();
+    }
+    async function publicResponse(at,completeness){
+      await page.getByLabel('Response record/revision timestamp',{exact:true}).fill(at);
+      await page.getByLabel('Fictional response sent timestamp',{exact:true}).fill(at);
+      await page.getByLabel('Response scope completeness',{exact:true}).selectOption(completeness);
+      await page.getByLabel('Fictional response reference',{exact:true}).fill('Synthetic response label');
+      await page.getByLabel('Fictional review-route reference (optional)',{exact:true}).fill('Synthetic review-route label');
+      await page.getByLabel('Fictional restriction/scope reference (optional)',{exact:true}).fill('Synthetic scope note');
+      await page.getByLabel('Response scope and correction evidence',{exact:true}).fill('Synthetic response record '+at);
+      await page.getByRole('button',{name:'Record fictional response',exact:true}).click();
+      await page.locator('#detail li').filter({hasText:'Synthetic response record '+at}).waitFor();
+    }
+    async function publicResponseCheck(at){
+      await page.getByLabel('Distinct response verifier identifier',{exact:true}).fill('SYNTHETIC VERIFIER');
+      await page.getByLabel('Response verification timestamp',{exact:true}).fill(at);
+      await page.getByLabel('Response verification and scope evidence',{exact:true}).fill('Synthetic response check '+at);
+      await page.getByRole('button',{name:'Verify current response',exact:true}).click();
+      await page.locator('#detail li').filter({hasText:'Synthetic response check '+at}).waitFor();
+    }
+    async function publicAction(action,at,failure=false){
+      const previous=await page.locator('#detail > ol').first().locator('li').count();
+      await page.getByLabel('Records case action',{exact:true}).selectOption(action);
+      await page.getByLabel('Records case action timestamp',{exact:true}).fill(at);
+      await page.getByLabel('Handoff, closure or reopening evidence',{exact:true}).fill('Synthetic '+action+' rationale');
+      await page.getByRole('button',{name:'Record records-case action',exact:true}).click();
+      if(!failure)await page.waitForFunction(n=>document.querySelector('#detail > ol').children.length===n+1,previous);
+    }
+    await publicCase('SYN-RECORDS-UI','RECORDS_REQUEST','2026-01-01T06:00:00Z');
+    await publicResponse('2026-01-01T04:00:00Z','PARTIAL');
+    await publicResponseCheck('2026-01-01T05:00:00Z');
+    await publicAction('CLOSED','2026-01-01T05:30:00Z',true);
+    await page.locator('#message').filter({hasText:'closure requires a checked COMPLETE response'}).waitFor();
+    await publicResponse('2026-01-01T07:00:00Z','COMPLETE');
+    await publicResponseCheck('2026-01-01T08:00:00Z');
+    await publicAction('CLOSED','2026-01-01T08:30:00Z');
+    await page.getByLabel('Deadline-assertion record timestamp',{exact:true}).fill('2026-01-01T09:00:00Z');
+    await page.locator('#detail').getByLabel('Externally stated due timestamp (blank = unknown)',{exact:true}).fill('2026-01-01T10:00:00Z');
+    await page.getByLabel('Deadline assertion source and rationale',{exact:true}).fill('Synthetic later due assertion');
+    await page.getByRole('button',{name:'Record external deadline',exact:true}).click();
+    await page.locator('#detail li').filter({hasText:'Synthetic later due assertion'}).waitFor();
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).requests.responses_assessed_against_recorded_due===1);
+    if(JSON.parse(await page.locator('#report-data').textContent()).requests.responses_meeting_recorded_due!==0)throw Error('Later deadline rewrote earlier response');
+    await publicAction('REOPENED','2026-01-01T09:00:00Z');
+    await publicAction('CLOSED','2026-01-01T09:00:00Z',true);
+    await page.locator('#message').filter({hasText:'closure requires a checked COMPLETE response'}).waitFor();
+    await publicAction('HANDOFF','2026-01-01T09:30:00Z');
+    await publicResponse('2026-01-01T10:00:00Z','COMPLETE');
+    await publicResponseCheck('2026-01-01T11:00:00Z');
+    await publicAction('CLOSED','2026-01-01T11:30:00Z');
+    await publicCase('SYN-COMPLAINT-UI','COMPLAINT');
+    await page.locator('#meeting-id').fill('SYN-MEETING-UI');
+    await page.locator('#meeting-title').fill('Fictional public meeting');
+    await page.locator('#meeting-area').fill('Demo area');
+    await page.locator('#meeting-at').fill('2026-01-01T00:00:00Z');
+    await page.locator('#meeting-start').fill('2026-01-02T12:00:00Z');
+    await page.locator('#meeting-evidence').fill('Synthetic meeting schedule');
+    await page.getByRole('button',{name:'Schedule synthetic meeting',exact:true}).click();
+    const meetingPanel=page.locator('#meetings details');
+    await meetingPanel.locator('summary').filter({hasText:'SYN-MEETING-UI'}).waitFor();
+    async function publicNotice(at,published,access){
+      await meetingPanel.locator('summary').click();
+      await meetingPanel.getByLabel('Notice record/revision timestamp',{exact:true}).fill(at);
+      await meetingPanel.getByLabel('Fictional notice publication timestamp',{exact:true}).fill(published);
+      await meetingPanel.getByLabel('Participation-access assertion',{exact:true}).selectOption(access);
+      if(access==='AVAILABLE'){
+        await meetingPanel.getByLabel('Fictional participation reference (optional)',{exact:true}).fill('Synthetic accessible participation label');
+        await meetingPanel.getByLabel('Fictional agenda reference (optional)',{exact:true}).fill('Synthetic agenda label');
+      }
+      await meetingPanel.getByLabel('Notice and participation evidence',{exact:true}).fill('Synthetic notice '+at);
+      await meetingPanel.getByRole('button',{name:'Record fictional notice',exact:true}).click();
+      await meetingPanel.locator('li').filter({hasText:'Synthetic notice '+at}).waitFor({state:'attached'});
+    }
+    async function publicNoticeCheck(at){
+      await meetingPanel.locator('summary').click();
+      await meetingPanel.getByLabel('Distinct notice verifier identifier',{exact:true}).fill('SYNTHETIC VERIFIER');
+      await meetingPanel.getByLabel('Notice verification timestamp',{exact:true}).fill(at);
+      await meetingPanel.getByLabel('Notice verification evidence',{exact:true}).fill('Synthetic notice check '+at);
+      await meetingPanel.getByRole('button',{name:'Verify current notice',exact:true}).click();
+      await meetingPanel.locator('li').filter({hasText:'Synthetic notice check '+at}).waitFor({state:'attached'});
+    }
+    await publicNotice('2026-01-01T12:00:00Z','2026-01-01T12:00:00Z','INCOMPLETE');
+    await publicNoticeCheck('2026-01-01T13:00:00Z');
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).meeting_notices.checked_notices===1);
+    let publicReport=JSON.parse(await page.locator('#report-data').textContent());
+    if(publicReport.notice_threshold_rate!==null||publicReport.notice_lead_hours.median!==24||publicReport.meeting_notices.incomplete_or_unknown_participation!==1)throw Error('Notice threshold/access report mismatch');
+    await page.locator('#notice-threshold').fill('24');
+    await publicNotice('2026-01-01T14:00:00Z','2026-01-01T11:00:00Z','AVAILABLE');
+    await publicNoticeCheck('2026-01-01T15:00:00Z');
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).meeting_notices.available_participation_assertions===1);
+    publicReport=JSON.parse(await page.locator('#report-data').textContent());
+    if(publicReport.latest_complete_response_hours.median!==10||publicReport.requests.unknown_current_due_dates!==1||publicReport.notice_lead_hours.median!==25||publicReport.notice_threshold_rate!==1)throw Error('Public access response/notice report mismatch');
+    await page.screenshot({path:'.local/portfolio-public-access-mobile.png'});
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Public access mobile overflow');
+    await page.reload();
+    await page.getByRole('heading',{name:'SYN-COMPLAINT-UI',exact:true}).waitFor();
+    await page.locator('#meetings summary').filter({hasText:'SYN-MEETING-UI'}).waitFor();
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: portfolio and five domain labs, verification/consent safeguards, reports, persistence and mobile layout');
+    console.log('PASS: portfolio and six domain labs, verification/consent/completeness safeguards, reports, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){

@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Implement project 014's synthetic records/complaint workflow with response-scope checks, immutable deadline-assertion capture, non-resetting handoff/reopening clocks and current-cycle closure evidence; add meeting-notice revision/access checks with optional supplied lead-time comparisons.
+- Add seven public-access integration tests and expand browser CI through partial-scope rejection, deadline changes, reopening, complaints, meeting notices, fresh checks, persistence and mobile layout. Keep source, legal-rule and qualified-acceptance gaps explicit.
+
 - Implement project 013's synthetic consent-assertion, referral/handoff, service-start/follow-up and interruption workflow with event-specific checks, non-resetting referral clocks and independent review-request response/reopening history.
 - Add seven housing tests and extend browser CI through consent holds, verified service/follow-up, withdrawal, interruption, closure, review requests, persistence and mobile layout. Preserve unread source, actual consent/eligibility requirements and qualified acceptance gaps.
 

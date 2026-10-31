@@ -14,6 +14,8 @@ The [synthetic transit lab for project 012](TRANSIT-LAB.md), at `/transit`, reco
 
 The [synthetic housing referral lab for project 013](HOUSING-LAB.md), at `/housing`, records consent assertions, referral/handoff stages, verified starts and follow-up, interruptions and review-request responses. No client-level identity fields, actual referrals, benefit decisions or outreach are provided.
 
+The [synthetic records and meetings lab for project 014](PUBLIC-ACCESS-LAB.md), at `/public-access`, tracks request/complaint scope, captured external due assertions, handoffs/reopening and checked meeting-notice/access references. It calculates no legal deadlines and sends or publishes no requests, responses or notices.
+
 The [50 individual plans](plans/README.md) define proposed outcomes, input records, measurement and counter-metrics, safeguards, eight delivery steps and acceptance criteria. Plans 001–006 retain unresolved titles and source mapping. Plans 007–050 use the supplied titles and explicitly labeled editorial proposals. None is represented as a transcription of the linked document or a completed domain service.
 
 ## Run locally
@@ -52,7 +54,7 @@ Each plan requires source review, confirmed scope, a data contract, baseline/cou
 
 A project reports `COMPLETE_AS_RECORDED` only when it has a title, accountable owner, confirmed scope, an imported and reviewed current source, and completion evidence for all eight steps. Unknown source data and unperformed work remain open. The application never grants execution authorization, and the original packet validator continues to enforce the Layer A hold.
 
-**Outstanding project-specific work:** import and review the real source documents; confirm 001–006; replace or accept the proposed requirements; implement and test each confirmed domain workflow beyond the bounded project 009–013 simulations; obtain qualified acceptance and resolve licensing. This shared delivery application and synthetic labs are not substitutes for those 50 accepted domain implementations.
+**Outstanding project-specific work:** import and review the real source documents; confirm 001–006; replace or accept the proposed requirements; implement and test each confirmed domain workflow beyond the bounded project 009–014 simulations; obtain qualified acceptance and resolve licensing. This shared delivery application and synthetic labs are not substitutes for those 50 accepted domain implementations.
 
 ## Export, backup and restore
 
