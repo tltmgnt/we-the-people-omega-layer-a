@@ -7,7 +7,7 @@ This working local workspace implements the supplied **portfolio-level governanc
 - [Overview provenance and content hash](sources/initiative-provenance.json)
 - [Existing delivery workspace and source-import instructions](APPLICATION.md)
 
-The four foundational links remain unassigned. Titles/scopes for 001–004 need exact mapping, and 005–006 are explicitly unfinished. Project 007 has no supplied document URL. A URL is not a readable source snapshot. The linked documents were not fetched or transcribed by this implementation; Project 023 separately has full user-supplied text. Existing synthetic domain prototypes are 009–020 and 023. The other 37 workstreams do not have dedicated domain prototypes.
+The four foundational links remain unassigned. Titles/scopes for 001–004 need exact mapping, and 005–006 are explicitly unfinished. Project 007 has no supplied document URL. A URL is not a readable source snapshot. The linked documents were not fetched or transcribed by this implementation; Project 023 separately has full user-supplied text. Existing synthetic domain prototypes are 009–021 and 023. The other 36 workstreams do not have dedicated domain prototypes.
 
 ## Run
 
@@ -54,7 +54,7 @@ Before stages after framework review, each scoped project needs a title, account
 
 Safeguards are authority; rights/accessibility; privacy/security; human accountability; independent challenge; transparency/correction; jurisdiction/Tribal sovereignty; service continuity. Completion here is a local evidence assertion, not an independent assessment of those protections. Original Layer A/legal review remains required even when every synthetic gate passes.
 
-Counts are an inventory, not a performance score: exactly 50 registered workstreams; thirteen delivered synthetic domain prototypes; missing project source count depends on the local workspace's imports. They do not measure implementation quality, institutional adoption or causal improvements. Readiness is a list of explicit blockers, not an invented numerical/composite ranking. The collaboration report describes current context; append-only event snapshots preserve old contexts but no historical-report cutoff is implemented.
+Counts are an inventory, not a performance score: exactly 50 registered workstreams; fourteen delivered synthetic domain prototypes; missing project source count depends on the local workspace's imports. They do not measure implementation quality, institutional adoption or causal improvements. Readiness is a list of explicit blockers, not an invented numerical/composite ranking. The collaboration report describes current context; append-only event snapshots preserve old contexts but no historical-report cutoff is implemented.
 
 ## API and handoff
 

@@ -39,6 +39,17 @@ EDUCATION_STAGES={
     'CONTINUITY_REVIEW':{'CLOSED','INTERRUPTED','WITHDRAWN'},
     'CLOSED':set(),'WITHDRAWN':set(),
 }
+HEALTH_STAGES={
+    'REQUEST_RECORDED':{'CONSENT_RECORDED','DECLINED'},
+    'CONSENT_RECORDED':{'REFERRAL_RECORDED','CONSENT_WITHDRAWN','DECLINED'},
+    'REFERRAL_RECORDED':{'WAITING','CONSENT_WITHDRAWN','DECLINED'},
+    'WAITING':{'SERVICE_STARTED','REFERRAL_RECORDED','CONSENT_WITHDRAWN','DECLINED'},
+    'SERVICE_STARTED':{'FOLLOW_UP_RECORDED','INTERRUPTED','CONSENT_WITHDRAWN'},
+    'INTERRUPTED':{'REFERRAL_RECORDED','CONSENT_WITHDRAWN','DECLINED'},
+    'FOLLOW_UP_RECORDED':{'CONTINUITY_REVIEW','INTERRUPTED','CONSENT_WITHDRAWN'},
+    'CONTINUITY_REVIEW':{'CLOSED','INTERRUPTED','CONSENT_WITHDRAWN'},
+    'CLOSED':set(),'DECLINED':set(),'CONSENT_WITHDRAWN':set(),
+}
 WORKFLOWS={
     'permit':dict(label='Project 009 — fictional permit',initial='RECEIVED',stages=STAGES,
                   terminal=TERMINAL,review_stages={'DECIDED'},completion='DECIDED',correction='AWAITING_CORRECTION'),
@@ -47,6 +58,10 @@ WORKFLOWS={
     'education':dict(label='Project 020 — fictional education-service access and continuity',initial='REQUEST_RECORDED',stages=EDUCATION_STAGES,
                   terminal={'CLOSED','WITHDRAWN'},review_stages={'CONTINUITY_REVIEW'},completion='CLOSED',correction='INTERRUPTED',
                   gate_anchors=['SERVICE_STARTED','FOLLOW_UP_RECORDED'],gate_label='continuity',gate_error='continuity requires a checker distinct from the current service/follow-up recorders'),
+    'health':dict(label='Project 021 — fictional health-service referral and continuity',initial='REQUEST_RECORDED',stages=HEALTH_STAGES,
+                  terminal={'CLOSED','DECLINED','CONSENT_WITHDRAWN'},review_stages={'CONTINUITY_REVIEW'},completion='CLOSED',correction='INTERRUPTED',
+                  gate_anchors=['SERVICE_STARTED','FOLLOW_UP_RECORDED'],gate_label='health-service continuity',
+                  gate_error='continuity requires a checker distinct from the current health-service/follow-up recorders'),
 }
 
 def configuration(workflow):
@@ -224,8 +239,12 @@ class Scenarios:
                     clock_minutes=state['clock_minutes'],decision_elapsed_minutes=last['minute'] if state['stage']=='DECIDED' else None,
                     open_age_minutes=None if terminal else state['clock_minutes'],stage_minutes=durations,
                     correction_cycles=sum(p['stage']==config['correction'] for p in state['path']),
-                    service_interruptions=sum(p['stage']=='INTERRUPTED' for p in state['path']) if workflow=='education' else None,
-                    service_start_elapsed_minutes=next((p['minute'] for p in state['path'] if p['stage']=='SERVICE_STARTED'),None) if workflow=='education' else None,
+                    service_interruptions=sum(p['stage']=='INTERRUPTED' for p in state['path']) if workflow in {'education','health'} else None,
+                    service_start_elapsed_minutes=next((p['minute'] for p in state['path'] if p['stage']=='SERVICE_STARTED'),None) if workflow in {'education','health'} else None,
                     learning_outcomes_assessed=False if workflow=='education' else None,
+                    clinical_outcomes_assessed=False if workflow=='health' else None,
+                    referral_wait_minutes=durations.get('WAITING',0) if workflow=='health' else None,
+                    repeat_referrals=max(0,sum(p['stage']=='REFERRAL_RECORDED' for p in state['path'])-1) if workflow=='health' else None,
+                    consent_status=('WITHDRAWAL_RECORDED' if state['stage']=='CONSENT_WITHDRAWN' else 'ASSERTED_ONLY' if any(p['stage']=='CONSENT_RECORDED' for p in state['path']) else 'NOT_RECORDED') if workflow=='health' else None,
                     history_events=len(run['history']),execution_authorized=False,legal_review='REQUIRED',
-                    method='Manual deterministic scenario clock; no background automation. TICK advances fictional time even while paused/stopped or terminal. PAUSE/STOP freeze workflow transitions until RESUME, not the manual clock. PRESET replays a shortest valid path at 60 minutes per edge; RESTORE copies a prior snapshot into a new append-only event. Neither deletes history. Quality outcomes and preset reviews are fictional assertions. Procurement and education closure require a distinct-recorder check pinned to the current path revision; changed delivery, follow-up, interruptions or corrections invalidate it. Education check identifiers must differ from both current service and follow-up recorders. No learning, eligibility or ranking inference is made. CLOSED presets include an explicit fictional check. This isolated controller does not issue awards, payments, permit approvals, project/source completion, government actions or Layer A holds.')
+                    method='Manual deterministic scenario clock; no background automation. TICK advances fictional time even while paused/stopped or terminal. PAUSE/STOP freeze workflow transitions until RESUME, not the manual clock. PRESET replays a shortest valid path at 60 minutes per edge; RESTORE copies a prior snapshot into a new append-only event. Neither deletes history. Quality outcomes and preset reviews are fictional assertions. Procurement, education and health-referral closure require a distinct-recorder check pinned to the current path revision; changed delivery, follow-up, interruptions or corrections invalidate it. Education and health-referral check identifiers must differ from both current service and follow-up recorders. Health consent records are fictional assertions; no clinical outcomes, triage, diagnosis or actual referrals are assessed or performed. No learning, eligibility or ranking inference is made. CLOSED presets include an explicit fictional check. This isolated controller does not issue awards, payments, permit approvals, project/source completion, government actions or Layer A holds.')

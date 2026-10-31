@@ -957,6 +957,45 @@ const path = require('node:path');
     await page.reload();await page.locator('#run').selectOption('SYN-EDUCATION-DEMO');
     await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "WITHDRAWN"')&&!document.querySelector('#refresh').disabled);
     await page.screenshot({path:'.local/portfolio-education-mobile.png'});
+    await page.locator('#workflow').selectOption('health');
+    await page.locator('#actor').fill('REFERRAL OPERATOR');
+    await page.locator('#note').fill('Fictional referral exercise; no patient information');
+    await page.locator('#run-id').fill('SYN-HEALTH-DEMO');
+    await page.getByRole('button',{name:'Create scenario',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('#run').value==='SYN-HEALTH-DEMO'&&!document.querySelector('#pause').disabled);
+    for(const stage of ['CONSENT_RECORDED','REFERRAL_RECORDED','WAITING','SERVICE_STARTED','FOLLOW_UP_RECORDED','CONTINUITY_REVIEW']){
+      await page.locator('#next').selectOption(stage);await scenarioClick('step');
+    }
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Health closure allowed before continuity check');
+    await page.locator('#pass').click();
+    await page.getByText('continuity requires a checker distinct from the current health-service/follow-up recorders',{exact:true}).waitFor();
+    await page.locator('#actor').fill('REFERRAL CHECKER');await scenarioClick('fail');
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Failed health continuity permits closure');
+    await scenarioClick('pass');
+    const healthCheckpoint=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#actor').fill('REFERRAL OPERATOR');
+    for(const stage of ['INTERRUPTED','REFERRAL_RECORDED','WAITING','SERVICE_STARTED','FOLLOW_UP_RECORDED','CONTINUITY_REVIEW']){
+      await page.locator('#next').selectOption(stage);await scenarioClick('step');
+    }
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Health referral reused stale continuity check');
+    await page.locator('#actor').fill('REFERRAL CHECKER');await scenarioClick('pass');
+    await page.locator('#next').selectOption('CLOSED');await scenarioClick('step');
+    let healthReport=JSON.parse(await page.locator('#report').textContent());
+    if(healthReport.workflow!=='health'||healthReport.service_interruptions!==1||healthReport.repeat_referrals!==1||healthReport.clinical_outcomes_assessed||healthReport.execution_authorized)throw Error('Health diagnostic/clinical boundary failed');
+    const beforeHealthRestore=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#snapshot').selectOption(String(healthCheckpoint));await page.locator('#restore').click();
+    await page.waitForFunction(n=>JSON.parse(document.querySelector('#snapshot-data').textContent).sequence===n&&!document.querySelector('#refresh').disabled,beforeHealthRestore+1);
+    await page.locator('#next').selectOption('CONSENT_WITHDRAWN');await scenarioClick('step');
+    if(!(await page.locator('#step').isDisabled()))throw Error('Withdrawn consent scenario can continue workflow');
+    for(const stage of ['REQUEST_RECORDED','CONSENT_RECORDED','REFERRAL_RECORDED','WAITING','SERVICE_STARTED','INTERRUPTED','FOLLOW_UP_RECORDED','CONTINUITY_REVIEW','CLOSED','DECLINED','CONSENT_WITHDRAWN']){
+      await page.locator('#preset-stage').selectOption(stage);await scenarioClick('preset');
+      healthReport=JSON.parse(await page.locator('#report').textContent());
+      if(healthReport.stage!==stage||healthReport.execution_authorized||healthReport.clinical_outcomes_assessed)throw Error('Health preset failed: '+stage);
+      if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Health mobile overflow: '+stage);
+    }
+    await page.reload();await page.locator('#run').selectOption('SYN-HEALTH-DEMO');
+    await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "CONSENT_WITHDRAWN"')&&!document.querySelector('#refresh').disabled);
+    await page.screenshot({path:'.local/portfolio-health-mobile.png'});
     if(errors.length)throw Error(errors.join('; '));
     console.log('PASS: portfolio and eleven domain labs, connected initiative and scenario controls, evidence/hold safeguards, reports, persistence and mobile layout');
   } catch(error) {

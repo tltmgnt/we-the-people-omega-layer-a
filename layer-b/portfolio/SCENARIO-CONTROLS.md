@@ -82,3 +82,7 @@ The console now also supports a [procurement and contract-delivery use case](PRO
 ## Additional workflow: Project 020
 
 The [education-service use case](EDUCATION-LAB.md) adds nine states for access, offers, service, follow-up, interruptions and withdrawal. Current continuity checks require an identifier distinct from both current service-start and follow-up recorders. Changed service/follow-up invalidates checks. All shared controls, historical snapshots and fixed holds apply. No learning assessment or student decisions are performed.
+
+## Additional workflow: Project 021
+
+The [fictional health-referral use case](HEALTH-LAB.md) adds eleven states for consent assertions, referrals/waiting, service/follow-up, interruption, decline and consent withdrawal. A separate current-revision continuity check is required before closure. Restore reproduces a fictional branch; it never renews real consent or authorizes any service. No clinical decisions or outcomes are assessed.

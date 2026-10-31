@@ -33,6 +33,8 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 
 ## Start here
 
+- [Control project 021 fictional health-service referrals and continuity](portfolio/HEALTH-LAB.md)
+
 - [Control project 020 education-service access and continuity](portfolio/EDUCATION-LAB.md)
 
 - [Control project 019 procurement and contract-delivery scenarios](portfolio/PROCUREMENT-LAB.md)

@@ -2,6 +2,10 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Add Project 021 controllable fictional health-service referrals: eleven states, consent assertion/withdrawal, handoffs/waiting, interruptions, current service/follow-up checks, decline, presets and snapshot restore. Add explicit nonclinical and consent-assertion diagnostics.
+- Add nine health-referral tests and browser coverage for check holds, interrupted referral cycles, withdrawal, all states, restore, persistence and mobile layout. Source/consent/privacy/clinical/legal and institutional review remain outstanding.
+
+
 - Add Project 020 controllable education-service access/continuity scenario, nine states, distinct service/follow-up checker, interruption invalidation, withdrawal, checked closure presets and snapshot restoration. Generalize guarded checks while preserving permit/procurement behavior.
 - Add eight education tests and browser coverage for continuity holds, interruptions, all states, restore, persistence and mobile layout. No learning outcomes, eligibility decisions or rankings are inferred; actual source and institutional review remain pending.
 
