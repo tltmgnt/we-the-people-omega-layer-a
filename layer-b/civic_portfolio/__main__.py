@@ -9,6 +9,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from .store import Conflict, MAX_TEXT, Store
 from .permits import Permits
+from .maintenance import Maintenance
 
 STATIC = Path(__file__).parent / 'static'
 
@@ -30,6 +31,7 @@ def strict_json(raw):
 def server(store, port=8765):
     token = secrets.token_urlsafe(32)
     permits = Permits(store)
+    maintenance = Maintenance(store)
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
@@ -68,8 +70,8 @@ def server(store, port=8765):
                 parts = urlsplit(self.path).path.strip('/').split('/')
                 if not mutation:
                     path = urlsplit(self.path).path
-                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js']:
-                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js'}[path]
+                    if path in ['/', '/app.js', '/style.css', '/permits', '/permits.js', '/maintenance', '/maintenance.js']:
+                        name = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css', '/permits': 'permits.html', '/permits.js': 'permits.js', '/maintenance': 'maintenance.html', '/maintenance.js': 'maintenance.js'}[path]
                         kind = 'text/html' if name.endswith('.html') else 'text/javascript' if name.endswith('.js') else 'text/css'
                         self.send(200, (STATIC / name).read_bytes(), kind + '; charset=utf-8')
                     elif path == '/api/bootstrap':
@@ -79,11 +81,27 @@ def server(store, port=8765):
                         self.send(200, store.export())
                     elif path == '/api/permits':
                         self.send(200, {'cases': permits.cases(), 'token': token})
+                    elif path == '/api/maintenance':
+                        self.send(200, {'assets': maintenance.assets(), 'orders': maintenance.orders(), 'token': token})
+                    elif path == '/api/maintenance/report':
+                        query = parse_qs(urlsplit(self.path).query)
+                        self.send(200, maintenance.report(query.get('as_of', [None])[0], query.get('area', [None])[0]))
                     elif path == '/api/permits/report':
                         query = parse_qs(urlsplit(self.path).query)
                         self.send(200, permits.report(query.get('as_of', [None])[0], query.get('category', [None])[0]))
                     elif len(parts) == 3 and parts[:2] == ['api', 'sources']:
                         self.send(200, store.source_content(parts[2]))
+                    else:
+                        self.send(404, {'error': 'route not found'})
+                elif parts == ['api', 'maintenance', 'assets']:
+                    self.send(201, maintenance.create_asset(data))
+                elif parts == ['api', 'maintenance', 'orders']:
+                    self.send(201, maintenance.create_order(data))
+                elif len(parts) == 5 and parts[:3] == ['api', 'maintenance', 'orders']:
+                    if parts[4] == 'events':
+                        self.send(200, maintenance.advance(parts[3], data))
+                    elif parts[4] == 'checks':
+                        self.send(200, maintenance.verify(parts[3], data))
                     else:
                         self.send(404, {'error': 'route not found'})
                 elif parts == ['api', 'permits']:

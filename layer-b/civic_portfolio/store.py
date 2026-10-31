@@ -60,6 +60,21 @@ class Store:
                   case_id TEXT NOT NULL REFERENCES permit_cases(id), sequence INTEGER NOT NULL,
                   at TEXT NOT NULL, reviewer TEXT NOT NULL, passed INTEGER NOT NULL,
                   evidence TEXT NOT NULL, PRIMARY KEY(case_id,sequence));
+                CREATE TABLE IF NOT EXISTS maintenance_assets (
+                  id TEXT PRIMARY KEY, category TEXT NOT NULL, area TEXT NOT NULL,
+                  registered_at TEXT NOT NULL, actor TEXT NOT NULL, evidence TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS maintenance_orders (
+                  id TEXT PRIMARY KEY, asset_id TEXT NOT NULL REFERENCES maintenance_assets(id),
+                  condition TEXT NOT NULL, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS maintenance_events (
+                  order_id TEXT NOT NULL REFERENCES maintenance_orders(id), sequence INTEGER NOT NULL,
+                  stage TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL, evidence TEXT NOT NULL,
+                  priority TEXT, team TEXT, PRIMARY KEY(order_id,sequence));
+                CREATE TABLE IF NOT EXISTS maintenance_checks (
+                  order_id TEXT NOT NULL REFERENCES maintenance_orders(id), sequence INTEGER NOT NULL,
+                  event_sequence INTEGER NOT NULL,
+                  at TEXT NOT NULL, verifier TEXT NOT NULL, passed INTEGER NOT NULL,
+                  evidence TEXT NOT NULL, PRIMARY KEY(order_id,sequence));
             ''')
             register = json.loads((ROOT / 'portfolio/project-register.json').read_text())
             plans = build()[1]
@@ -151,6 +166,11 @@ class Store:
                         'cases': [dict(r) for r in db.execute('SELECT * FROM permit_cases ORDER BY id')],
                         'events': [dict(r) for r in db.execute('SELECT * FROM permit_events ORDER BY case_id,sequence')],
                         'quality': [dict(r) for r in db.execute('SELECT * FROM permit_quality ORDER BY case_id,sequence')]},
+                    'synthetic_maintenance': {
+                        'assets': [dict(r) for r in db.execute('SELECT * FROM maintenance_assets ORDER BY id')],
+                        'orders': [dict(r) for r in db.execute('SELECT * FROM maintenance_orders ORDER BY id')],
+                        'events': [dict(r) for r in db.execute('SELECT * FROM maintenance_events ORDER BY order_id,sequence')],
+                        'checks': [dict(r) for r in db.execute('SELECT * FROM maintenance_checks ORDER BY order_id,sequence')]},
                     'notice': 'Local user assertions; completion does not authorize public-service execution.'}
 
     def update(self, identifier, data):

@@ -81,8 +81,60 @@ const path = require('node:path');
     await page.reload();
     await page.getByRole('heading',{name:'SYN-BROWSER',exact:true}).waitFor();
     await page.getByRole('heading',{name:'Synthetic quality review',exact:true}).waitFor();
+    await page.goto(url+'/maintenance');
+    await page.getByText('No fictional assets registered.',{exact:true}).waitFor();
+    await page.locator('#actor').fill('SYNTHETIC WORKER');
+    await page.locator('#asof').fill('2026-01-02T00:00:00Z');
+    await page.locator('#asset-id').fill('SYN-ASSET-UI');
+    await page.locator('#asset-category').fill('Fictional sidewalk');
+    await page.locator('#asset-area').fill('Demo area');
+    await page.locator('#asset-at').fill('2026-01-01T00:00:00Z');
+    await page.locator('#asset-evidence').fill('Synthetic asset record');
+    await page.getByRole('button',{name:'Register synthetic asset',exact:true}).click();
+    await page.locator('#asset-list').filter({hasText:'SYN-ASSET-UI'}).waitFor();
+    await page.locator('#order-id').fill('SYN-WORK-UI');
+    await page.locator('#order-asset').selectOption('SYN-ASSET-UI');
+    await page.locator('#order-at').fill('2026-01-01T01:00:00Z');
+    await page.locator('#condition').fill('Fictional surface defect');
+    await page.locator('#order-evidence').fill('Synthetic condition observation');
+    await page.getByRole('button',{name:'Create synthetic work order',exact:true}).click();
+    await page.getByRole('heading',{name:'SYN-WORK-UI',exact:true}).waitFor();
+    async function maintenanceStage(stage,hour){
+      await page.getByLabel('Next maintenance stage',{exact:true}).selectOption(stage);
+      await page.getByLabel('Maintenance event timestamp',{exact:true}).fill(`2026-01-01T${hour}:00:00Z`);
+      await page.getByLabel('Stage evidence and rationale',{exact:true}).fill('Synthetic stage rationale');
+      if(stage==='TRIAGED')await page.getByLabel('Triage priority',{exact:true}).selectOption('URGENT');
+      if(stage==='SCHEDULED')await page.getByLabel('Assigned fictional team (scheduling only)',{exact:true}).fill('SYNTHETIC TEAM');
+      await page.getByRole('button',{name:'Record maintenance stage',exact:true}).click();
+    }
+    for(const [stage,hour] of [['TRIAGED','02'],['SCHEDULED','03'],['IN_PROGRESS','04'],['VERIFICATION','05']]){
+      await maintenanceStage(stage,hour);
+      await page.locator('#detail > p').filter({hasText:stage+' ·'}).waitFor();
+    }
+    await maintenanceStage('CLOSED','06');
+    await page.locator('#message').filter({hasText:'closure requires a passing verification'}).waitFor();
+    await page.getByLabel('Distinct verifier identifier',{exact:true}).fill('SYNTHETIC VERIFIER');
+    await page.getByLabel('Verification timestamp',{exact:true}).fill('2026-01-01T06:00:00Z');
+    await page.getByLabel('Verification criteria and evidence',{exact:true}).fill('Synthetic checked repair criteria');
+    await page.getByRole('button',{name:'Record repair verification',exact:true}).click();
+    await page.locator('#detail li').filter({hasText:'Synthetic checked repair criteria'}).waitFor();
+    await maintenanceStage('CLOSED','07');
+    await page.locator('#detail > p').filter({hasText:'CLOSED ·'}).waitFor();
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).closed_orders===1);
+    const maintenanceReport=JSON.parse(await page.locator('#report-data').textContent());
+    if(maintenanceReport.open_orders!==0||maintenanceReport.verified_elapsed_calendar_hours.median!==6)throw Error('Maintenance closure report mismatch');
+    await maintenanceStage('TRIAGED','09');
+    await page.locator('#detail > p').filter({hasText:'TRIAGED ·'}).waitFor();
+    await page.getByRole('button',{name:'Refresh report',exact:true}).click();
+    await page.waitForFunction(()=>JSON.parse(document.getElementById('report-data').textContent).reopen_events===1);
+    await page.screenshot({path:'.local/portfolio-maintenance-mobile.png'});
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth))throw Error('Maintenance mobile overflow');
+    await page.reload();
+    await page.getByRole('heading',{name:'SYN-WORK-UI',exact:true}).waitFor();
+    await page.locator('#detail > p').filter({hasText:'TRIAGED ·'}).waitFor();
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: portfolio and synthetic permit lifecycle, reports, persisted records and mobile layout');
+    console.log('PASS: portfolio, permit and maintenance workflows, closure safeguards, reports, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){

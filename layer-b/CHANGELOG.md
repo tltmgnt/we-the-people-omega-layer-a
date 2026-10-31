@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Implement project 010's synthetic asset-maintenance lab with condition records, triage rationale, team assignment, stage history, current-cycle verification before closure, reopening, historical backlog/repair measures and area-inventory context.
+- Add seven maintenance integration tests and extend browser CI through a verified closure, rejected unverified closure, reopening, persistence and mobile layout. Preserve unknown source/acceptance requirements and original blocked packets.
+
 - Implement project 009's synthetic permit lifecycle with append-only stage histories, correction loops, version-checked writes, quality reviews, persisted exports/backups and cutoff/category-based time/effort reports. Preserve the original blocked permit packet and do not claim live permit authority or completed project acceptance.
 - Add seven permit integration tests and extend browser CI through a complete fictional decision and quality-review workflow.
 
