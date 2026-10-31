@@ -2,6 +2,11 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Complete synthetic state-control coverage for all 44 defined workstreams (007–050) with 38 project-specific catalog profiles and individual handoffs. Retain undefined 001–006 and all source/institutional acceptance gaps.
+- Add typed observations, missingness, path/contract freshness and separate counter-measures; add Project 050 snapshot attachments with current completed measured-evidence checks and stale-dependency holds. Layer A remains LEGAL_REVIEW_REQUIRED.
+- Add catalog-wide profile/state/gate tests and browser coverage, capstone rejection/recovery, metrics, snapshots, persistence, mobile layout and coverage documentation. These controls do not execute real services, analytical agents or institutional transitions.
+
+
 - Extend Project 023 with fifteen controllable justice-caseflow states, current notice/remedy/reentry record gates, remand/rehearing loops, censored pending decision timing, both closure paths and snapshot restore. Keep observatory data and legal/live holds separate.
 - Add ten justice-control tests and browser coverage for notice holds, remand, both closure branches, all presets, restore, persistence and mobile layout. Qualified review, real remedies and the institutional pilot remain pending.
 

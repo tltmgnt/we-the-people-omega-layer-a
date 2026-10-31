@@ -1,0 +1,3288 @@
+{
+  "version": 1,
+  "basis": "User-supplied titles/editorial profiles; synthetic use cases, not completed source requirements",
+  "profiles": [
+    {
+      "workflow": "p007",
+      "project_id": "007",
+      "label": "Project 007 — Civic capacity",
+      "initial": "COHORT_PLANNED",
+      "stages": {
+        "COHORT_PLANNED": [
+          "EXERCISE_ASSIGNED",
+          "WITHDRAWN"
+        ],
+        "EXERCISE_ASSIGNED": [
+          "PRACTICE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "PRACTICE_RECORDED": [
+          "ASSESSMENT_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ASSESSMENT_RECORDED": [
+          "CAPACITY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "CAPACITY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "EXERCISE_ASSIGNED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "CAPACITY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "EXERCISE_ASSIGNED",
+      "gate_anchors": [
+        "PRACTICE_RECORDED",
+        "ASSESSMENT_RECORDED"
+      ],
+      "gate_label": "civic capacity record",
+      "gate_error": "civic capacity requires a checker distinct from the current recorders",
+      "scope": "Build civic research capacity through a bounded training and delivery cycle",
+      "records": "Training cohorts, role descriptions, exercises and feedback",
+      "measure": "Track exercise completion and independently assessed skill gains; countercheck participant burden",
+      "safeguard": "Do not treat participation or attendance as proof of competence",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": null,
+      "metrics": [
+        {
+          "id": "assessed_skill_gain",
+          "kind": "RATIO",
+          "unit": "proportion",
+          "definition": "Fictional assessed skill-gain proportion",
+          "counter_metric": "participant_burden_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Declared fictional successes in the assessed sample",
+          "denominator_definition": "Declared fictional assessed sample; positive denominator required",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "participant_burden_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Do not treat participation or attendance as proof of competence; supplied fictional counter-measure",
+          "counter_metric": "assessed_skill_gain",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p008",
+      "project_id": "008",
+      "label": "Project 008 — Policy-analysis comparison",
+      "initial": "QUESTION_SCOPED",
+      "stages": {
+        "QUESTION_SCOPED": [
+          "BASELINE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "BASELINE_RECORDED": [
+          "ALTERNATIVES_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ALTERNATIVES_RECORDED": [
+          "ANALYSIS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ANALYSIS_RECORDED": [
+          "COMPARISON_RECORDED",
+          "WITHDRAWN"
+        ],
+        "COMPARISON_RECORDED": [
+          "POLICY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "POLICY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "ANALYSIS_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "POLICY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "ANALYSIS_RECORDED",
+      "gate_anchors": [
+        "BASELINE_RECORDED",
+        "COMPARISON_RECORDED"
+      ],
+      "gate_label": "policy-analysis comparison record",
+      "gate_error": "policy-analysis comparison requires a checker distinct from the current recorders",
+      "scope": "Compare a documented policy-analysis workflow with a simpler baseline",
+      "records": "Policy questions, alternatives, assumptions, model outputs and reviewer corrections",
+      "measure": "Track factual error rate and review time; countercheck unsupported claims",
+      "safeguard": "Retain human review and disclose model limitations and uncertainty",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1wNQQIrwRr2MrUR8RnyO_pl0yft7oUiCuamxGD44W8PA/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "verified_error_count",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional checked factual errors",
+          "counter_metric": "review_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "review_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Retain human review and disclose model limitations and uncertainty; supplied fictional counter-measure",
+          "counter_metric": "verified_error_count",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p010",
+      "project_id": "010",
+      "label": "Project 010 — Maintenance",
+      "initial": "ASSET_REGISTERED",
+      "stages": {
+        "ASSET_REGISTERED": [
+          "CONDITION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CONDITION_RECORDED": [
+          "WORK_PLANNED",
+          "WITHDRAWN"
+        ],
+        "WORK_PLANNED": [
+          "WORK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "WORK_RECORDED": [
+          "VERIFICATION_REVIEW",
+          "WITHDRAWN"
+        ],
+        "VERIFICATION_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "WORK_PLANNED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "VERIFICATION_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "WORK_PLANNED",
+      "gate_anchors": [
+        "CONDITION_RECORDED",
+        "WORK_RECORDED"
+      ],
+      "gate_label": "maintenance record",
+      "gate_error": "maintenance requires a checker distinct from the current recorders",
+      "scope": "Prioritize and verify a bounded infrastructure maintenance queue",
+      "records": "Asset inventory, condition inspections, work orders and completion checks",
+      "measure": "Measure verified repair time and backlog age; countercheck repeat defects",
+      "safeguard": "Account for safety-critical assets and neighborhood coverage",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1w9DZHESN7euGF5hrWOMH2O0vTSHVww9DQ8pZemzw8ao/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "repeat_defects",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional repeat defects",
+          "counter_metric": "coverage_gaps",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "coverage_gaps",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Account for safety-critical assets and neighborhood coverage; supplied fictional counter-measure",
+          "counter_metric": "repeat_defects",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p011",
+      "project_id": "011",
+      "label": "Project 011 — Sanitation",
+      "initial": "ROUTE_PLANNED",
+      "stages": {
+        "ROUTE_PLANNED": [
+          "SERVICE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "SERVICE_RECORDED": [
+          "MISSED_SERVICE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "MISSED_SERVICE_RECORDED": [
+          "RECOVERY_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RECOVERY_RECORDED": [
+          "RECOVERY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "RECOVERY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "MISSED_SERVICE_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "RECOVERY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "MISSED_SERVICE_RECORDED",
+      "gate_anchors": [
+        "MISSED_SERVICE_RECORDED",
+        "RECOVERY_RECORDED"
+      ],
+      "gate_label": "sanitation record",
+      "gate_error": "sanitation requires a checker distinct from the current recorders",
+      "scope": "Trace sanitation requests and missed-service corrections",
+      "records": "Routes, service events, missed pickups and complaints",
+      "measure": "Measure missed-service rate and correction time; countercheck repeat reports",
+      "safeguard": "Avoid publishing household-level identifiable service data",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1w5d1dvK7wPsWa7zYab3AKv-ctcQWa5aC5P9C7PQ4RwU/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "missed_visits",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional missed service visits",
+          "counter_metric": "repeat_reports",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "repeat_reports",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Avoid publishing household-level identifiable service data; supplied fictional counter-measure",
+          "counter_metric": "missed_visits",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p012",
+      "project_id": "012",
+      "label": "Project 012 — Transit",
+      "initial": "TRIP_PLANNED",
+      "stages": {
+        "TRIP_PLANNED": [
+          "ARRIVAL_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ARRIVAL_RECORDED": [
+          "ACCESS_FINDING_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ACCESS_FINDING_RECORDED": [
+          "CORRECTION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CORRECTION_RECORDED": [
+          "SERVICE_REVIEW",
+          "WITHDRAWN"
+        ],
+        "SERVICE_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "ACCESS_FINDING_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "SERVICE_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "ACCESS_FINDING_RECORDED",
+      "gate_anchors": [
+        "ACCESS_FINDING_RECORDED",
+        "CORRECTION_RECORDED"
+      ],
+      "gate_label": "transit record",
+      "gate_error": "transit requires a checker distinct from the current recorders",
+      "scope": "Assess reliability and accessibility of a selected transit service",
+      "records": "Scheduled trips, actual arrivals, cancellations and accessibility reports",
+      "measure": "Measure on-time service and passenger delay; countercheck excluded riders",
+      "safeguard": "Report service gaps by access need without identifying passengers",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1vsg1zhPUgY7H28vCCE5NEcuauYVc6hzux4GvJv6Iovk/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "passenger_delay_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Fictional aggregate passenger-delay minutes",
+          "counter_metric": "access_barriers",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "access_barriers",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Report service gaps by access need without identifying passengers; supplied fictional counter-measure",
+          "counter_metric": "passenger_delay_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p013",
+      "project_id": "013",
+      "label": "Project 013 — Housing referral",
+      "initial": "REQUEST_RECORDED",
+      "stages": {
+        "REQUEST_RECORDED": [
+          "CONSENT_ASSERTED",
+          "WITHDRAWN"
+        ],
+        "CONSENT_ASSERTED": [
+          "REFERRAL_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REFERRAL_RECORDED": [
+          "SERVICE_START_RECORDED",
+          "WITHDRAWN"
+        ],
+        "SERVICE_START_RECORDED": [
+          "FOLLOW_UP_RECORDED",
+          "WITHDRAWN"
+        ],
+        "FOLLOW_UP_RECORDED": [
+          "CONTINUITY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "CONTINUITY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "REFERRAL_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "CONTINUITY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "REFERRAL_RECORDED",
+      "gate_anchors": [
+        "SERVICE_START_RECORDED",
+        "FOLLOW_UP_RECORDED"
+      ],
+      "gate_label": "housing referral record",
+      "gate_error": "housing referral requires a checker distinct from the current recorders",
+      "scope": "Trace a bounded housing-service referral and follow-up process",
+      "records": "Referral events, eligibility notices, placements and follow-up records",
+      "measure": "Measure referral-to-service time; countercheck failed referrals and service continuity",
+      "safeguard": "Protect housing and personal records; preserve appeal and consent processes",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1vrUwwTOVMjeB1JznqvsvCTq9pHCuHGfUsJmJr4G0J-M/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "referral_wait_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Fictional referral wait",
+          "counter_metric": "failed_handoffs",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "failed_handoffs",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Protect housing and personal records; preserve appeal and consent processes; supplied fictional counter-measure",
+          "counter_metric": "referral_wait_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p014",
+      "project_id": "014",
+      "label": "Project 014 — Records and meetings",
+      "initial": "REQUEST_REGISTERED",
+      "stages": {
+        "REQUEST_REGISTERED": [
+          "SCOPE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "SCOPE_RECORDED": [
+          "RESPONSE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RESPONSE_RECORDED": [
+          "COMPLETENESS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "COMPLETENESS_RECORDED": [
+          "RESPONSE_REVIEW",
+          "WITHDRAWN"
+        ],
+        "RESPONSE_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "RESPONSE_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "RESPONSE_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "RESPONSE_RECORDED",
+      "gate_anchors": [
+        "RESPONSE_RECORDED",
+        "COMPLETENESS_RECORDED"
+      ],
+      "gate_label": "records and meetings record",
+      "gate_error": "records and meetings requires a checker distinct from the current recorders",
+      "scope": "Track records requests, public meetings and complaint responses",
+      "records": "Request logs, meeting notices, response events and correction records",
+      "measure": "Measure response timeliness and unresolved age; countercheck incomplete responses",
+      "safeguard": "Preserve exemptions, retention duties and accessible public participation",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1vib_ITR_S6DRzQA_k65qD8ID2uDFXYT2ijjgxrFzj1I/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unanswered_items",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional unanswered scope items",
+          "counter_metric": "access_barriers",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "access_barriers",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Preserve exemptions, retention duties and accessible public participation; supplied fictional counter-measure",
+          "counter_metric": "unanswered_items",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p015",
+      "project_id": "015",
+      "label": "Project 015 — Utility continuity",
+      "initial": "ASSET_RECORDED",
+      "stages": {
+        "ASSET_RECORDED": [
+          "INTERRUPTION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "INTERRUPTION_RECORDED": [
+          "WORK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "WORK_RECORDED": [
+          "RESTORATION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RESTORATION_RECORDED": [
+          "QUALITY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "QUALITY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "WORK_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "QUALITY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "WORK_RECORDED",
+      "gate_anchors": [
+        "WORK_RECORDED",
+        "RESTORATION_RECORDED"
+      ],
+      "gate_label": "utility continuity record",
+      "gate_error": "utility continuity requires a checker distinct from the current recorders",
+      "scope": "Assess utility-service continuity and work-order resolution",
+      "records": "Asset registers, interruptions, maintenance orders and restoration events",
+      "measure": "Measure outage duration and repeat failures; countercheck water or service quality",
+      "safeguard": "Escalate safety incidents through existing accountable processes",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1vfpzAWFnFoMaSyQD1O9h4nqUya1k0j4QvmneD2AM6gU/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "interruption_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Fictional interruption duration",
+          "counter_metric": "quality_exceptions",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "quality_exceptions",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Escalate safety incidents through existing accountable processes; supplied fictional counter-measure",
+          "counter_metric": "interruption_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p016",
+      "project_id": "016",
+      "label": "Project 016 — Rights-review conditions",
+      "initial": "QUESTION_REGISTERED",
+      "stages": {
+        "QUESTION_REGISTERED": [
+          "AUTHORITY_CANDIDATE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "AUTHORITY_CANDIDATE_RECORDED": [
+          "EVIDENCE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "EVIDENCE_RECORDED": [
+          "CHALLENGE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CHALLENGE_RECORDED": [
+          "RESPONSE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RESPONSE_RECORDED": [
+          "CONDITIONS_REVIEW",
+          "WITHDRAWN"
+        ],
+        "CONDITIONS_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "EVIDENCE_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "CONDITIONS_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "EVIDENCE_RECORDED",
+      "gate_anchors": [
+        "CHALLENGE_RECORDED",
+        "RESPONSE_RECORDED"
+      ],
+      "gate_label": "rights-review conditions record",
+      "gate_error": "rights-review conditions requires a checker distinct from the current recorders",
+      "scope": "Organize constitutional-rights review questions and evidence",
+      "records": "Review records, applicable authority references and challenge records",
+      "measure": "Measure evidence completeness and unresolved review age; countercheck false assurance",
+      "safeguard": "Qualified reviewers determine applicability; software does not issue legal judgments",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1v_XDyUF0b8qpLlcqvMyakAW4KY0AOSPIRUWg1AXL29A/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unresolved_conditions",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional unresolved review conditions",
+          "counter_metric": "challenge_burden_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "challenge_burden_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Qualified reviewers determine applicability; software does not issue legal judgments; supplied fictional counter-measure",
+          "counter_metric": "unresolved_conditions",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p017",
+      "project_id": "017",
+      "label": "Project 017 — Election-administration service",
+      "initial": "SESSION_PLANNED",
+      "stages": {
+        "SESSION_PLANNED": [
+          "READINESS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "READINESS_RECORDED": [
+          "ACCESS_GAP_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ACCESS_GAP_RECORDED": [
+          "CORRECTION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CORRECTION_RECORDED": [
+          "ACCESS_REVIEW",
+          "WITHDRAWN"
+        ],
+        "ACCESS_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "ACCESS_GAP_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "ACCESS_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "ACCESS_GAP_RECORDED",
+      "gate_anchors": [
+        "ACCESS_GAP_RECORDED",
+        "CORRECTION_RECORDED"
+      ],
+      "gate_label": "election-administration service record",
+      "gate_error": "election-administration service requires a checker distinct from the current recorders",
+      "scope": "Trace election-administration service and representation issues",
+      "records": "Public administrative reports, access complaints and correction records",
+      "measure": "Measure documented service gaps and correction time; countercheck access disparities",
+      "safeguard": "Avoid voter targeting and unsupported claims about election validity",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1vYWZRsARQniDmW_GllU_54kgWG7Ewa-PoIJPAFhfmVo/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "service_gaps",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional administrative service gaps",
+          "counter_metric": "unverified_items",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "unverified_items",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Avoid voter targeting and unsupported claims about election validity; supplied fictional counter-measure",
+          "counter_metric": "service_gaps",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p018",
+      "project_id": "018",
+      "label": "Project 018 — Finance reconciliation",
+      "initial": "BASIS_DECLARED",
+      "stages": {
+        "BASIS_DECLARED": [
+          "AUTHORIZATION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "AUTHORIZATION_RECORDED": [
+          "OBLIGATION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "OBLIGATION_RECORDED": [
+          "EXPENDITURE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "EXPENDITURE_RECORDED": [
+          "RECONCILIATION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RECONCILIATION_RECORDED": [
+          "FINANCE_REVIEW",
+          "WITHDRAWN"
+        ],
+        "FINANCE_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "EXPENDITURE_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "FINANCE_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "EXPENDITURE_RECORDED",
+      "gate_anchors": [
+        "EXPENDITURE_RECORDED",
+        "RECONCILIATION_RECORDED"
+      ],
+      "gate_label": "finance reconciliation record",
+      "gate_error": "finance reconciliation requires a checker distinct from the current recorders",
+      "scope": "Reconcile a bounded budget authorization-to-expenditure chain",
+      "records": "Appropriations, allocations, obligations, expenditures and reconciliation notes",
+      "measure": "Measure unreconciled amounts and reconciliation age; countercheck service outcomes",
+      "safeguard": "Keep financial categories distinct and preserve authoritative accounting records",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1vNBWg5IkO90kPdtqS3JizE7Mj9BO9z4jqhtzoK-VuOA/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unreconciled_minor_units",
+          "kind": "INTEGER_MINOR_UNITS",
+          "unit": "declared minor units",
+          "definition": "Fictional unsigned discrepancy magnitude in declared minor units; categories remain separate",
+          "counter_metric": "service_gaps",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "service_gaps",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Keep financial categories distinct and preserve authoritative accounting records; supplied fictional counter-measure",
+          "counter_metric": "unreconciled_minor_units",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p024",
+      "project_id": "024",
+      "label": "Project 024 — Workforce-service referral",
+      "initial": "REQUEST_RECORDED",
+      "stages": {
+        "REQUEST_RECORDED": [
+          "CONSENT_ASSERTED",
+          "WITHDRAWN"
+        ],
+        "CONSENT_ASSERTED": [
+          "REFERRAL_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REFERRAL_RECORDED": [
+          "PARTICIPATION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "PARTICIPATION_RECORDED": [
+          "FOLLOW_UP_RECORDED",
+          "WITHDRAWN"
+        ],
+        "FOLLOW_UP_RECORDED": [
+          "CONTINUITY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "CONTINUITY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "REFERRAL_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "CONTINUITY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "REFERRAL_RECORDED",
+      "gate_anchors": [
+        "PARTICIPATION_RECORDED",
+        "FOLLOW_UP_RECORDED"
+      ],
+      "gate_label": "workforce-service referral record",
+      "gate_error": "workforce-service referral requires a checker distinct from the current recorders",
+      "scope": "Assess workforce-service referrals and sustained access",
+      "records": "Program offerings, referrals, participation and follow-up records",
+      "measure": "Measure verified referral completion and follow-up continuity; countercheck dropout and exclusion",
+      "safeguard": "Protect participant information and distinguish service access from causal employment claims",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1uQW0nDQf6SjWUnS1sBspBZ_ck3u9sJMLDYIz_EHfbXw/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "referral_wait_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Fictional referral waiting time",
+          "counter_metric": "dropouts",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "dropouts",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Protect participant information and distinguish service access from causal employment claims; supplied fictional counter-measure",
+          "counter_metric": "referral_wait_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p025",
+      "project_id": "025",
+      "label": "Project 025 — Food-assistance access",
+      "initial": "CAPACITY_RECORDED",
+      "stages": {
+        "CAPACITY_RECORDED": [
+          "REQUEST_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REQUEST_RECORDED": [
+          "AVAILABILITY_RECORDED",
+          "WITHDRAWN"
+        ],
+        "AVAILABILITY_RECORDED": [
+          "SERVICE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "SERVICE_RECORDED": [
+          "ACCESS_CHECK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ACCESS_CHECK_RECORDED": [
+          "NUTRITION_ACCESS_REVIEW",
+          "WITHDRAWN"
+        ],
+        "NUTRITION_ACCESS_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "AVAILABILITY_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "NUTRITION_ACCESS_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "AVAILABILITY_RECORDED",
+      "gate_anchors": [
+        "SERVICE_RECORDED",
+        "ACCESS_CHECK_RECORDED"
+      ],
+      "gate_label": "food-assistance access record",
+      "gate_error": "food-assistance access requires a checker distinct from the current recorders",
+      "scope": "Trace food-assistance service capacity and access",
+      "records": "Service locations, availability, referral logs and supply interruptions",
+      "measure": "Measure service availability and unmet requests; countercheck nutrition and accessibility",
+      "safeguard": "Avoid identifiable benefit-recipient reporting or automated eligibility decisions",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1uOnJNJsG7c9ybFCfJab0o_towvB756zSIYWG7e5N63c/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unmet_requests",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional unmet service requests",
+          "counter_metric": "availability_gaps",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "availability_gaps",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Avoid identifiable benefit-recipient reporting or automated eligibility decisions; supplied fictional counter-measure",
+          "counter_metric": "unmet_requests",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p026",
+      "project_id": "026",
+      "label": "Project 026 — Environmental monitoring",
+      "initial": "METHOD_RECORDED",
+      "stages": {
+        "METHOD_RECORDED": [
+          "OBSERVATION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "OBSERVATION_RECORDED": [
+          "QUALITY_FLAG_RECORDED",
+          "WITHDRAWN"
+        ],
+        "QUALITY_FLAG_RECORDED": [
+          "CORRECTION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CORRECTION_RECORDED": [
+          "RETEST_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RETEST_RECORDED": [
+          "MONITORING_REVIEW",
+          "WITHDRAWN"
+        ],
+        "MONITORING_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "OBSERVATION_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "MONITORING_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "OBSERVATION_RECORDED",
+      "gate_anchors": [
+        "CORRECTION_RECORDED",
+        "RETEST_RECORDED"
+      ],
+      "gate_label": "environmental monitoring record",
+      "gate_error": "environmental monitoring requires a checker distinct from the current recorders",
+      "scope": "Assess a bounded environmental monitoring and correction workflow",
+      "records": "Monitoring observations, methods, quality flags and corrective work",
+      "measure": "Measure verified threshold exceptions and response time; countercheck missing observations",
+      "safeguard": "Record measurement uncertainty and avoid overstating causal attribution",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1uJfEyrYKXdOKOAbX_UwYyUCX7np0MklvjygY_vPcAaQ/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "exceptions",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional method-specific exceptions",
+          "counter_metric": "missing_observations",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "missing_observations",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Record measurement uncertainty and avoid overstating causal attribution; supplied fictional counter-measure",
+          "counter_metric": "exceptions",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p027",
+      "project_id": "027",
+      "label": "Project 027 — Energy resilience exercise",
+      "initial": "DEPENDENCIES_RECORDED",
+      "stages": {
+        "DEPENDENCIES_RECORDED": [
+          "INTERRUPTION_SIMULATED",
+          "WITHDRAWN"
+        ],
+        "INTERRUPTION_SIMULATED": [
+          "RECOVERY_PLAN_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RECOVERY_PLAN_RECORDED": [
+          "RECOVERY_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RECOVERY_RECORDED": [
+          "QUALITY_CHECK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "QUALITY_CHECK_RECORDED": [
+          "RESILIENCE_REVIEW",
+          "WITHDRAWN"
+        ],
+        "RESILIENCE_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "RECOVERY_PLAN_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "RESILIENCE_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "RECOVERY_PLAN_RECORDED",
+      "gate_anchors": [
+        "RECOVERY_RECORDED",
+        "QUALITY_CHECK_RECORDED"
+      ],
+      "gate_label": "energy resilience exercise record",
+      "gate_error": "energy resilience exercise requires a checker distinct from the current recorders",
+      "scope": "Assess energy-service resilience using documented incidents or simulation",
+      "records": "Asset dependencies, interruption logs, restoration plans and exercise results",
+      "measure": "Measure interruption duration and tested recovery capacity; countercheck vulnerable-user impacts",
+      "safeguard": "No operational grid control or disclosure of sensitive infrastructure details",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1uFWHqSzjT5p5Qec4GD2eNce-bSQ0CHQZAWbwc47DdGQ/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "interruption_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Fictional simulated interruption duration",
+          "counter_metric": "coverage_gaps",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "coverage_gaps",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "No operational grid control or disclosure of sensitive infrastructure details; supplied fictional counter-measure",
+          "counter_metric": "interruption_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p028",
+      "project_id": "028",
+      "label": "Project 028 — Digital-service journey",
+      "initial": "JOURNEY_SCOPED",
+      "stages": {
+        "JOURNEY_SCOPED": [
+          "NONDIGITAL_ROUTE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "NONDIGITAL_ROUTE_RECORDED": [
+          "ACCESS_CHECK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ACCESS_CHECK_RECORDED": [
+          "EXCHANGE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "EXCHANGE_RECORDED": [
+          "CORRECTION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CORRECTION_RECORDED": [
+          "JOURNEY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "JOURNEY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "ACCESS_CHECK_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "JOURNEY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "ACCESS_CHECK_RECORDED",
+      "gate_anchors": [
+        "EXCHANGE_RECORDED",
+        "CORRECTION_RECORDED"
+      ],
+      "gate_label": "digital-service journey record",
+      "gate_error": "digital-service journey requires a checker distinct from the current recorders",
+      "scope": "Trace a bounded digital-service journey and data exchange",
+      "records": "Service steps, accessibility findings, field definitions and exchange logs",
+      "measure": "Measure successful completion and correction rate; countercheck access barriers and data exposure",
+      "safeguard": "Minimize identity data and retain a usable non-digital route",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1uCHpRGNz4x2LJKJRu-K_SKj1IOssA3K9Eb22P_4amvc/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "failed_steps",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional failed journey steps",
+          "counter_metric": "data_exposure_findings",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "data_exposure_findings",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Minimize identity data and retain a usable non-digital route; supplied fictional counter-measure",
+          "counter_metric": "failed_steps",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p029",
+      "project_id": "029",
+      "label": "Project 029 — Defensive remediation",
+      "initial": "AUTHORIZATION_ASSERTED",
+      "stages": {
+        "AUTHORIZATION_ASSERTED": [
+          "ASSET_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ASSET_RECORDED": [
+          "FINDING_RECORDED",
+          "WITHDRAWN"
+        ],
+        "FINDING_RECORDED": [
+          "REMEDIATION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REMEDIATION_RECORDED": [
+          "RETEST_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RETEST_RECORDED": [
+          "SECURITY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "SECURITY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "FINDING_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "SECURITY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "FINDING_RECORDED",
+      "gate_anchors": [
+        "REMEDIATION_RECORDED",
+        "RETEST_RECORDED"
+      ],
+      "gate_label": "defensive remediation record",
+      "gate_error": "defensive remediation requires a checker distinct from the current recorders",
+      "scope": "Track defensive security findings and verified remediation",
+      "records": "Authorized asset inventory, control findings, remediation evidence and retest results",
+      "measure": "Measure remediation age and verified recurrence; countercheck service disruption",
+      "safeguard": "Use authorized defensive work only; protect credentials and exploit details",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1uBAl5OY27hTnnXngX2nRpT-IjpQKI6ZaPg301eFvriU/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "recurrent_findings",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional recurrent defensive findings",
+          "counter_metric": "service_disruption_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "service_disruption_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Use authorized defensive work only; protect credentials and exploit details; supplied fictional counter-measure",
+          "counter_metric": "recurrent_findings",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p030",
+      "project_id": "030",
+      "label": "Project 030 — Land-use participation",
+      "initial": "APPLICATION_RECORDED",
+      "stages": {
+        "APPLICATION_RECORDED": [
+          "NOTICE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "NOTICE_RECORDED": [
+          "PARTICIPATION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "PARTICIPATION_RECORDED": [
+          "REVIEW_RECORD_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REVIEW_RECORD_RECORDED": [
+          "CORRECTION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CORRECTION_RECORDED": [
+          "PARTICIPATION_REVIEW",
+          "WITHDRAWN"
+        ],
+        "PARTICIPATION_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "NOTICE_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "PARTICIPATION_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "NOTICE_RECORDED",
+      "gate_anchors": [
+        "REVIEW_RECORD_RECORDED",
+        "CORRECTION_RECORDED"
+      ],
+      "gate_label": "land-use participation record",
+      "gate_error": "land-use participation requires a checker distinct from the current recorders",
+      "scope": "Trace land-use application milestones and public participation",
+      "records": "Applications, notices, review events, public comments and dispositions",
+      "measure": "Measure review time and notice completeness; countercheck appeals and participation barriers",
+      "safeguard": "Respect jurisdictional rules and avoid automated zoning or approval judgments",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1u7RdsrlwTzf6Kwv6O-AU08bojmky5V28fxLXOHhGbNU/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "missing_notice_items",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional notice completeness gaps",
+          "counter_metric": "participation_barriers",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "participation_barriers",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Respect jurisdictional rules and avoid automated zoning or approval judgments; supplied fictional counter-measure",
+          "counter_metric": "missing_notice_items",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p031",
+      "project_id": "031",
+      "label": "Project 031 — Consumer complaint",
+      "initial": "COMPLAINT_RECORDED",
+      "stages": {
+        "COMPLAINT_RECORDED": [
+          "SCOPE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "SCOPE_RECORDED": [
+          "REFERRAL_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REFERRAL_RECORDED": [
+          "RESPONSE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RESPONSE_RECORDED": [
+          "REMEDY_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REMEDY_RECORDED": [
+          "REMEDY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "REMEDY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "RESPONSE_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "REMEDY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "RESPONSE_RECORDED",
+      "gate_anchors": [
+        "RESPONSE_RECORDED",
+        "REMEDY_RECORDED"
+      ],
+      "gate_label": "consumer complaint record",
+      "gate_error": "consumer complaint requires a checker distinct from the current recorders",
+      "scope": "Trace a bounded consumer-protection complaint workflow",
+      "records": "Complaints, referral events, response records and documented remedies",
+      "measure": "Measure response time and verified remedy completion; countercheck repeated harm",
+      "safeguard": "Avoid unverified allegations or automated enforcement and liability judgments",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1thqd-vH5cfOcxZuZI-zm09O6Tpj-U_2wx2EJlBjNCaU/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unresolved_items",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional unanswered complaint items",
+          "counter_metric": "repeat_reports",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "repeat_reports",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Avoid unverified allegations or automated enforcement and liability judgments; supplied fictional counter-measure",
+          "counter_metric": "unresolved_items",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p032",
+      "project_id": "032",
+      "label": "Project 032 — Workforce capacity",
+      "initial": "FUNCTION_SCOPED",
+      "stages": {
+        "FUNCTION_SCOPED": [
+          "AGGREGATE_ROLES_RECORDED",
+          "WITHDRAWN"
+        ],
+        "AGGREGATE_ROLES_RECORDED": [
+          "WORKLOAD_RECORDED",
+          "WITHDRAWN"
+        ],
+        "WORKLOAD_RECORDED": [
+          "CAPACITY_GAP_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CAPACITY_GAP_RECORDED": [
+          "CONTINUITY_PLAN_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CONTINUITY_PLAN_RECORDED": [
+          "CAPACITY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "CAPACITY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "WORKLOAD_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "CAPACITY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "WORKLOAD_RECORDED",
+      "gate_anchors": [
+        "CAPACITY_GAP_RECORDED",
+        "CONTINUITY_PLAN_RECORDED"
+      ],
+      "gate_label": "workforce capacity record",
+      "gate_error": "workforce capacity requires a checker distinct from the current recorders",
+      "scope": "Assess institutional workforce capacity for a selected function",
+      "records": "Role inventories, vacancies, workload aggregates and training records",
+      "measure": "Measure capacity gaps and service continuity; countercheck workload and turnover",
+      "safeguard": "Use aggregate data; no individual employee ranking or personnel decisions",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1tfyflce39LWJbADC_j54R2JnMckMIv3wl9ZArxQNEOA/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "capacity_gaps",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional aggregate capacity gaps",
+          "counter_metric": "workload_burden_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "workload_burden_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Use aggregate data; no individual employee ranking or personnel decisions; supplied fictional counter-measure",
+          "counter_metric": "capacity_gaps",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p033",
+      "project_id": "033",
+      "label": "Project 033 — Ethics-control follow-up",
+      "initial": "CONTROL_SCOPED",
+      "stages": {
+        "CONTROL_SCOPED": [
+          "DISCLOSURE_RECORD_RECORDED",
+          "WITHDRAWN"
+        ],
+        "DISCLOSURE_RECORD_RECORDED": [
+          "REVIEW_QUESTION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REVIEW_QUESTION_RECORDED": [
+          "CORRECTION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CORRECTION_RECORDED": [
+          "CHECK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CHECK_RECORDED": [
+          "CONTROL_REVIEW",
+          "WITHDRAWN"
+        ],
+        "CONTROL_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "REVIEW_QUESTION_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "CONTROL_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "REVIEW_QUESTION_RECORDED",
+      "gate_anchors": [
+        "CORRECTION_RECORDED",
+        "CHECK_RECORDED"
+      ],
+      "gate_label": "ethics-control follow-up record",
+      "gate_error": "ethics-control follow-up requires a checker distinct from the current recorders",
+      "scope": "Track ethics-control disclosures and documented review follow-up",
+      "records": "Disclosure requirements, submitted records, review findings and corrections",
+      "measure": "Measure unresolved control findings and correction time; countercheck reporting burden",
+      "safeguard": "Do not label people corrupt or treat unverified conflicts as findings",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1tVdBgzy5q1f6srkd2gdXLCgXvwQU1C1tyA3TWdV3BTE/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unresolved_control_items",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional unresolved controls, not misconduct findings",
+          "counter_metric": "reporting_burden_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "reporting_burden_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Do not label people corrupt or treat unverified conflicts as findings; supplied fictional counter-measure",
+          "counter_metric": "unresolved_control_items",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p034",
+      "project_id": "034",
+      "label": "Project 034 — Civic-information correction",
+      "initial": "CLAIM_RECORDED",
+      "stages": {
+        "CLAIM_RECORDED": [
+          "SOURCES_RECORDED",
+          "WITHDRAWN"
+        ],
+        "SOURCES_RECORDED": [
+          "UNCERTAINTY_RECORDED",
+          "WITHDRAWN"
+        ],
+        "UNCERTAINTY_RECORDED": [
+          "CORRECTION_DRAFT_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CORRECTION_DRAFT_RECORDED": [
+          "CHECK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CHECK_RECORDED": [
+          "INFORMATION_REVIEW",
+          "WITHDRAWN"
+        ],
+        "INFORMATION_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "SOURCES_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "INFORMATION_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "SOURCES_RECORDED",
+      "gate_anchors": [
+        "CORRECTION_DRAFT_RECORDED",
+        "CHECK_RECORDED"
+      ],
+      "gate_label": "civic-information correction record",
+      "gate_error": "civic-information correction requires a checker distinct from the current recorders",
+      "scope": "Assess a bounded civic-information correction process",
+      "records": "Public claims, source references, verification notes and published corrections",
+      "measure": "Measure citation coverage and correction time; countercheck uncertainty and viewpoint access",
+      "safeguard": "Separate evidence from opinion; no censorship or individual credibility scoring",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1tE7NxG9b6YcshBhxJA_H-NqUH8obvZCSS3aBINoKi7Y/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unsupported_claims",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional unsupported claims",
+          "counter_metric": "missing_viewpoint_sources",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "missing_viewpoint_sources",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Separate evidence from opinion; no censorship or individual credibility scoring; supplied fictional counter-measure",
+          "counter_metric": "unsupported_claims",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p035",
+      "project_id": "035",
+      "label": "Project 035 — Public oversight research",
+      "initial": "PUBLIC_SCOPE_RECORDED",
+      "stages": {
+        "PUBLIC_SCOPE_RECORDED": [
+          "AUTHORITY_CANDIDATES_RECORDED",
+          "WITHDRAWN"
+        ],
+        "AUTHORITY_CANDIDATES_RECORDED": [
+          "SOURCES_RECORDED",
+          "WITHDRAWN"
+        ],
+        "SOURCES_RECORDED": [
+          "OVERSIGHT_QUESTIONS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "OVERSIGHT_QUESTIONS_RECORDED": [
+          "LIMITATIONS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "LIMITATIONS_RECORDED": [
+          "RESEARCH_REVIEW",
+          "WITHDRAWN"
+        ],
+        "RESEARCH_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "SOURCES_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "RESEARCH_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "SOURCES_RECORDED",
+      "gate_anchors": [
+        "OVERSIGHT_QUESTIONS_RECORDED",
+        "LIMITATIONS_RECORDED"
+      ],
+      "gate_label": "public oversight research record",
+      "gate_error": "public oversight research requires a checker distinct from the current recorders",
+      "scope": "Organize public national-security governance research and review",
+      "records": "Public authorities, oversight documents, stated objectives and review questions",
+      "measure": "Measure source traceability and unresolved oversight questions; countercheck uncertainty",
+      "safeguard": "Use public or expressly authorized material; no classified or operational intelligence work",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1t7hhrV61vxIDCETLQi4a7eysUuTe-oonlBwx0hrZC6o/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unresolved_questions",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional public oversight research questions",
+          "counter_metric": "missing_sources",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "missing_sources",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Use public or expressly authorized material; no classified or operational intelligence work; supplied fictional counter-measure",
+          "counter_metric": "unresolved_questions",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p036",
+      "project_id": "036",
+      "label": "Project 036 — Research reproducibility",
+      "initial": "PROTOCOL_RECORDED",
+      "stages": {
+        "PROTOCOL_RECORDED": [
+          "CONSENT_LICENSE_ASSERTED",
+          "WITHDRAWN"
+        ],
+        "CONSENT_LICENSE_ASSERTED": [
+          "PROVENANCE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "PROVENANCE_RECORDED": [
+          "REPLICATION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REPLICATION_RECORDED": [
+          "LIMITATIONS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "LIMITATIONS_RECORDED": [
+          "REPRODUCIBILITY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "REPRODUCIBILITY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "PROVENANCE_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "REPRODUCIBILITY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "PROVENANCE_RECORDED",
+      "gate_anchors": [
+        "REPLICATION_RECORDED",
+        "LIMITATIONS_RECORDED"
+      ],
+      "gate_label": "research reproducibility record",
+      "gate_error": "research reproducibility requires a checker distinct from the current recorders",
+      "scope": "Trace research-governance decisions and reproducibility evidence",
+      "records": "Protocols, funding disclosures, methods, data provenance and replication notes",
+      "measure": "Measure reproducibility checks and disclosed limitations; countercheck research burden",
+      "safeguard": "Respect consent, licensing and restricted research data",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1t-TqMhCzVIF0jglEJd5-wqcZOxFLC4XztobTaVKHtjo/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "failed_replication_checks",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional replication check failures",
+          "counter_metric": "research_burden_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "research_burden_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Respect consent, licensing and restricted research data; supplied fictional counter-measure",
+          "counter_metric": "failed_replication_checks",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p037",
+      "project_id": "037",
+      "label": "Project 037 — Recovery rehearsal",
+      "initial": "DEPENDENCIES_RECORDED",
+      "stages": {
+        "DEPENDENCIES_RECORDED": [
+          "OBJECTIVES_RECORDED",
+          "WITHDRAWN"
+        ],
+        "OBJECTIVES_RECORDED": [
+          "DISRUPTION_SIMULATED",
+          "WITHDRAWN"
+        ],
+        "DISRUPTION_SIMULATED": [
+          "RECOVERY_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RECOVERY_RECORDED": [
+          "FUNCTION_CHECK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "FUNCTION_CHECK_RECORDED": [
+          "RECOVERY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "RECOVERY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "DISRUPTION_SIMULATED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "RECOVERY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "DISRUPTION_SIMULATED",
+      "gate_anchors": [
+        "RECOVERY_RECORDED",
+        "FUNCTION_CHECK_RECORDED"
+      ],
+      "gate_label": "recovery rehearsal record",
+      "gate_error": "recovery rehearsal requires a checker distinct from the current recorders",
+      "scope": "Test a bounded continuity and disaster-recovery plan",
+      "records": "Dependency inventory, recovery objectives, exercise events and after-action findings",
+      "measure": "Measure exercise recovery times against declared objectives; countercheck lost functionality",
+      "safeguard": "Use controlled simulations and maintain independent emergency authority",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1syzPBh7WW-DCJMeYstf7NVdSHWUKAdjYOMec_XjyLRM/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "recovery_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Fictional recovery time relative to separately declared objectives",
+          "counter_metric": "lost_functions",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "lost_functions",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Use controlled simulations and maintain independent emergency authority; supplied fictional counter-measure",
+          "counter_metric": "recovery_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p038",
+      "project_id": "038",
+      "label": "Project 038 — Public-space stewardship",
+      "initial": "SPACE_SCOPED",
+      "stages": {
+        "SPACE_SCOPED": [
+          "AVAILABILITY_RECORDED",
+          "WITHDRAWN"
+        ],
+        "AVAILABILITY_RECORDED": [
+          "PARTICIPATION_AGGREGATE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "PARTICIPATION_AGGREGATE_RECORDED": [
+          "MAINTENANCE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "MAINTENANCE_RECORDED": [
+          "INCLUSION_CHECK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "INCLUSION_CHECK_RECORDED": [
+          "STEWARDSHIP_REVIEW",
+          "WITHDRAWN"
+        ],
+        "STEWARDSHIP_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "AVAILABILITY_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "STEWARDSHIP_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "AVAILABILITY_RECORDED",
+      "gate_anchors": [
+        "MAINTENANCE_RECORDED",
+        "INCLUSION_CHECK_RECORDED"
+      ],
+      "gate_label": "public-space stewardship record",
+      "gate_error": "public-space stewardship requires a checker distinct from the current recorders",
+      "scope": "Assess access and stewardship of a selected public space or program",
+      "records": "Asset records, program availability, participation aggregates and maintenance requests",
+      "measure": "Measure availability and repair timeliness; countercheck cultural inclusion and displacement",
+      "safeguard": "Use inclusive participation and avoid identifiable attendance tracking",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1syq6NpD5Cc4KIN6uTaVyRfiOPFENIvFmITUxa3_6KUc/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unavailable_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Fictional unavailable program/space time",
+          "counter_metric": "inclusion_barriers",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "inclusion_barriers",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Use inclusive participation and avoid identifiable attendance tracking; supplied fictional counter-measure",
+          "counter_metric": "unavailable_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p039",
+      "project_id": "039",
+      "label": "Project 039 — Veteran-service continuity",
+      "initial": "REQUEST_RECORDED",
+      "stages": {
+        "REQUEST_RECORDED": [
+          "CONSENT_ASSERTED",
+          "WITHDRAWN"
+        ],
+        "CONSENT_ASSERTED": [
+          "REFERRAL_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REFERRAL_RECORDED": [
+          "SERVICE_START_RECORDED",
+          "WITHDRAWN"
+        ],
+        "SERVICE_START_RECORDED": [
+          "FOLLOW_UP_RECORDED",
+          "WITHDRAWN"
+        ],
+        "FOLLOW_UP_RECORDED": [
+          "CONTINUITY_REVIEW",
+          "WITHDRAWN"
+        ],
+        "CONTINUITY_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "REFERRAL_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "CONTINUITY_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "REFERRAL_RECORDED",
+      "gate_anchors": [
+        "SERVICE_START_RECORDED",
+        "FOLLOW_UP_RECORDED"
+      ],
+      "gate_label": "veteran-service continuity record",
+      "gate_error": "veteran-service continuity requires a checker distinct from the current recorders",
+      "scope": "Trace veteran-service referrals and follow-up continuity",
+      "records": "Service directories, referrals, access constraints and follow-up records",
+      "measure": "Measure referral completion and waiting time; countercheck repeated handoffs",
+      "safeguard": "Protect veteran records and avoid automated benefit eligibility decisions",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1swT7Dv3bwQNhocxRyOSRAes3XSRmLEXsvmUfa_KCaHM/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "referral_wait_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Fictional veteran-service referral wait",
+          "counter_metric": "repeat_handoffs",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "repeat_handoffs",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Protect veteran records and avoid automated benefit eligibility decisions; supplied fictional counter-measure",
+          "counter_metric": "referral_wait_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p040",
+      "project_id": "040",
+      "label": "Project 040 — Intergovernmental handoff",
+      "initial": "JURISDICTIONS_RECORDED",
+      "stages": {
+        "JURISDICTIONS_RECORDED": [
+          "AUTHORITY_AGREEMENT_ASSERTED",
+          "WITHDRAWN"
+        ],
+        "AUTHORITY_AGREEMENT_ASSERTED": [
+          "INSTITUTIONAL_CONSENT_ASSERTED",
+          "WITHDRAWN"
+        ],
+        "INSTITUTIONAL_CONSENT_ASSERTED": [
+          "HANDOFF_RECORDED",
+          "WITHDRAWN"
+        ],
+        "HANDOFF_RECORDED": [
+          "AUTONOMY_CHECK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "AUTONOMY_CHECK_RECORDED": [
+          "GOVERNANCE_REVIEW",
+          "WITHDRAWN"
+        ],
+        "GOVERNANCE_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "AUTHORITY_AGREEMENT_ASSERTED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "GOVERNANCE_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "AUTHORITY_AGREEMENT_ASSERTED",
+      "gate_anchors": [
+        "HANDOFF_RECORDED",
+        "AUTONOMY_CHECK_RECORDED"
+      ],
+      "gate_label": "intergovernmental handoff record",
+      "gate_error": "intergovernmental handoff requires a checker distinct from the current recorders",
+      "scope": "Map a bounded intergovernmental collaboration and accountable handoffs",
+      "records": "Authority agreements, jurisdiction maps, consent records and handoff events",
+      "measure": "Measure unresolved responsibility gaps and handoff delay; countercheck autonomy and service continuity",
+      "safeguard": "Respect distinct Tribal sovereignty and each institution's authority and consent",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1smZiCkVu1JJmHLh0qBzWm7L2ZdPwqpFOCR4VuhUCNh0/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "responsibility_gaps",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional unresolved responsibility gaps",
+          "counter_metric": "continuity_gaps",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "continuity_gaps",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Respect distinct Tribal sovereignty and each institution's authority and consent; supplied fictional counter-measure",
+          "counter_metric": "responsibility_gaps",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p041",
+      "project_id": "041",
+      "label": "Project 041 — Civic curriculum",
+      "initial": "OBJECTIVES_RECORDED",
+      "stages": {
+        "OBJECTIVES_RECORDED": [
+          "SOURCED_LESSON_RECORDED",
+          "WITHDRAWN"
+        ],
+        "SOURCED_LESSON_RECORDED": [
+          "ACCESS_CHECK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ACCESS_CHECK_RECORDED": [
+          "EXERCISE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "EXERCISE_RECORDED": [
+          "ASSESSMENT_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ASSESSMENT_RECORDED": [
+          "CURRICULUM_REVIEW",
+          "WITHDRAWN"
+        ],
+        "CURRICULUM_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "SOURCED_LESSON_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "CURRICULUM_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "SOURCED_LESSON_RECORDED",
+      "gate_anchors": [
+        "EXERCISE_RECORDED",
+        "ASSESSMENT_RECORDED"
+      ],
+      "gate_label": "civic curriculum record",
+      "gate_error": "civic curriculum requires a checker distinct from the current recorders",
+      "scope": "Deliver and assess a bounded constitutional and civic curriculum",
+      "records": "Learning objectives, sourced lessons, exercises, accessibility review and assessments",
+      "measure": "Measure assessed learning and retention; countercheck accessibility and time burden",
+      "safeguard": "Label draft interpretations and seek qualified content review",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1smLlTMvFJ6AFQ467hTE0_CusoQT6ief3x05KP8WUm1o/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "retention_proportion",
+          "kind": "RATIO",
+          "unit": "proportion",
+          "definition": "Fictional retention proportion, not validated learning",
+          "counter_metric": "participant_burden_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Declared fictional successes in the assessed sample",
+          "denominator_definition": "Declared fictional assessed sample; positive denominator required",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "participant_burden_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Label draft interpretations and seek qualified content review; supplied fictional counter-measure",
+          "counter_metric": "retention_proportion",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p042",
+      "project_id": "042",
+      "label": "Project 042 — Gap-method comparison",
+      "initial": "SYSTEM_SCOPED",
+      "stages": {
+        "SYSTEM_SCOPED": [
+          "NODES_RECORDED",
+          "WITHDRAWN"
+        ],
+        "NODES_RECORDED": [
+          "RESPONSIBILITIES_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RESPONSIBILITIES_RECORDED": [
+          "GAPS_CLASSIFIED",
+          "WITHDRAWN"
+        ],
+        "GAPS_CLASSIFIED": [
+          "BASELINE_COMPARISON_RECORDED",
+          "WITHDRAWN"
+        ],
+        "BASELINE_COMPARISON_RECORDED": [
+          "METHOD_REVIEW",
+          "WITHDRAWN"
+        ],
+        "METHOD_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "RESPONSIBILITIES_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "METHOD_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "RESPONSIBILITIES_RECORDED",
+      "gate_anchors": [
+        "GAPS_CLASSIFIED",
+        "BASELINE_COMPARISON_RECORDED"
+      ],
+      "gate_label": "gap-method comparison record",
+      "gate_error": "gap-method comparison requires a checker distinct from the current recorders",
+      "scope": "Implement a documented gap matrix for a bounded system",
+      "records": "Nodes, responsibilities, dependencies, evidence and unresolved gaps",
+      "measure": "Measure reproducible gap classification and reviewer agreement; countercheck false positives",
+      "safeguard": "Treat the method as proposed and validate against simpler diagnostics",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1siG93kfoAvfB_7-_zOsJH5bJD-ayfVeNJ9zMyH50JCQ/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "reviewer_agreement",
+          "kind": "RATIO",
+          "unit": "proportion",
+          "definition": "Fictional agreement proportion on declared sample",
+          "counter_metric": "false_positive_count",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Declared fictional successes in the assessed sample",
+          "denominator_definition": "Declared fictional assessed sample; positive denominator required",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "false_positive_count",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Treat the method as proposed and validate against simpler diagnostics; supplied fictional counter-measure",
+          "counter_metric": "reviewer_agreement",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p043",
+      "project_id": "043",
+      "label": "Project 043 — Evidence provenance",
+      "initial": "SOURCE_REGISTERED",
+      "stages": {
+        "SOURCE_REGISTERED": [
+          "SNAPSHOT_RECORDED",
+          "WITHDRAWN"
+        ],
+        "SNAPSHOT_RECORDED": [
+          "HASH_RECORDED",
+          "WITHDRAWN"
+        ],
+        "HASH_RECORDED": [
+          "QUALITY_RECORDED",
+          "WITHDRAWN"
+        ],
+        "QUALITY_RECORDED": [
+          "CORRECTION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CORRECTION_RECORDED": [
+          "PROVENANCE_REVIEW",
+          "WITHDRAWN"
+        ],
+        "PROVENANCE_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "SNAPSHOT_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "PROVENANCE_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "SNAPSHOT_RECORDED",
+      "gate_anchors": [
+        "QUALITY_RECORDED",
+        "CORRECTION_RECORDED"
+      ],
+      "gate_label": "evidence provenance record",
+      "gate_error": "evidence provenance requires a checker distinct from the current recorders",
+      "scope": "Maintain a traceable civic evidence catalog",
+      "records": "Source identities, snapshots, hashes, methods, revisions and correction records",
+      "measure": "Measure traceable evidence coverage and stale-source age; countercheck missing or biased data",
+      "safeguard": "Preserve provenance and access restrictions; do not imply source endorsement",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1sdxH6Lr5Y3O__7B7xaxlWr4KQDqTWs5RVamgZYW77t8/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "stale_sources",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional stale-source inventory",
+          "counter_metric": "missing_sources",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "missing_sources",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Preserve provenance and access restrictions; do not imply source endorsement; supplied fictional counter-measure",
+          "counter_metric": "stale_sources",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p044",
+      "project_id": "044",
+      "label": "Project 044 — Administrative burden",
+      "initial": "PROCESS_SCOPED",
+      "stages": {
+        "PROCESS_SCOPED": [
+          "EVENTS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "EVENTS_RECORDED": [
+          "ACTIVE_TIME_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ACTIVE_TIME_RECORDED": [
+          "WAITING_TIME_RECORDED",
+          "WITHDRAWN"
+        ],
+        "WAITING_TIME_RECORDED": [
+          "COUNTERCHECK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "COUNTERCHECK_RECORDED": [
+          "BURDEN_REVIEW",
+          "WITHDRAWN"
+        ],
+        "BURDEN_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "EVENTS_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "BURDEN_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "EVENTS_RECORDED",
+      "gate_anchors": [
+        "WAITING_TIME_RECORDED",
+        "COUNTERCHECK_RECORDED"
+      ],
+      "gate_label": "administrative burden record",
+      "gate_error": "administrative burden requires a checker distinct from the current recorders",
+      "scope": "Measure end-to-end administrative burden for a selected workflow",
+      "records": "Event timestamps, active work time, waiting periods and participant effort",
+      "measure": "Measure elapsed and active time separately; countercheck errors and transferred burden",
+      "safeguard": "Avoid invented composite scores and protect participant-level records",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1sFGbaPHj6Udok8I9beO_x0CjjbqxkGDupq3wepvVuFc/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "active_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Fictional active time, separate from waiting",
+          "counter_metric": "transferred_burden_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "transferred_burden_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Avoid invented composite scores and protect participant-level records; supplied fictional counter-measure",
+          "counter_metric": "active_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p045",
+      "project_id": "045",
+      "label": "Project 045 — Analytical-role comparison",
+      "initial": "TASK_SCOPED",
+      "stages": {
+        "TASK_SCOPED": [
+          "BASELINE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "BASELINE_RECORDED": [
+          "ROLE_OUTPUTS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ROLE_OUTPUTS_RECORDED": [
+          "DISAGREEMENT_RECORDED",
+          "WITHDRAWN"
+        ],
+        "DISAGREEMENT_RECORDED": [
+          "COMPARISON_RECORDED",
+          "WITHDRAWN"
+        ],
+        "COMPARISON_RECORDED": [
+          "ANALYSIS_REVIEW",
+          "WITHDRAWN"
+        ],
+        "ANALYSIS_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "ROLE_OUTPUTS_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "ANALYSIS_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "ROLE_OUTPUTS_RECORDED",
+      "gate_anchors": [
+        "BASELINE_RECORDED",
+        "COMPARISON_RECORDED"
+      ],
+      "gate_label": "analytical-role comparison record",
+      "gate_error": "analytical-role comparison requires a checker distinct from the current recorders",
+      "scope": "Compare multiple analytical roles with a single-workflow baseline",
+      "records": "Task definitions, role outputs, disagreement logs and verified conclusions",
+      "measure": "Measure verified error and review cost; countercheck coordination overhead",
+      "safeguard": "Keep outputs advisory; no autonomous consequential decisions",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1s6WOoFs5nQFwowYhkq3csKGbLjpwEwEBzU_vKzU1lkc/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "verified_error_count",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Supplied fictional checked errors, not actual agent execution",
+          "counter_metric": "coordination_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "coordination_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Keep outputs advisory; no autonomous consequential decisions; supplied fictional counter-measure",
+          "counter_metric": "verified_error_count",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p046",
+      "project_id": "046",
+      "label": "Project 046 — Transition rehearsal",
+      "initial": "CURRENT_PROCESS_RECORDED",
+      "stages": {
+        "CURRENT_PROCESS_RECORDED": [
+          "FUTURE_PROCESS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "FUTURE_PROCESS_RECORDED": [
+          "CONTINUITY_PLAN_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CONTINUITY_PLAN_RECORDED": [
+          "REHEARSAL_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REHEARSAL_RECORDED": [
+          "ROLLBACK_TEST_RECORDED",
+          "WITHDRAWN"
+        ],
+        "ROLLBACK_TEST_RECORDED": [
+          "TRANSITION_REVIEW",
+          "WITHDRAWN"
+        ],
+        "TRANSITION_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "CONTINUITY_PLAN_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "TRANSITION_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "CONTINUITY_PLAN_RECORDED",
+      "gate_anchors": [
+        "REHEARSAL_RECORDED",
+        "ROLLBACK_TEST_RECORDED"
+      ],
+      "gate_label": "transition rehearsal record",
+      "gate_error": "transition rehearsal requires a checker distinct from the current recorders",
+      "scope": "Rehearse a bounded institutional transition with rollback",
+      "records": "Current and future processes, dependencies, readiness checks and rollback tests",
+      "measure": "Measure rehearsal success and recovery time; countercheck service interruption",
+      "safeguard": "Require separate authorization before any live transition",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1rzbuZ0anFujmQXnrSUWttW-qSy8ua40LVG-bCr9NXY0/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "recovery_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Fictional rollback recovery duration",
+          "counter_metric": "interruption_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "interruption_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Require separate authorization before any live transition; supplied fictional counter-measure",
+          "counter_metric": "recovery_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p047",
+      "project_id": "047",
+      "label": "Project 047 — Rights and agency conditions",
+      "initial": "IMPACT_QUESTIONS_RECORDED",
+      "stages": {
+        "IMPACT_QUESTIONS_RECORDED": [
+          "EVIDENCE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "EVIDENCE_RECORDED": [
+          "CHALLENGE_ROUTE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CHALLENGE_ROUTE_RECORDED": [
+          "RESPONSE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RESPONSE_RECORDED": [
+          "CONDITIONS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "CONDITIONS_RECORDED": [
+          "ASSURANCE_REVIEW",
+          "WITHDRAWN"
+        ],
+        "ASSURANCE_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "EVIDENCE_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "ASSURANCE_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "EVIDENCE_RECORDED",
+      "gate_anchors": [
+        "RESPONSE_RECORDED",
+        "CONDITIONS_RECORDED"
+      ],
+      "gate_label": "rights and agency conditions record",
+      "gate_error": "rights and agency conditions requires a checker distinct from the current recorders",
+      "scope": "Record rights, ethics and human-agency review conditions",
+      "records": "Impact questions, evidence, challenge routes, reviewer notes and unresolved conditions",
+      "measure": "Measure evidence coverage and unresolved condition age; countercheck access to remedy",
+      "safeguard": "Review records are not legal approval or a substitute for accountable human decisions",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1rxSeKiCsyrVYPA8uft3LEvJIUqV5C7KqN-nMz0lnN6Q/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unresolved_conditions",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional unresolved assurance conditions, not legal approval",
+          "counter_metric": "remedy_access_gaps",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "remedy_access_gaps",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Review records are not legal approval or a substitute for accountable human decisions; supplied fictional counter-measure",
+          "counter_metric": "unresolved_conditions",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p048",
+      "project_id": "048",
+      "label": "Project 048 — Scorecard reproducibility",
+      "initial": "METRICS_DEFINED",
+      "stages": {
+        "METRICS_DEFINED": [
+          "DENOMINATORS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "DENOMINATORS_RECORDED": [
+          "BASELINE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "BASELINE_RECORDED": [
+          "COUNTER_METRICS_RECORDED",
+          "WITHDRAWN"
+        ],
+        "COUNTER_METRICS_RECORDED": [
+          "REPRODUCTION_RECORDED",
+          "WITHDRAWN"
+        ],
+        "REPRODUCTION_RECORDED": [
+          "SCORECARD_REVIEW",
+          "WITHDRAWN"
+        ],
+        "SCORECARD_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "DENOMINATORS_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "SCORECARD_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "DENOMINATORS_RECORDED",
+      "gate_anchors": [
+        "COUNTER_METRICS_RECORDED",
+        "REPRODUCTION_RECORDED"
+      ],
+      "gate_label": "scorecard reproducibility record",
+      "gate_error": "scorecard reproducibility requires a checker distinct from the current recorders",
+      "scope": "Publish a reproducible draft scorecard with uncertainty",
+      "records": "Metric definitions, denominators, baseline observations, counter-metrics and corrections",
+      "measure": "Measure reproducibility and correction timeliness; countercheck gaming and missing data",
+      "safeguard": "Do not rank institutions using unvalidated composite scores",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1rr9eAQS9UTW7tj8o-cKLLoUdoHzLXoOJElUmhUGukRI/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "reproduction_failures",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional reproduction failures; no composite rankings",
+          "counter_metric": "missing_observations",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "missing_observations",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Do not rank institutions using unvalidated composite scores; supplied fictional counter-measure",
+          "counter_metric": "reproduction_failures",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p049",
+      "project_id": "049",
+      "label": "Project 049 — Adoption and sustainment",
+      "initial": "STAKEHOLDERS_RECORDED",
+      "stages": {
+        "STAKEHOLDERS_RECORDED": [
+          "COMMITMENTS_ASSERTED",
+          "WITHDRAWN"
+        ],
+        "COMMITMENTS_ASSERTED": [
+          "OWNERSHIP_RECORDED",
+          "WITHDRAWN"
+        ],
+        "OWNERSHIP_RECORDED": [
+          "RESOURCE_PLAN_RECORDED",
+          "WITHDRAWN"
+        ],
+        "RESOURCE_PLAN_RECORDED": [
+          "FEEDBACK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "FEEDBACK_RECORDED": [
+          "ADOPTION_REVIEW",
+          "WITHDRAWN"
+        ],
+        "ADOPTION_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "OWNERSHIP_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "ADOPTION_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "OWNERSHIP_RECORDED",
+      "gate_anchors": [
+        "RESOURCE_PLAN_RECORDED",
+        "FEEDBACK_RECORDED"
+      ],
+      "gate_label": "adoption and sustainment record",
+      "gate_error": "adoption and sustainment requires a checker distinct from the current recorders",
+      "scope": "Plan accountable adoption and sustainment of a bounded improvement",
+      "records": "Stakeholder commitments, role assignments, resource plans and feedback",
+      "measure": "Measure sustained ownership and verified practice adoption; countercheck participation burden",
+      "safeguard": "Do not claim institutional endorsement without recorded agreement",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1rlJkKUjTodlMbHhDSVo-e9k3a5A2TOZInCknszXHwEI/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unowned_actions",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional unowned sustainment actions; no endorsement",
+          "counter_metric": "participation_burden_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "participation_burden_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Do not claim institutional endorsement without recorded agreement; supplied fictional counter-measure",
+          "counter_metric": "unowned_actions",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    },
+    {
+      "workflow": "p050",
+      "project_id": "050",
+      "label": "Project 050 — Cross-layer capstone",
+      "initial": "SCENARIO_SCOPED",
+      "stages": {
+        "SCENARIO_SCOPED": [
+          "LAYER_A_HOLD_RECORDED",
+          "WITHDRAWN"
+        ],
+        "LAYER_A_HOLD_RECORDED": [
+          "LAYER_B_RECORD_RECORDED",
+          "WITHDRAWN"
+        ],
+        "LAYER_B_RECORD_RECORDED": [
+          "LAYER_C_OUTCOME_ASSERTED",
+          "WITHDRAWN"
+        ],
+        "LAYER_C_OUTCOME_ASSERTED": [
+          "LAYER_D_EVIDENCE_RECORDED",
+          "WITHDRAWN"
+        ],
+        "LAYER_D_EVIDENCE_RECORDED": [
+          "LAYER_E_ROLLBACK_RECORDED",
+          "WITHDRAWN"
+        ],
+        "LAYER_E_ROLLBACK_RECORDED": [
+          "CAPSTONE_REVIEW",
+          "WITHDRAWN"
+        ],
+        "CAPSTONE_REVIEW": [
+          "CLOSED",
+          "WITHDRAWN",
+          "LAYER_B_RECORD_RECORDED"
+        ],
+        "CLOSED": [],
+        "WITHDRAWN": []
+      },
+      "terminal": [
+        "CLOSED",
+        "WITHDRAWN"
+      ],
+      "review_stages": [
+        "CAPSTONE_REVIEW"
+      ],
+      "completion": "CLOSED",
+      "correction": "LAYER_B_RECORD_RECORDED",
+      "gate_anchors": [
+        "LAYER_D_EVIDENCE_RECORDED",
+        "LAYER_E_ROLLBACK_RECORDED"
+      ],
+      "gate_label": "cross-layer capstone record",
+      "gate_error": "cross-layer capstone requires a checker distinct from the current recorders",
+      "scope": "Run a synthetic cross-layer simulation and capstone",
+      "records": "Scenario definitions, Layer A review, B workflow, C outcomes, D evidence and E transition records",
+      "measure": "Measure reproducible scenario results and gate enforcement; countercheck unsupported assumptions",
+      "safeguard": "Keep synthetic data clearly labeled and enforce unresolved review holds",
+      "source_basis": "EDITORIAL SYNTHETIC USE CASE; full linked source not reviewed",
+      "source_url": "https://docs.google.com/document/d/1rjRxBHazH9mkTBK8OUs1UKREpSMGPCAntDRMBzunzLA/edit?usp=drivesdk",
+      "metrics": [
+        {
+          "id": "unsupported_assumptions",
+          "kind": "COUNT",
+          "unit": "count",
+          "definition": "Fictional unsupported capstone assumptions",
+          "counter_metric": "rollback_minutes",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        },
+        {
+          "id": "rollback_minutes",
+          "kind": "MINUTES",
+          "unit": "minutes",
+          "definition": "Keep synthetic data clearly labeled and enforce unresolved review holds; supplied fictional counter-measure",
+          "counter_metric": "unsupported_assumptions",
+          "period": "current fictional scenario branch",
+          "owner": "local operator assertion",
+          "exclusions": "No real people, institutions or live records; missing values remain null",
+          "uncertainty": "Supplied synthetic observation; not verified real-world performance",
+          "numerator_definition": "Not applicable",
+          "denominator_definition": "Not applicable",
+          "correction_process": "Append an observation with evidence; old values remain in control history"
+        }
+      ],
+      "execution_authorized": false
+    }
+  ]
+}

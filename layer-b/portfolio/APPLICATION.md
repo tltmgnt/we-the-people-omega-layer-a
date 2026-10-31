@@ -115,3 +115,7 @@ The [controlled readiness-exercise use case](EMERGENCY-LAB.md), at `/scenarios?w
 ## Project 023 scenario controls
 
 The existing justice observatory now links an isolated [justice control use case](JUSTICE-CONTROLS.md), at `/scenarios?workflow=justice`, with fifteen states, separate notice/remedy/reentry checks, remand/rehearing loops and both remedy/reentry closure paths. No judicial, sentencing, bail or release decisions are made. This extends an existing prototype; the portfolio still has fifteen bounded synthetic domain prototypes, not institutionally accepted projects.
+
+## All defined workstreams now have controls
+
+The [controlled portfolio](CONTROLLED-PORTFOLIO.md) covers all 44 defined workstreams, 007–050, with individual handoffs in [control coverage](CONTROL-COVERAGE.md). Existing deeper labs remain; 38 additional catalog profiles add project-specific states, checked rework/closure and typed measures. Project 050 links current completed observed scenario snapshots and flags stale dependencies while retaining the Layer A hold. Six slots, 001–006, remain definition-blocked. These are synthetic software use cases, not 44 accepted institutional domain implementations; source requirements and qualified real-world acceptance remain outstanding.
