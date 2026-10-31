@@ -33,6 +33,8 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 
 ## Start here
 
+- [Load fictional examples for all 44 defined workstreams in one action](portfolio/DEMO-LOADER.md)
+
 - [Control all 44 defined workstreams; inspect six blocked definitions](portfolio/CONTROLLED-PORTFOLIO.md)
 - [All 50 slots: exact scenario coverage and remaining acceptance](portfolio/CONTROL-COVERAGE.md)
 

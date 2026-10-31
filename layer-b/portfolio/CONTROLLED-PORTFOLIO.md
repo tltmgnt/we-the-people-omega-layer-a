@@ -89,3 +89,7 @@ Export/backup preserves state, measurements, source references and full immutabl
 ## Outstanding acceptance
 
 Software scenario coverage is delivered for 007–050. Remaining substantive work includes full source import/review, confirming 001–006, project-specific data/operating contracts, actual method benchmarks and agent execution where appropriate, qualified rights/legal/security/professional review, real evaluation and institutional acceptance. The shared framework and these scenarios remain proposed methods and fictional demonstrations, not completed government programs.
+
+## Ready-to-inspect example batch
+
+The [one-action demo loader](DEMO-LOADER.md) creates 44 completed fictional examples, sample catalog observations and a linked capstone through the normal controls. It is atomic, rejects collisions and preserves later edits on repeat loading. The CLI command is `python -m civic_portfolio demo-scenarios --batch-id SYN-DEMO-V1 --actor "DEMO INITIATOR"`. Existing source/project/domain records and all legal/live holds remain unchanged.
