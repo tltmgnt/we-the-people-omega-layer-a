@@ -2,6 +2,10 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Extend the scenario engine with Project 019 procurement/delivery, nine states, distinct-recorder acceptance pinned to the current path revision, invalidation after corrections, cancellation and explicit checked closure presets. Preserve existing permit runs and legacy stored snapshots.
+- Add eight procurement tests and browser coverage for acceptance holds, corrected delivery, snapshot restore, all state presets, persistence and mobile layout. Source review and real procurement acceptance remain outstanding.
+
+
 - Add an isolated, deterministic permit-use-case controller with all six workflow-state presets, pause/resume/stop, valid steps, manual clock, quality outcomes, reset and append-only snapshot restore. Preserve domain records and fixed legal/execution holds.
 - Add eleven scenario tests and browser coverage for control availability, correction loops, quality outcomes, restore, all presets, persistence and mobile layout.
 

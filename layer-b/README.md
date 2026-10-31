@@ -33,6 +33,8 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 
 ## Start here
 
+- [Control project 019 procurement and contract-delivery scenarios](portfolio/PROCUREMENT-LAB.md)
+
 - [Control every state of a synthetic permit use case](portfolio/SCENARIO-CONTROLS.md)
 
 - [Explore all 50 connected workstreams and the collaboration rehearsal](portfolio/INITIATIVE-LAB.md)

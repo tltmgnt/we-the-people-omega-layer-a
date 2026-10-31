@@ -31,7 +31,7 @@ class InitiativeTests(unittest.TestCase):
             seq=self.lab.program('SYN-PILOT')['events'][-1]['sequence'];self.record('SAFEGUARD_CHECK',dict(assertion_sequence=seq,passed=True,evidence='Fictional separate check'),actor='CHECKER')
     def test_all_50_and_honest_unknowns(self):
         catalog=self.lab.catalog();self.assertEqual([p['project_id'] for p in catalog],[f'{i:03}' for i in range(1,51)])
-        self.assertTrue(all(p['title'] is None for p in catalog[:6]));self.assertEqual(sum(p['prototype_path'] is not None for p in catalog),11)
+        self.assertTrue(all(p['title'] is None for p in catalog[:6]));self.assertEqual(sum(p['prototype_path'] is not None for p in catalog),12)
         self.assertTrue(all(not p['execution_authorized'] for p in catalog));self.assertEqual(sum(p['group']=='SHARED_METHODS' for p in catalog),10)
     def test_dependencies_cycle_deactivation_and_closure(self):
         self.record('DEPENDENCY',dict(from_project='042',to_project='009',rationale='Proposed method dependency',active=True))

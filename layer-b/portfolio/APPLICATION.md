@@ -95,3 +95,7 @@ The [connected initiative workspace](INITIATIVE-LAB.md), at `/initiative`, shows
 ## Controllable use case
 
 The [permit scenario control console](SCENARIO-CONTROLS.md), at `/scenarios`, provides all six workflow states, pause/resume/stop, valid stepping, a manual scenario clock, quality outcomes, presets, reset and append-only snapshot restore. It uses isolated scenario tables and does not change domain permit records, project acceptance or legal/execution holds.
+
+## Project 019 procurement scenario
+
+The [procurement and contract-delivery use case](PROCUREMENT-LAB.md), at `/scenarios?workflow=procurement`, adds nine controllable states, exact-revision acceptance by a distinct recorder identifier, correction invalidation, cancellation, presets and snapshot restore. Full project source review, real contract/competition data and qualified institutional acceptance remain outstanding. There are now twelve bounded synthetic domain prototypes (009–019 and 023), not twelve institutionally completed projects.
