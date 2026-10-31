@@ -75,6 +75,27 @@ class Store:
                   event_sequence INTEGER NOT NULL,
                   at TEXT NOT NULL, verifier TEXT NOT NULL, passed INTEGER NOT NULL,
                   evidence TEXT NOT NULL, PRIMARY KEY(order_id,sequence));
+                CREATE TABLE IF NOT EXISTS sanitation_routes (
+                  id TEXT PRIMARY KEY, stream TEXT NOT NULL, area TEXT NOT NULL,
+                  expected_stops INTEGER NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL, evidence TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS sanitation_runs (
+                  id TEXT PRIMARY KEY, route_id TEXT NOT NULL REFERENCES sanitation_routes(id),
+                  expected_stops INTEGER NOT NULL, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS sanitation_events (
+                  run_id TEXT NOT NULL REFERENCES sanitation_runs(id), sequence INTEGER NOT NULL,
+                  stage TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
+                  served_total INTEGER, evidence TEXT NOT NULL, PRIMARY KEY(run_id,sequence));
+                CREATE TABLE IF NOT EXISTS sanitation_checks (
+                  run_id TEXT NOT NULL REFERENCES sanitation_runs(id), sequence INTEGER NOT NULL,
+                  event_sequence INTEGER NOT NULL, at TEXT NOT NULL, verifier TEXT NOT NULL,
+                  observed_total INTEGER NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(run_id,sequence));
+                CREATE TABLE IF NOT EXISTS sanitation_issues (
+                  id TEXT PRIMARY KEY, run_id TEXT NOT NULL REFERENCES sanitation_runs(id),
+                  description TEXT NOT NULL, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS sanitation_issue_events (
+                  issue_id TEXT NOT NULL REFERENCES sanitation_issues(id), sequence INTEGER NOT NULL,
+                  status TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
+                  evidence TEXT NOT NULL, PRIMARY KEY(issue_id,sequence));
             ''')
             register = json.loads((ROOT / 'portfolio/project-register.json').read_text())
             plans = build()[1]
@@ -171,6 +192,13 @@ class Store:
                         'orders': [dict(r) for r in db.execute('SELECT * FROM maintenance_orders ORDER BY id')],
                         'events': [dict(r) for r in db.execute('SELECT * FROM maintenance_events ORDER BY order_id,sequence')],
                         'checks': [dict(r) for r in db.execute('SELECT * FROM maintenance_checks ORDER BY order_id,sequence')]},
+                    'synthetic_sanitation': {
+                        'routes': [dict(r) for r in db.execute('SELECT * FROM sanitation_routes ORDER BY id')],
+                        'runs': [dict(r) for r in db.execute('SELECT * FROM sanitation_runs ORDER BY id')],
+                        'events': [dict(r) for r in db.execute('SELECT * FROM sanitation_events ORDER BY run_id,sequence')],
+                        'checks': [dict(r) for r in db.execute('SELECT * FROM sanitation_checks ORDER BY run_id,sequence')],
+                        'issues': [dict(r) for r in db.execute('SELECT * FROM sanitation_issues ORDER BY id')],
+                        'issue_events': [dict(r) for r in db.execute('SELECT * FROM sanitation_issue_events ORDER BY issue_id,sequence')]},
                     'notice': 'Local user assertions; completion does not authorize public-service execution.'}
 
     def update(self, identifier, data):
