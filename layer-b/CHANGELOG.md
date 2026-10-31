@@ -2,6 +2,11 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Add selected review ZIPs with bounded transitive snapshot/comparison scope, workflow definitions, A–E summary, checksums and standalone offline verification of references/state hashes/arithmetic/boundaries. Add guarded UI/API/CLI without overwriting outputs or exporting unrelated workspace records.
+- Add a central five-layer architecture index and individual user-supplied A–E summaries, with direct links to detailed A/B documents and explicit C/D/E/full-source acceptance gaps.
+- Add twelve bundle tests and browser download/trusted-verification/mobile checks. Hashes remain unsigned structural evidence, not authenticity, legal approval or actual outcome validation.
+
+
 - Add immutable baseline/alternative scenario comparisons with frozen snapshot/contract pins, separate timing/metric deltas, source/catalog/integrity warnings, quality-pass-loss diagnostics and withholding for incompatible phases/branches or missing/stale observations. Preserve all source scenarios.
 - Add twelve comparison tests and browser coverage for arithmetic, note escaping, persistence, frozen results after source advancement and mobile layout. No causal, significance, composite-score or real-world improvement claim is produced.
 

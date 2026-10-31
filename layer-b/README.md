@@ -33,6 +33,9 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 
 ## Start here
 
+- [Find the Five-Layer Architecture A–E](../Docs/Architecture/README.md)
+- [Download selected review bundles and verify them independently](portfolio/REVIEW-BUNDLES.md)
+
 - [Compare baseline and alternative scenario snapshots](portfolio/SCENARIO-COMPARISONS.md)
 
 - [Load fictional examples for all 44 defined workstreams in one action](portfolio/DEMO-LOADER.md)
