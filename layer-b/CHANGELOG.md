@@ -2,6 +2,10 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Add Project 020 controllable education-service access/continuity scenario, nine states, distinct service/follow-up checker, interruption invalidation, withdrawal, checked closure presets and snapshot restoration. Generalize guarded checks while preserving permit/procurement behavior.
+- Add eight education tests and browser coverage for continuity holds, interruptions, all states, restore, persistence and mobile layout. No learning outcomes, eligibility decisions or rankings are inferred; actual source and institutional review remain pending.
+
+
 - Extend the scenario engine with Project 019 procurement/delivery, nine states, distinct-recorder acceptance pinned to the current path revision, invalidation after corrections, cancellation and explicit checked closure presets. Preserve existing permit runs and legacy stored snapshots.
 - Add eight procurement tests and browser coverage for acceptance holds, corrected delivery, snapshot restore, all state presets, persistence and mobile layout. Source review and real procurement acceptance remain outstanding.
 

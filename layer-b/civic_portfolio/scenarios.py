@@ -29,11 +29,24 @@ PROCUREMENT_STAGES={
     'CORRECTION_REQUESTED':{'DELIVERY_RECORDED','CANCELLED'},
     'CLOSED':set(),'CANCELLED':set(),
 }
+EDUCATION_STAGES={
+    'REQUEST_RECORDED':{'ACCESS_REVIEW','WITHDRAWN'},
+    'ACCESS_REVIEW':{'SERVICE_OFFERED','WITHDRAWN'},
+    'SERVICE_OFFERED':{'SERVICE_STARTED','ACCESS_REVIEW','WITHDRAWN'},
+    'SERVICE_STARTED':{'FOLLOW_UP_RECORDED','INTERRUPTED','WITHDRAWN'},
+    'INTERRUPTED':{'SERVICE_OFFERED','WITHDRAWN'},
+    'FOLLOW_UP_RECORDED':{'CONTINUITY_REVIEW','INTERRUPTED','WITHDRAWN'},
+    'CONTINUITY_REVIEW':{'CLOSED','INTERRUPTED','WITHDRAWN'},
+    'CLOSED':set(),'WITHDRAWN':set(),
+}
 WORKFLOWS={
     'permit':dict(label='Project 009 — fictional permit',initial='RECEIVED',stages=STAGES,
                   terminal=TERMINAL,review_stages={'DECIDED'},completion='DECIDED',correction='AWAITING_CORRECTION'),
     'procurement':dict(label='Project 019 — fictional procurement and delivery',initial='DRAFT',stages=PROCUREMENT_STAGES,
-                  terminal={'CLOSED','CANCELLED'},review_stages={'ACCEPTANCE_REVIEW'},completion='CLOSED',correction='CORRECTION_REQUESTED'),
+                  terminal={'CLOSED','CANCELLED'},review_stages={'ACCEPTANCE_REVIEW'},completion='CLOSED',correction='CORRECTION_REQUESTED',gate_anchors=['DELIVERY_RECORDED'],gate_label='acceptance',gate_error='acceptance requires a checker distinct from the current delivery recorder'),
+    'education':dict(label='Project 020 — fictional education-service access and continuity',initial='REQUEST_RECORDED',stages=EDUCATION_STAGES,
+                  terminal={'CLOSED','WITHDRAWN'},review_stages={'CONTINUITY_REVIEW'},completion='CLOSED',correction='INTERRUPTED',
+                  gate_anchors=['SERVICE_STARTED','FOLLOW_UP_RECORDED'],gate_label='continuity',gate_error='continuity requires a checker distinct from the current service/follow-up recorders'),
 }
 
 def configuration(workflow):
@@ -78,15 +91,15 @@ def route(target,workflow='permit'):
 def controls(state,workflow='permit'):
     config=configuration(workflow);active=state['stage'] not in config['terminal']
     running=state['execution']=='RUNNING';structural=sorted(config['stages'][state['stage']]);blocked={}
-    if workflow=='procurement' and 'CLOSED' in structural and not acceptance_current(state):
-        blocked['CLOSED']='Passing check of this exact acceptance revision required.'
+    if config.get('gate_anchors') and 'CLOSED' in structural and not acceptance_current(state):
+        blocked['CLOSED']='Passing check of this exact '+config['gate_label']+' revision required.'
     return dict(step=active and running,next_stages=[s for s in structural if s not in blocked] if active and running else [],
                 structural_next_stages=structural,blocked_next_stages=blocked,
                 pause=active and running,resume=active and state['execution'] in {'PAUSED','STOPPED'},
                 stop=active and state['execution'] in {'RUNNING','PAUSED'},tick=True,
                 review=state['stage'] in config['review_stages'] and (workflow=='permit' or running),
                 preset=True,restore=True,
-                reason='Closure needs a separate passing check for the current acceptance revision.' if blocked and running else
+                reason='Closure needs a separate passing check for the current '+config.get('gate_label','quality')+' revision.' if blocked and running else
                 'Choose a valid transition.' if active and running else
                 'Terminal workflow state: inspect, review where applicable, restore or load a preset.' if not active else
                 'Resume the simulation before changing workflow state.')
@@ -146,10 +159,10 @@ class Scenarios:
                     target=text(params['stage'],'next stage',100)
                     if not allowed['step']:raise ValueError(allowed['reason'])
                     if target not in config['stages'][state['stage']]:raise ValueError('invalid workflow transition')
-                    if workflow=='procurement' and target=='CLOSED' and not acceptance_current(state):raise ValueError('closure requires a passing check for the current acceptance revision')
+                    if config.get('gate_anchors') and target=='CLOSED' and not acceptance_current(state):raise ValueError('closure requires a passing check for the current '+config['gate_label']+' revision')
                     state['clock_minutes']+=minutes;state['stage']=target
                     state['path'].append(dict(stage=target,minute=state['clock_minutes'],actor=actor))
-                    if workflow=='procurement' and target!='CLOSED':state.update(quality='UNREVIEWED',review_path_index=None)
+                    if config.get('gate_anchors') and target!='CLOSED':state.update(quality='UNREVIEWED',review_path_index=None)
                     if target in config['terminal']:state['execution']='COMPLETED'
                 else:state['clock_minutes']+=minutes
             elif action=='PAUSE':
@@ -164,25 +177,25 @@ class Scenarios:
             elif action=='REVIEW':
                 if not allowed['review']:raise ValueError('review is unavailable in this workflow/execution state')
                 if type(params['passed']) is not bool:raise ValueError('passed requires boolean')
-                if workflow=='procurement':
-                    delivery=next((p for p in reversed(state['path']) if p['stage']=='DELIVERY_RECORDED'),None)
-                    if not delivery or delivery.get('actor')==actor:raise ValueError('acceptance requires a checker distinct from the current delivery recorder')
+                if config.get('gate_anchors'):
+                    anchors=[next((p for p in reversed(state['path']) if p['stage']==stage),None) for stage in config['gate_anchors']]
+                    if any(p is None or p.get('actor')==actor for p in anchors):raise ValueError(config['gate_error'])
                     state['review_path_index']=len(state['path'])-1
                 state['quality']='PASS' if params['passed'] else 'FAIL'
                 state['reviews'].append(dict(passed=params['passed'],minute=state['clock_minutes'],actor=actor,note=note))
             elif action=='PRESET':
                 target=text(params['stage'],'preset stage',100);quality=text(params['quality'],'preset quality',100)
                 if quality not in QUALITY or (target not in config['review_stages'] and target!=config['completion'] and quality!='UNREVIEWED'):raise ValueError('quality outcomes are unavailable for this preset')
-                if workflow=='procurement' and target=='CLOSED' and quality!='PASS':raise ValueError('CLOSED preset requires PASS quality; use ACCEPTANCE_REVIEW for unchecked/failed states')
+                if config.get('gate_anchors') and target=='CLOSED' and quality!='PASS':raise ValueError('CLOSED preset requires PASS quality; use the review state for unchecked/failed outcomes')
                 path=route(target,workflow);state=initial(state['start_at'],workflow)
                 for stage in path[1:]:
-                    if workflow=='procurement' and stage=='CLOSED':
+                    if config.get('gate_anchors') and stage=='CLOSED':
                         state['quality']='PASS';state['review_path_index']=len(state['path'])-1
-                        state['reviews'].append(dict(passed=True,minute=state['clock_minutes'],actor='SYN-PRESET-CHECKER',note='Explicit fictional acceptance check in CLOSED preset',path_index=len(state['path'])-1))
+                        state['reviews'].append(dict(passed=True,minute=state['clock_minutes'],actor='SYN-PRESET-CHECKER',note='Explicit fictional '+config['gate_label']+' check in CLOSED preset',path_index=len(state['path'])-1))
                     state['clock_minutes']+=60;state['stage']=stage
                     state['path'].append(dict(stage=stage,minute=state['clock_minutes'],actor='SYN-PRESET-RECORDER'))
                 if target in config['terminal']:state['execution']='COMPLETED'
-                if quality!='UNREVIEWED' and not (workflow=='procurement' and target=='CLOSED'):
+                if quality!='UNREVIEWED' and not (config.get('gate_anchors') and target=='CLOSED'):
                     state['quality']=quality;state['review_path_index']=len(state['path'])-1
                     state['reviews'].append(dict(passed=quality=='PASS',minute=state['clock_minutes'],actor='SYN-PRESET-CHECKER',note='Fictional preset outcome: '+note))
             elif action=='RESTORE':
@@ -211,5 +224,8 @@ class Scenarios:
                     clock_minutes=state['clock_minutes'],decision_elapsed_minutes=last['minute'] if state['stage']=='DECIDED' else None,
                     open_age_minutes=None if terminal else state['clock_minutes'],stage_minutes=durations,
                     correction_cycles=sum(p['stage']==config['correction'] for p in state['path']),
+                    service_interruptions=sum(p['stage']=='INTERRUPTED' for p in state['path']) if workflow=='education' else None,
+                    service_start_elapsed_minutes=next((p['minute'] for p in state['path'] if p['stage']=='SERVICE_STARTED'),None) if workflow=='education' else None,
+                    learning_outcomes_assessed=False if workflow=='education' else None,
                     history_events=len(run['history']),execution_authorized=False,legal_review='REQUIRED',
-                    method='Manual deterministic scenario clock; no background automation. TICK advances fictional time even while paused/stopped or terminal. PAUSE/STOP freeze workflow transitions until RESUME, not the manual clock. PRESET replays a shortest valid path at 60 minutes per edge; RESTORE copies a prior snapshot into a new append-only event. Neither deletes history. Quality outcomes and preset reviews are fictional assertions. Procurement closure requires a distinct-recorder acceptance check pinned to the current path revision; changed delivery/corrections invalidate it. CLOSED presets include an explicit fictional check. This isolated controller does not issue awards, payments, permit approvals, project/source completion, government actions or Layer A holds.')
+                    method='Manual deterministic scenario clock; no background automation. TICK advances fictional time even while paused/stopped or terminal. PAUSE/STOP freeze workflow transitions until RESUME, not the manual clock. PRESET replays a shortest valid path at 60 minutes per edge; RESTORE copies a prior snapshot into a new append-only event. Neither deletes history. Quality outcomes and preset reviews are fictional assertions. Procurement and education closure require a distinct-recorder check pinned to the current path revision; changed delivery, follow-up, interruptions or corrections invalidate it. Education check identifiers must differ from both current service and follow-up recorders. No learning, eligibility or ranking inference is made. CLOSED presets include an explicit fictional check. This isolated controller does not issue awards, payments, permit approvals, project/source completion, government actions or Layer A holds.')

@@ -919,6 +919,44 @@ const path = require('node:path');
     await page.reload();await page.locator('#run').selectOption('SYN-PROCUREMENT-DEMO');
     await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "CANCELLED"')&&!document.querySelector('#refresh').disabled);
     await page.screenshot({path:'.local/portfolio-procurement-mobile.png'});
+    await page.locator('#workflow').selectOption('education');
+    await page.locator('#actor').fill('EDUCATION OPERATOR');
+    await page.locator('#note').fill('Fictional education service only');
+    await page.locator('#run-id').fill('SYN-EDUCATION-DEMO');
+    await page.getByRole('button',{name:'Create scenario',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('#run').value==='SYN-EDUCATION-DEMO'&&!document.querySelector('#pause').disabled);
+    for(const stage of ['ACCESS_REVIEW','SERVICE_OFFERED','SERVICE_STARTED','FOLLOW_UP_RECORDED','CONTINUITY_REVIEW']){
+      await page.locator('#next').selectOption(stage);await scenarioClick('step');
+    }
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Education closure available without continuity check');
+    await page.locator('#pass').click();
+    await page.getByText('continuity requires a checker distinct from the current service/follow-up recorders',{exact:true}).waitFor();
+    await page.locator('#actor').fill('EDUCATION CHECKER');await scenarioClick('fail');
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Failed education check permits closure');
+    await scenarioClick('pass');
+    const educationCheckpoint=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#actor').fill('EDUCATION OPERATOR');
+    for(const stage of ['INTERRUPTED','SERVICE_OFFERED','SERVICE_STARTED','FOLLOW_UP_RECORDED','CONTINUITY_REVIEW']){
+      await page.locator('#next').selectOption(stage);await scenarioClick('step');
+    }
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Education reused earlier continuity check after interruption');
+    await page.locator('#actor').fill('EDUCATION CHECKER');await scenarioClick('pass');
+    await page.locator('#next').selectOption('CLOSED');await scenarioClick('step');
+    let educationReport=JSON.parse(await page.locator('#report').textContent());
+    if(educationReport.workflow!=='education'||educationReport.service_interruptions!==1||educationReport.learning_outcomes_assessed||educationReport.execution_authorized)throw Error('Education report falsely implies learning/authority');
+    const beforeEducationRestore=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#snapshot').selectOption(String(educationCheckpoint));await page.locator('#restore').click();
+    await page.waitForFunction(n=>JSON.parse(document.querySelector('#snapshot-data').textContent).sequence===n&&!document.querySelector('#refresh').disabled,beforeEducationRestore+1);
+    if(!(await page.locator('#next option[value="CLOSED"]').count()))throw Error('Education continuity snapshot not restored');
+    for(const stage of ['REQUEST_RECORDED','ACCESS_REVIEW','SERVICE_OFFERED','SERVICE_STARTED','INTERRUPTED','FOLLOW_UP_RECORDED','CONTINUITY_REVIEW','CLOSED','WITHDRAWN']){
+      await page.locator('#preset-stage').selectOption(stage);await scenarioClick('preset');
+      educationReport=JSON.parse(await page.locator('#report').textContent());
+      if(educationReport.stage!==stage||educationReport.execution_authorized)throw Error('Education preset failed: '+stage);
+      if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Education mobile overflow: '+stage);
+    }
+    await page.reload();await page.locator('#run').selectOption('SYN-EDUCATION-DEMO');
+    await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "WITHDRAWN"')&&!document.querySelector('#refresh').disabled);
+    await page.screenshot({path:'.local/portfolio-education-mobile.png'});
     if(errors.length)throw Error(errors.join('; '));
     console.log('PASS: portfolio and eleven domain labs, connected initiative and scenario controls, evidence/hold safeguards, reports, persistence and mobile layout');
   } catch(error) {

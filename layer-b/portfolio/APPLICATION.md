@@ -98,4 +98,8 @@ The [permit scenario control console](SCENARIO-CONTROLS.md), at `/scenarios`, pr
 
 ## Project 019 procurement scenario
 
-The [procurement and contract-delivery use case](PROCUREMENT-LAB.md), at `/scenarios?workflow=procurement`, adds nine controllable states, exact-revision acceptance by a distinct recorder identifier, correction invalidation, cancellation, presets and snapshot restore. Full project source review, real contract/competition data and qualified institutional acceptance remain outstanding. There are now twelve bounded synthetic domain prototypes (009–019 and 023), not twelve institutionally completed projects.
+The [procurement and contract-delivery use case](PROCUREMENT-LAB.md), at `/scenarios?workflow=procurement`, adds nine controllable states, exact-revision acceptance by a distinct recorder identifier, correction invalidation, cancellation, presets and snapshot restore. Full project source review, real contract/competition data and qualified institutional acceptance remain outstanding. This remains a bounded synthetic domain prototype, not an institutionally completed project.
+
+## Project 020 education scenario
+
+The [education-service access and continuity use case](EDUCATION-LAB.md), at `/scenarios?workflow=education`, adds nine controllable states, service/follow-up revision checks, interruptions and withdrawal. It assesses no learning, eligibility or rankings. There are now thirteen bounded synthetic domain prototypes (009–020 and 023); source review and real institutional acceptance remain outstanding.

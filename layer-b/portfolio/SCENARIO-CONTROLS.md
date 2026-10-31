@@ -78,3 +78,7 @@ Tests cover every workflow preset, valid/invalid edges, pause/stop/resume, expli
 ## Additional workflow: Project 019
 
 The console now also supports a [procurement and contract-delivery use case](PROCUREMENT-LAB.md) with nine states and revision-specific acceptance holds. Select the workflow when creating a run. Omitted workflow and older stored bodies continue to default to permit. Reset targets each workflow's own initial state; snapshots remain scoped to the immutable run/workflow. The shared bootstrap publishes both workflow configurations. See the linked procurement handoff for closure rules and explicit checked CLOSED presets.
+
+## Additional workflow: Project 020
+
+The [education-service use case](EDUCATION-LAB.md) adds nine states for access, offers, service, follow-up, interruptions and withdrawal. Current continuity checks require an identifier distinct from both current service-start and follow-up recorders. Changed service/follow-up invalidates checks. All shared controls, historical snapshots and fixed holds apply. No learning assessment or student decisions are performed.
