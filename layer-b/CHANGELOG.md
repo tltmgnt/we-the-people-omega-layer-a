@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Implement project 017's synthetic administrative-service readiness, revision-specific checks, anonymous access observations and correction/closure/reopening workflow, with explicit unknown counts, censored ages and area/channel inventory context.
+- Add seven election-service tests and expand browser CI through readiness revision, correction-proof holds, reopening, unknown counts, persistence and mobile layout. Preserve actual service/representation requirements and avoid voter-level data or election-outcome conclusions.
+
 - Implement project 016's synthetic rights-evidence intake with A1–A7 screening histories, exact-text/hash revisions, validated snapshot pins, stale-dependency diagnostics, unassessed authority candidates and question/challenge histories; export a permanently blocked Layer A draft and companion evidence bundle.
 - Add seven rights tests including canonical schema/Layer A readiness validation, stale-source history, pin integrity and backup/export; expand browser CI through revisions, reassessment, challenge reopening, fixed legal-review holds, persistence and mobile layout. Preserve actual applicability and qualified-review gaps.
 

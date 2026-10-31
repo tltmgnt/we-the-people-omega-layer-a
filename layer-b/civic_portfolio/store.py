@@ -218,6 +218,31 @@ class Store:
                   question_id TEXT NOT NULL REFERENCES rights_questions(id), sequence INTEGER NOT NULL,
                   status TEXT NOT NULL, evidence_pins TEXT NOT NULL, at TEXT NOT NULL,
                   actor TEXT NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(question_id,sequence));
+                CREATE TABLE IF NOT EXISTS election_sessions (
+                  id TEXT PRIMARY KEY, label TEXT NOT NULL, area TEXT NOT NULL, channel TEXT NOT NULL,
+                  opens_at TEXT NOT NULL, closes_at TEXT NOT NULL, registered_at TEXT NOT NULL,
+                  last_at TEXT NOT NULL, actor TEXT NOT NULL, report_reference TEXT, version INTEGER NOT NULL);
+                CREATE TABLE IF NOT EXISTS election_readiness (
+                  session_id TEXT NOT NULL REFERENCES election_sessions(id), sequence INTEGER NOT NULL,
+                  item TEXT NOT NULL, status TEXT NOT NULL, criteria_reference TEXT,
+                  evidence TEXT NOT NULL, at TEXT NOT NULL, actor TEXT NOT NULL,
+                  PRIMARY KEY(session_id,sequence));
+                CREATE TABLE IF NOT EXISTS election_readiness_checks (
+                  session_id TEXT NOT NULL REFERENCES election_sessions(id), sequence INTEGER NOT NULL,
+                  readiness_sequence INTEGER NOT NULL, at TEXT NOT NULL, verifier TEXT NOT NULL,
+                  passed INTEGER NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(session_id,sequence));
+                CREATE TABLE IF NOT EXISTS election_access_observations (
+                  id TEXT PRIMARY KEY, session_id TEXT NOT NULL REFERENCES election_sessions(id),
+                  barrier TEXT NOT NULL, description TEXT NOT NULL, affected_observations INTEGER,
+                  at TEXT NOT NULL, actor TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS election_observation_events (
+                  observation_id TEXT NOT NULL REFERENCES election_access_observations(id), sequence INTEGER NOT NULL,
+                  status TEXT NOT NULL, correction_reference TEXT, at TEXT NOT NULL,
+                  actor TEXT NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(observation_id,sequence));
+                CREATE TABLE IF NOT EXISTS election_correction_checks (
+                  observation_id TEXT NOT NULL REFERENCES election_access_observations(id), sequence INTEGER NOT NULL,
+                  correction_sequence INTEGER NOT NULL, at TEXT NOT NULL, verifier TEXT NOT NULL,
+                  passed INTEGER NOT NULL, evidence TEXT NOT NULL, PRIMARY KEY(observation_id,sequence));
             ''')
             register = json.loads((ROOT / 'portfolio/project-register.json').read_text())
             plans = build()[1]
@@ -352,6 +377,14 @@ class Store:
                             ('cases','rights_cases','id'),('screenings','rights_screenings','case_id,sequence'),
                             ('evidence','rights_evidence','case_id,evidence_id,revision'),('candidate_authorities','rights_authorities','case_id,authority_id'),
                             ('questions','rights_questions','id'),('question_events','rights_question_events','question_id,sequence')]},
+                    'synthetic_election_services': {
+                        name: [dict(r) for r in db.execute('SELECT * FROM '+table+' ORDER BY '+order)]
+                        for name,table,order in [
+                            ('sessions','election_sessions','id'),('readiness','election_readiness','session_id,sequence'),
+                            ('readiness_checks','election_readiness_checks','session_id,sequence'),
+                            ('access_observations','election_access_observations','id'),
+                            ('observation_events','election_observation_events','observation_id,sequence'),
+                            ('correction_checks','election_correction_checks','observation_id,sequence')]},
                     'notice': 'Local user assertions; completion does not authorize public-service execution.'}
 
     def update(self, identifier, data):
