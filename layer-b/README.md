@@ -33,6 +33,8 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 
 ## Start here
 
+- [Compare baseline and alternative scenario snapshots](portfolio/SCENARIO-COMPARISONS.md)
+
 - [Load fictional examples for all 44 defined workstreams in one action](portfolio/DEMO-LOADER.md)
 
 - [Control all 44 defined workstreams; inspect six blocked definitions](portfolio/CONTROLLED-PORTFOLIO.md)

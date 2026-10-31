@@ -2,6 +2,10 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Add immutable baseline/alternative scenario comparisons with frozen snapshot/contract pins, separate timing/metric deltas, source/catalog/integrity warnings, quality-pass-loss diagnostics and withholding for incompatible phases/branches or missing/stale observations. Preserve all source scenarios.
+- Add twelve comparison tests and browser coverage for arithmetic, note escaping, persistence, frozen results after source advancement and mobile layout. No causal, significance, composite-score or real-world improvement claim is produced.
+
+
 - Add one-action/CLI loading of all 44 fictional examples with checked paths, sample observations, linked capstone and persisted batch receipts. Seed through the normal controls in one transaction; reject collisions, preserve operator changes and flag older/missing/catalog-changed batches.
 - Add demo rollback/idempotency/isolation/backup/API/CLI tests and browser coverage for loading, non-overwriting reload, stale capstone preservation, persistence and mobile layout. Real source acceptance and live authority remain unchanged.
 
