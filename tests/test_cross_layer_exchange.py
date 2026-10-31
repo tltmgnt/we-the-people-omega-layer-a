@@ -22,6 +22,34 @@ class CrossLayerExchangeTests(unittest.TestCase):
             self.assertEqual(main(["--require-ready", str(self.path)]), 2)
         self.assertEqual(output.getvalue().count("VALID EXCHANGE; BLOCKED"), 2)
 
+    def test_ambiguous_exchange_json_is_rejected(self):
+        duplicate = '{"schema_version":"9.0.0",' + json.dumps(self.exchange)[1:]
+        nested = json.dumps(self.exchange).replace(
+            '"proposal_id": "HYPOTHETICAL-BENEFITS-001"',
+            '"proposal_id": "OTHER", "proposal_id": "HYPOTHETICAL-BENEFITS-001"', 1)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "exchange.json"
+            for value in [duplicate, nested, '{"value":NaN}']:
+                with self.subTest(value=value), redirect_stderr(io.StringIO()):
+                    path.write_text(value)
+                    self.assertEqual(main(["--require-ready", str(path)]), 1)
+
+    def test_pinned_json_is_strict_even_when_hash_matches(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / "pinned.json"
+            for raw in [
+                b'{"review_status":"DRAFT","review_status":"LEGAL_REVIEW_REQUIRED"}',
+                b'{"sources":[{"evidence_id":"FIRST","evidence_id":"LAST"}]}',
+                b'{"sources":[NaN]}', b'{"sources":[Infinity]}',
+                b'{"sources":[-Infinity]}', b'\xff',
+            ]:
+                with self.subTest(raw=raw):
+                    path.write_bytes(raw)
+                    reference = {"path": path.name, "sha256": hashlib.sha256(raw).hexdigest()}
+                    with self.assertRaises(ValueError):
+                        read_pinned(reference, root)
+
     def test_mismatched_proposal_and_review_identity(self):
         for layer, field, value in [
             ("layer_c", "proposal_id", "OTHER"), ("layer_d", "proposal_id", "OTHER"),

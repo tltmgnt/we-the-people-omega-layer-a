@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Reject duplicate JSON keys and nonstandard numeric constants in records, exchanges and pinned JSON; add regression coverage and a stack-review report.
 - Add a milestone roadmap, 0.2.0-alpha acceptance criteria, stacked-PR merge procedure and release evidence ledger; no release is published.
 - Add a versioned synthetic B/C/A/D exchange, pinned-reference consumer, contract documentation and negative integration tests.
 - Add A1–A7 domain checklists with review questions, evidence requests, escalation triggers and shared record-field mapping.

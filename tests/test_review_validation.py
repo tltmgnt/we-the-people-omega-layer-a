@@ -6,7 +6,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from scripts.validate_review import ROOT, main, validator
+from scripts.validate_review import ROOT, load_json, main, validator
 
 
 class ReviewValidationTests(unittest.TestCase):
@@ -39,6 +39,22 @@ class ReviewValidationTests(unittest.TestCase):
                 record = copy.deepcopy(self.record)
                 record[field] = value
                 self.assertFalse(self.check.is_valid(record))
+
+    def test_ambiguous_and_nonstandard_json_is_rejected(self):
+        duplicate = '{"review_status":"DRAFT",' + json.dumps(self.record)[1:]
+        values = [
+            duplicate, '{"nested":{"id":"first","id":"last"}}',
+            '{"revision":NaN}', '{"revision":Infinity}', '{"revision":-Infinity}',
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "record.json"
+            for value in values:
+                with self.subTest(value=value):
+                    with self.assertRaises(ValueError):
+                        load_json(value)
+                    path.write_text(value)
+                    with redirect_stderr(io.StringIO()):
+                        self.assertEqual(main(["--require-ready", str(path)]), 1)
 
     def ready_record(self):
         record = copy.deepcopy(self.record)

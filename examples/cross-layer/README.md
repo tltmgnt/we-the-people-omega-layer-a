@@ -35,7 +35,8 @@ authenticate an author, reviewer or external source.
 5. Report the actual Layer A status and keep the exchange blocked. This initial fixture
    requires nonempty D uncertainties, so it cannot represent a ready or approved exchange.
 
-Malformed or mismatched exchanges exit 1. Valid structure exits 0 while reporting BLOCKED;
+Duplicate JSON keys, NaN/Infinity constants and non-UTF-8 pinned JSON are rejected before
+schema or reference checks. Malformed or mismatched exchanges exit 1. Valid structure exits 0 while reporting BLOCKED;
 --require-ready exits 2. Downstream actions must not interpret structural success as permission.
 No institution is authorized, no legal review is invented, and the consumer sends no requests.
 
