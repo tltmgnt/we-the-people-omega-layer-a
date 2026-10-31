@@ -6,11 +6,14 @@ Evaluates whether public services and investments produce meaningful, measurable
 
 ## Current repository scope
 
-Conceptual architecture outline and manually supplied synthetic outcome/counter-measure records. No separate completed Layer C package, verified real outcome dataset, distributional evaluation or causal-effect assessment is delivered.
+Dedicated synthetic aggregate outcome workspace: immutable measurement/cohort/exclusion/uncertainty contracts, revision-pinned baseline/follow-up observations, counter-measures, separate checks and descriptive deltas with missing/stale-data holds. No verified real outcome dataset, distributional inference or causal-effect assessment is delivered.
 
 - [Measurement contracts and limits](../../../layer-b/portfolio/CONTROLLED-PORTFOLIO.md)
 - [Proposed balanced scorecard](../../../layer-b/docs/Methods/scorecard.md)
 - [Scenario comparisons: no causal claims](../../../layer-b/portfolio/SCENARIO-COMPARISONS.md)
+
+- [Dedicated C/D/E workspace, controls and worked example](../../../layer-b/portfolio/LAYER-WORKSPACES.md)
+- [Shared prototype implementation](../../../layer-b/civic_portfolio/layer_workspaces.py)
 
 ## Source and acceptance
 

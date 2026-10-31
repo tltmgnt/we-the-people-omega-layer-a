@@ -64,7 +64,7 @@ POST /api/review-bundles accepts bundle_id, selections=[{run_id,sequence}], comp
 
 ## Architecture location
 
-The repository's [central five-layer index](../../Docs/Architecture/README.md) links individual A–E summaries and existing detailed A/B documents. C/D/E summaries and shared tools are not separate completed layer packages. The bundled machine-readable summary preserves this distinction and the supplied source URLs.
+The repository's [central five-layer index](../../Docs/Architecture/README.md) links individual A–E summaries and existing detailed A/B documents. C/D/E now have dedicated synthetic workspaces, documented in [LAYER-WORKSPACES.md](LAYER-WORKSPACES.md). Their evidence/outcome/rehearsal records are outside this selected scenario ZIP; these remain prototypes rather than complete institutional implementations. The bundled machine-readable summary preserves this distinction and the supplied source URLs.
 
 ## Verification and handoff
 

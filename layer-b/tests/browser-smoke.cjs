@@ -1220,8 +1220,61 @@ const path = require('node:path');
     await page.getByText('Selected review ZIP built. Check the manifest and selected notes before sharing; no authority is granted.',{exact:true}).waitFor();
     if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Review bundle mobile overflow');
     await page.screenshot({path:'.local/portfolio-review-bundle-mobile.png'});
+    await page.goto(url+'/layers');
+    await page.getByRole('heading',{name:'Outcomes, evidence and learning',exact:true}).waitFor();
+    await page.locator('#field-evidence_id').waitFor();
+    async function layerSave(kind,values,actor='CDE RECORDER'){
+      await page.locator('#record-kind').selectOption(kind);
+      await page.locator('#actor').fill(actor);
+      await page.locator('#note').fill('Fictional CDE browser rehearsal; no real-world acceptance');
+      await page.locator('#at').fill('2026-01-03T00:00:00Z');
+      for(const [name,value] of Object.entries(values)){
+        const field=page.locator('#field-'+name);
+        if(await field.evaluate(e=>e.tagName==='SELECT'))await field.selectOption(value);
+        else await field.fill(String(value));
+      }
+      await page.locator('#message').evaluate(e=>e.textContent='');
+      await page.locator('#save-layer').click();
+      await page.waitForFunction(()=>document.querySelector('#message').textContent.length>0&&!document.querySelector('#save-layer').disabled);
+      const message=await page.locator('#message').textContent();
+      if(!message.startsWith('Saved local'))throw Error('CDE save failed: '+message);
+    }
+    const sourceFields={evidence_id:'SYN-CDE-EVIDENCE',content:' exact synthetic text <script>window.cdeBad=true</script>\n',origin:'Fictional browser fixture',confidence:'C',limitations:'Fictional aggregate source, unverified'};
+    await layerSave('EVIDENCE',sourceFields);
+    await layerSave('EVIDENCE_REVIEW',{passed:'true'},'CDE CHECKER');
+    if(await page.evaluate(()=>window.cdeBad))throw Error('CDE source executed as HTML');
+    await layerSave('STUDY',{study_id:'SYN-CDE-STUDY',domain:'Fictional service',definition:'Completed divided by eligible requests',kind:'PROPORTION',unit:'fraction',cohort:'Fictional aggregate requests',exclusions:'No exclusions assumed',uncertainty:'No inference',counter_definition:'Repeat visits',counter_kind:'COUNT',counter_unit:'visits',owner:'SYN-OWNER'});
+    const observation={phase:'BASELINE',group:'Fictional cohort',window_start:'2026-01-01T00:00:00Z',window_end:'2026-01-02T00:00:00Z',primary_numerator:8,primary_denominator:10,counter_numerator:2,pins:JSON.stringify({evidence_id:'SYN-CDE-EVIDENCE',revision:1})};
+    await layerSave('OBSERVATION',observation);
+    await layerSave('OUTCOME_REVIEW',{observation_sequence:1,passed:'true'},'CDE CHECKER');
+    await layerSave('OBSERVATION',{...observation,phase:'FOLLOW_UP',window_start:'2026-01-02T00:00:00Z',window_end:'2026-01-03T00:00:00Z',primary_numerator:9,counter_numerator:1});
+    await layerSave('OUTCOME_REVIEW',{observation_sequence:3,passed:'true'},'CDE CHECKER');
+    let outcome=JSON.parse(await page.locator('#study-output').textContent());
+    if(!outcome.ready_for_rehearsal||Math.abs(outcome.groups[0].primary_delta-.1)>1e-9||outcome.groups[0].counter_delta!==-1||outcome.causal_effect_estimated)throw Error('CDE outcome comparison failed');
+    await layerSave('TRIAL',{trial_id:'SYN-CDE-TRIAL',study_ids:'SYN-CDE-STUDY',scope:'Fictional notice rehearsal',owner:'SYN-OWNER',resources:'Fictional staff',continuity:'Fictional fallback',rollback:'Reopen record; no actual action to undo'});
+    for(const [index,status] of ['DESIGNED','BASELINE_RECORDED','REHEARSAL_RECORDED'].entries()){
+      await layerSave('TRIAL_EVENT',{action:'RECORD',status});
+      await layerSave('TRIAL_EVENT',{action:'CHECK',target_sequence:index*2+1,passed:'true'},'CDE CHECKER');
+    }
+    await page.reload();
+    await page.waitForFunction(()=>document.querySelector('#trial-output').textContent.includes('REHEARSAL_RECORDED'));
+    let trial=JSON.parse(await page.locator('#trial-output').textContent());
+    if(!trial.stage_checked||trial.execution_authorized||trial.layer_a_status!=='LEGAL_REVIEW_REQUIRED')throw Error('CDE trial persistence/holds failed');
+    await layerSave('EVIDENCE',{...sourceFields,content:'Corrected fictional evidence'});
+    outcome=JSON.parse(await page.locator('#study-output').textContent());trial=JSON.parse(await page.locator('#trial-output').textContent());
+    if(outcome.ready_for_rehearsal||trial.stage_checked||trial.stale_event_sequences.length!==6)throw Error('CDE changed evidence did not invalidate results');
+    await page.locator('#record-kind').selectOption('TRIAL_EVENT');
+    await page.locator('#field-status').selectOption('EVALUATION_RECORDED');
+    await page.locator('#message').evaluate(e=>e.textContent='');
+    await page.locator('#save-layer').click();
+    await page.waitForFunction(()=>document.querySelector('#message').textContent.includes('prior phase needs'));
+    await layerSave('TRIAL_EVENT',{action:'REOPEN'});
+    trial=JSON.parse(await page.locator('#trial-output').textContent());
+    if(trial.stage!=='DRAFT'||trial.execution_authorized)throw Error('CDE reopen failed');
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('CDE mobile overflow');
+    await page.screenshot({path:'.local/portfolio-layers-mobile.png'});
     if(errors.length)throw Error(errors.join('; '));
-    console.log('PASS: all 44 defined-workstream controls, legacy domain labs, measurements, capstone evidence holds, snapshots, persistence and mobile layout');
+    console.log('PASS: all 44 defined-workstream controls, legacy domain labs, measurements, capstone evidence holds, snapshots, C/D/E evidence-outcome-rehearsal invalidation, persistence and mobile layout');
   } catch(error) {
     const page=browser?.contexts()[0]?.pages()[0];
     if(page){

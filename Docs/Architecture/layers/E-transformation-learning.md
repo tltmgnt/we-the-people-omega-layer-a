@@ -6,11 +6,14 @@ Connects diagnosis to implementation. It establishes methods for controlled pilo
 
 ## Current repository scope
 
-Conceptual outline plus synthetic pilot/governance rehearsals, checked corrections, scenario rollback/restore and capstone references. No separate completed Layer E package, real institutional transition, independent adoption evidence or completed government pilot is delivered.
+Dedicated synthetic rehearsal/learning workspace: owner/resources/continuity/rollback plans, linked outcome studies, context-pinned phases, separate checks, stale-context holds and reopen/rollback history. No real institutional transition, adoption evidence or completed government pilot is delivered.
 
 - [Collaboration/pilot rehearsal](../../../layer-b/portfolio/INITIATIVE-LAB.md)
 - [Government collaboration brief](../../../layer-b/docs/Collaboration/concept-and-pilot.md)
 - [Scenario controls, rollback and holds](../../../layer-b/portfolio/CONTROLLED-PORTFOLIO.md)
+
+- [Dedicated C/D/E workspace, controls and worked example](../../../layer-b/portfolio/LAYER-WORKSPACES.md)
+- [Shared prototype implementation](../../../layer-b/civic_portfolio/layer_workspaces.py)
 
 ## Source and acceptance
 

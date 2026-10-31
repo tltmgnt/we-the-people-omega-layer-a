@@ -6,12 +6,15 @@ Provides the shared research and analytical foundation for the initiative. It in
 
 ## Current repository scope
 
-Conceptual outline plus shared source snapshots/hashes, revision checks, frozen comparisons and proposed method documentation. No separate completed Layer D package, actual multi-agent analytical execution, qualified causal evaluation or universally validated combined method is delivered.
+Dedicated synthetic evidence workspace: exact-text SHA-256 revisions, origins, confidence A/B/C assertions, limitations and separate revision checks; existing source/comparison tools remain available. No authenticated evidence, executed multi-agent analysis, qualified causal evaluation or universally validated method is delivered.
 
 - [Topological Gap Analysis proposal](../../../layer-b/docs/Methods/topological-gap-analysis.md)
 - [DTI / temporal burden proposal](../../../layer-b/docs/Methods/temporal-burden.md)
 - [HedgeOps roles and limits](../../../layer-b/docs/Governance/hedgeops.md)
 - [Frozen scenario comparisons](../../../layer-b/portfolio/SCENARIO-COMPARISONS.md)
+
+- [Dedicated C/D/E workspace, controls and worked example](../../../layer-b/portfolio/LAYER-WORKSPACES.md)
+- [Shared prototype implementation](../../../layer-b/civic_portfolio/layer_workspaces.py)
 
 ## Source and acceptance
 
