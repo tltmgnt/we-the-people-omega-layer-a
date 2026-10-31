@@ -1141,6 +1141,7 @@ const path = require('node:path');
     if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Capstone mobile overflow');
     await page.screenshot({path:'.local/portfolio-all-workstreams-mobile.png'});
     await page.locator('#actor').fill('DEMO INITIATOR');
+    await page.locator('#note').fill('Fictional operator edit after loading the demo; preserve this change on repeat load');
     await page.locator('#demo-batch-id').fill('SYN-BROWSER-DEMO');
     await page.getByRole('button',{name:'Load 44 fictional examples',exact:true}).click();
     await page.waitForFunction(()=>document.querySelector('#demo-receipt').textContent.includes('"created": true')&&!document.querySelector('#load-demo').disabled);
