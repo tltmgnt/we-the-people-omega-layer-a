@@ -881,6 +881,44 @@ const path = require('node:path');
     await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "WITHDRAWN"')&&!document.querySelector('#refresh').disabled);
     if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Scenario controls mobile overflow');
     await page.screenshot({path:'.local/portfolio-scenarios-mobile.png'});
+    await page.locator('#workflow').selectOption('procurement');
+    await page.locator('#actor').fill('PROCUREMENT RECORDER');
+    await page.locator('#note').fill('Fictional procurement scenario only');
+    await page.locator('#run-id').fill('SYN-PROCUREMENT-DEMO');
+    await page.getByRole('button',{name:'Create scenario',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('#run').value==='SYN-PROCUREMENT-DEMO'&&!document.querySelector('#pause').disabled);
+    for(const stage of ['SOLICITATION_RECORDED','EVALUATION_RECORDED','CONTRACT_RECORDED','DELIVERY_RECORDED','ACCEPTANCE_REVIEW']){
+      await page.locator('#next').selectOption(stage);await scenarioClick('step');
+    }
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Procurement closure exposed before acceptance check');
+    await page.locator('#pass').click();
+    await page.getByText('acceptance requires a checker distinct from the current delivery recorder',{exact:true}).waitFor();
+    await page.locator('#actor').fill('PROCUREMENT CHECKER');await scenarioClick('fail');
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Failed procurement acceptance permits closure');
+    await scenarioClick('pass');
+    const acceptanceCheckpoint=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#actor').fill('PROCUREMENT RECORDER');
+    await page.locator('#next').selectOption('CORRECTION_REQUESTED');await scenarioClick('step');
+    await page.locator('#next').selectOption('DELIVERY_RECORDED');await scenarioClick('step');
+    await page.locator('#next').selectOption('ACCEPTANCE_REVIEW');await scenarioClick('step');
+    if(await page.locator('#next option[value="CLOSED"]').count())throw Error('Procurement reused acceptance from earlier delivery');
+    await page.locator('#actor').fill('PROCUREMENT CHECKER');await scenarioClick('pass');
+    await page.locator('#next').selectOption('CLOSED');await scenarioClick('step');
+    let procurementReport=JSON.parse(await page.locator('#report').textContent());
+    if(procurementReport.workflow!=='procurement'||procurementReport.correction_cycles!==1||procurementReport.execution_authorized)throw Error('Procurement report/hold failed');
+    const beforeAcceptanceRestore=JSON.parse(await page.locator('#snapshot-data').textContent()).sequence;
+    await page.locator('#snapshot').selectOption(String(acceptanceCheckpoint));await page.locator('#restore').click();
+    await page.waitForFunction(n=>JSON.parse(document.querySelector('#snapshot-data').textContent).sequence===n&&!document.querySelector('#refresh').disabled,beforeAcceptanceRestore+1);
+    if(!(await page.locator('#next option[value="CLOSED"]').count()))throw Error('Procurement exact acceptance snapshot not restored');
+    for(const stage of ['DRAFT','SOLICITATION_RECORDED','EVALUATION_RECORDED','CONTRACT_RECORDED','DELIVERY_RECORDED','ACCEPTANCE_REVIEW','CORRECTION_REQUESTED','CLOSED','CANCELLED']){
+      await page.locator('#preset-stage').selectOption(stage);await scenarioClick('preset');
+      procurementReport=JSON.parse(await page.locator('#report').textContent());
+      if(procurementReport.stage!==stage)throw Error('Procurement preset failed: '+stage);
+      if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Procurement mobile overflow: '+stage);
+    }
+    await page.reload();await page.locator('#run').selectOption('SYN-PROCUREMENT-DEMO');
+    await page.waitForFunction(()=>document.querySelector('#report').textContent.includes('"stage": "CANCELLED"')&&!document.querySelector('#refresh').disabled);
+    await page.screenshot({path:'.local/portfolio-procurement-mobile.png'});
     if(errors.length)throw Error(errors.join('; '));
     console.log('PASS: portfolio and eleven domain labs, connected initiative and scenario controls, evidence/hold safeguards, reports, persistence and mobile layout');
   } catch(error) {

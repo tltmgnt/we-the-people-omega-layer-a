@@ -74,3 +74,7 @@ Export includes synthetic_scenarios run/event bodies plus the existing shared wo
 Keep exports out of public git when the workspace contains private source material. Stop the app and retain an untouched backup before upgrades; restore a copy with the previous application version for rollback.
 
 Tests cover every workflow preset, valid/invalid edges, pause/stop/resume, explicit paused clock advancement, correction-loop timing, terminal controls, all quality outcomes, reset/restore history, stale versions, invalid input atomicity, calendar limits, isolation, backup/export and HTTP controls. Browser CI walks the use case, all presets, quality outcomes, snapshot restore, persistence and mobile layout.
+
+## Additional workflow: Project 019
+
+The console now also supports a [procurement and contract-delivery use case](PROCUREMENT-LAB.md) with nine states and revision-specific acceptance holds. Select the workflow when creating a run. Omitted workflow and older stored bodies continue to default to permit. Reset targets each workflow's own initial state; snapshots remain scoped to the immutable run/workflow. The shared bootstrap publishes both workflow configurations. See the linked procurement handoff for closure rules and explicit checked CLOSED presets.

@@ -9,7 +9,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 from .store import Conflict, MAX_TEXT, Store, now
-from .scenarios import Scenarios, ACTIONS as SCENARIO_ACTIONS, QUALITY as SCENARIO_QUALITY
+from .scenarios import Scenarios, ACTIONS as SCENARIO_ACTIONS, QUALITY as SCENARIO_QUALITY, catalog as scenario_catalog
 from .permits import Permits, STAGES as PERMIT_STAGES
 from .maintenance import Maintenance
 from .sanitation import Sanitation
@@ -103,7 +103,7 @@ def server(store, port=8765):
                     elif path == '/api/export':
                         self.send(200, store.export())
                     elif path == '/api/scenarios':
-                        self.send(200,dict(runs=scenarios.runs(),token=token,stages={k:sorted(v) for k,v in PERMIT_STAGES.items()},quality=SCENARIO_QUALITY,actions=SCENARIO_ACTIONS))
+                        self.send(200,dict(runs=scenarios.runs(),token=token,stages={k:sorted(v) for k,v in PERMIT_STAGES.items()},quality=SCENARIO_QUALITY,actions=SCENARIO_ACTIONS,workflows=scenario_catalog()))
                     elif len(parts)==4 and parts[:2]==['api','scenarios'] and parts[3]=='report':
                         self.send(200,scenarios.report(parts[2]))
                     elif path == '/api/permits':

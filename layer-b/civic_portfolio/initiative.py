@@ -8,7 +8,7 @@ from .store import Conflict,text,ROOT
 METHODS={'041':'Constitutional and civic foundations','042':'Topological Gap Analysis Ω','043':'Civic systems intelligence and evidence','044':'DTI Ω temporal capacity','045':'HedgeOps Ω benchmarked analysis','046':'Institutional transition management','047':'Rights and human agency assurance','048':'Civic performance and validation','049':'Leadership and institutional adoption','050':'Integrated simulation and capstone'}
 SAFEGUARDS=('AUTHORITY','RIGHTS_ACCESSIBILITY','PRIVACY_SECURITY','HUMAN_ACCOUNTABILITY','INDEPENDENT_CHALLENGE','TRANSPARENCY_CORRECTION','JURISDICTION_TRIBAL_SOVEREIGNTY','SERVICE_CONTINUITY')
 STAGES=('PROPOSED','FRAMEWORK_REVIEW','PILOT_SELECTED','BASELINE_RECORDED','CONTROLLED_TEST_RECORDED','INDEPENDENT_EVALUATION_RECORDED','REPORT_RECORDED')
-LABS={'009':'/permits','010':'/maintenance','011':'/sanitation','012':'/transit','013':'/housing','014':'/public-access','015':'/utilities','016':'/rights','017':'/election-services','018':'/finance','023':'/justice'}
+LABS={'009':'/permits','010':'/maintenance','011':'/sanitation','012':'/transit','013':'/housing','014':'/public-access','015':'/utilities','016':'/rights','017':'/election-services','018':'/finance','019':'/scenarios?workflow=procurement','023':'/justice'}
 SCHEMAS={'DEPENDENCY':'from_project to_project rationale active','PRIORITY':'project_id disposition owner rationale','SAFEGUARD':'safeguard status owner evidence','SAFEGUARD_CHECK':'assertion_sequence passed evidence','STAGE':'stage owner evidence limitations','STAGE_CHECK':'stage_sequence passed evidence','REOPEN':'reason','CHALLENGE':'challenge_id question owner evidence','RESPONSE':'challenge_id response evidence'}
 
 
