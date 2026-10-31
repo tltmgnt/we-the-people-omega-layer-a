@@ -1,5 +1,7 @@
 # 50-project portfolio and Layer B crosswalk
 
+Use the [local portfolio application](APPLICATION.md) to import full source-text exports, maintain project definitions and record delivery evidence. Review the [50 individual proposed implementation plans](plans/README.md) before confirming requirements. The application is a shared delivery workspace; it does not mean the 50 domain services have been implemented.
+
 [project-register.json](project-register.json) records 50 numbered slots from the supplied
 initiative goal. It is a source/title register, not an implementation authorization or final
 work-breakdown structure. All projects remain proposed, with owners and scope to be agreed.

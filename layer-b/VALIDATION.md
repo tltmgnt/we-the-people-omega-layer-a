@@ -1,5 +1,13 @@
 # Preparation and import validation — 2026-10-31
 
+## Portfolio application follow-up
+
+Local verification of the shared portfolio application: all 20 Layer B tests pass (13 existing packet tests and 7 new application tests). All 21 root Layer A tests also pass. JavaScript syntax checking passes. A local browser executable was unavailable and its download failed, so local visual verification is not claimed. The application browser smoke check is included for GitHub CI.
+
+Application tests cover all 50 IDs and generated plans, full-text source preservation/hashing/versioning, user-attributed review records, persisted edits, stale-write/review rejection, completion evidence, changed-source/scope invalidation, HTTP mutation/export, loopback origin checks and restorable SQLite backup. No complete domain-project implementation or external source-document import is claimed.
+
+## Merged starter import evidence
+
 The starter was prepared and tested locally with Python 3.12, then imported through [PR #7](https://github.com/tltmgnt/we-the-people-omega-layer-a/pull/7).
 
 Both workflows passed on merged import commit `eb2a3df04b7a585b8bdd373b3059c108a085bee1`:
