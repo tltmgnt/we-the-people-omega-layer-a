@@ -36,6 +36,7 @@ Layer B supports the broader proposed five-layer, 50-project civic research and 
 - [Run the 50-project portfolio application](portfolio/APPLICATION.md)
 - [Try project 009's synthetic permit workflow](portfolio/PERMIT-LAB.md)
 - [Try project 010's synthetic asset-maintenance workflow](portfolio/MAINTENANCE-LAB.md)
+- [Try project 011's synthetic sanitation-service workflow](portfolio/SANITATION-LAB.md)
 - [All 50 proposed implementation plans](portfolio/plans/README.md)
 
 - [Architecture, mission and lifecycle](docs/Architecture/layer-b-overview.md)

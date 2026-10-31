@@ -2,6 +2,9 @@
 
 ## Unreleased — 0.1.0-alpha preparation
 
+- Implement project 011's synthetic route/run records, current-record count verification, service recovery revisions and anonymous missed-service response/reopening histories. Separate verified stop-visit rates, recovery intervals and report-response measures; retain explicit missing verification and unknown sample values.
+- Add seven sanitation integration tests and extend browser CI through a shortfall, report response, newly verified recovery, repeat report and persisted mobile workflow. Preserve unread source and institutional acceptance gaps.
+
 - Implement project 010's synthetic asset-maintenance lab with condition records, triage rationale, team assignment, stage history, current-cycle verification before closure, reopening, historical backlog/repair measures and area-inventory context.
 - Add seven maintenance integration tests and extend browser CI through a verified closure, rejected unverified closure, reopening, persistence and mobile layout. Preserve unknown source/acceptance requirements and original blocked packets.
 
