@@ -1,0 +1,36 @@
+{
+  "review_id": "SYNTHETIC-A-PERMIT-001",
+  "schema_version": "0.1.0",
+  "proposal_id": "HYPOTHETICAL-PERMIT-001",
+  "proposal_summary": "Hypothetical permit backlog diagnosis before any service change",
+  "responsible_institution": "Fictional permitting office; no authorized participating institution",
+  "jurisdictions": [
+    "Undetermined fictional local jurisdiction"
+  ],
+  "legal_authorities": [],
+  "rights_affected": [
+    "Potential notice, access, privacy and review interests; applicability requires legal review"
+  ],
+  "procedural_requirements": [
+    "Determine governing permit, notice, inspection and appeal requirements"
+  ],
+  "jurisdictional_limitations": [
+    "Permit type, jurisdiction and institutional authority are not identified"
+  ],
+  "accountability_mechanisms": [
+    "Proposed human review and complaint routes; not verified"
+  ],
+  "unresolved_questions": [
+    "Which jurisdiction, program and authorities govern the proposed study?",
+    "What data access, process and review safeguards are required?"
+  ],
+  "review_status": "LEGAL_REVIEW_REQUIRED",
+  "reviewer_role": "Qualified authorized legal reviewer required; unassigned",
+  "conditions": [
+    "No implementation until authority and required safeguards are resolved"
+  ],
+  "evidence_ids": [
+    "SYNTHETIC-PERMIT-NOTES-001"
+  ],
+  "revision": 1
+}
