@@ -1,0 +1,63 @@
+const {chromium}=require('playwright');
+const {spawn}=require('node:child_process');
+const {mkdir,mkdtemp,rm,readFile,writeFile}=require('node:fs/promises');
+const {tmpdir}=require('node:os');
+const path=require('node:path');
+const assert=require('node:assert/strict');
+(async()=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'capacity-atlas-'));
+ const server=spawn(process.env.PYTHON||'python',['-u','-m','http.server','0','--bind','127.0.0.1','--directory','dist']);
+ let browser;
+ try{
+  const url=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Static server timeout')),10000);server.stdout.on('data',c=>{const match=c.toString().match(/port (\d+)/);if(match){clearTimeout(timer);resolve('http://127.0.0.1:'+match[1]);}});server.on('error',reject);server.on('exit',code=>reject(Error('Static server exited '+code)));});
+  browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.goto(url);await page.locator('#usable').filter({hasText:'95 min'}).waitFor();
+  assert.equal(await page.locator('#margin').textContent(),'0 min');
+  await page.locator('#baseline').click();
+  await page.locator('#state-actions').getByRole('button',{name:'Start',exact:true}).click();
+  await page.locator('#work-minutes').fill('16');await page.locator('#work-form button').click();
+  await page.getByText('Minutes exceed the remaining estimate',{exact:true}).waitFor();
+  assert.equal(await page.locator('#worked').inputValue(),'0');
+  await page.locator('#work-minutes').fill('15');await page.locator('#work-form button').click();
+  await page.locator('#state-actions').getByRole('button',{name:'Complete',exact:true}).click();
+  await page.locator('#task-state').filter({hasText:'COMPLETED'}).waitFor();
+  await page.locator('#task-strip button').nth(1).click();
+  await page.locator('#state-actions').getByRole('button',{name:'Start',exact:true}).click();
+  await page.locator('#state-actions').getByRole('button',{name:'Pause',exact:true}).click();
+  await page.locator('#task-strip button').nth(3).click();
+  await page.locator('#state-actions').getByRole('button',{name:'Start',exact:true}).click();
+  await page.locator('#state-actions').getByRole('button',{name:'Block',exact:true}).click();
+  await page.locator('#state-actions').getByRole('button',{name:'Unblock',exact:true}).click();
+  await page.locator('#task-strip button').nth(0).click();
+  await page.locator('#state-actions').getByRole('button',{name:'Reopen',exact:true}).click();
+  await page.locator('#task-strip button').nth(1).click();
+  // B was paused, so its old progress is retained but resume is now forbidden.
+  assert.equal(await page.locator('#state-actions').getByRole('button',{name:'Resume',exact:true}).isDisabled(),true);
+  await page.locator('#task-strip button').nth(0).click();
+  await page.locator('#dependencies input[value="E"]').check();await page.locator('#task-form button').click();
+  await page.getByText('Dependency cycle detected; keep the map acyclic',{exact:true}).waitFor();
+  await page.locator('#dependencies input[value="E"]').uncheck();await page.locator('#task-title').fill('Fictional revised authority check');await page.locator('#task-form button').click();
+  await page.getByText('A edits saved. Dependencies rechecked.',{exact:true}).waitFor();
+  await page.locator('#interruptions').focus();await page.locator('#interruptions').press('Home');for(let i=0;i<4;i++)await page.locator('#interruptions').press('ArrowRight');
+  await page.locator('#budget-form button').click();
+  assert.equal(await page.locator('#usable').textContent(),'85 min');assert.equal(await page.locator('#margin').textContent(),'-10 min');
+  assert.match(await page.locator('#comparison').textContent(),/planning margin -10 min/);
+  await page.getByRole('button',{name:'Focus',exact:true}).click();assert.equal(await page.getByRole('button',{name:'Focus',exact:true}).getAttribute('aria-pressed'),'true');
+  await page.getByRole('button',{name:'Constraints',exact:true}).click();
+  await page.locator('#save-local').click();await page.reload();
+  await page.locator('#message').filter({hasText:'Loaded your saved browser session.'}).waitFor();
+  assert.equal(await page.locator('#task-title').inputValue(),'Fictional revised authority check');assert.equal(await page.locator('#usable').textContent(),'85 min');
+  const download=page.waitForEvent('download');await page.locator('#export').click();const exported=await download;const exportedPath=path.join(dir,'session.json');await exported.saveAs(exportedPath);
+  const record=JSON.parse(await readFile(exportedPath,'utf8'));assert.equal(record.version,1);assert.equal(record.baseline.settings.interruptions,2);assert.equal(record.core.settings.interruptions,4);
+  await page.locator('#import').setInputFiles({name:'bad.json',mimeType:'application/json',buffer:Buffer.from('{"version":99}')});await page.getByText('Unsupported session format',{exact:true}).waitFor();assert.equal(await page.locator('#usable').textContent(),'85 min');
+  page.once('dialog',dialog=>dialog.accept());await page.locator('#import').setInputFiles(exportedPath);await page.getByText('Session imported. Imported history is unverified user data.',{exact:true}).waitFor();
+  const before=await page.locator('#history .event').count();await page.locator('#history .event').last().getByRole('button').click();
+  assert.equal(await page.locator('#history .event').count(),before+1);assert.equal(await page.locator('#usable').textContent(),'95 min');
+  await page.locator('#about-button').click();await page.getByRole('heading',{name:'A workspace for deliberate work',exact:true}).waitFor();await page.locator('#close-about').click();
+  await mkdir('.local',{recursive:true});await page.screenshot({path:'.local/atlas-desktop.png'});
+  await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);await page.screenshot({path:'.local/atlas-mobile.png',fullPage:true});
+  assert.deepEqual(errors,[]);console.log('PASS: Capacity Atlas controls, negative cases, baseline, history, save/reload, export/import and mobile layout');
+ }catch(error){if(browser){const page=browser.contexts()[0]?.pages()[0];if(page){await mkdir('.local',{recursive:true});await page.screenshot({path:'.local/atlas-failure.png',fullPage:true}).catch(()=>{});console.error('Application status:',await page.locator('#message').textContent().catch(()=>''));}}throw error;}
+ finally{if(browser)await browser.close();server.kill();await rm(dir,{recursive:true,force:true});}
+})().catch(error=>{console.error(error);process.exitCode=1;});
