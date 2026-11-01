@@ -2,12 +2,12 @@
 
 WE THE PEOPLE Ω is a civic systems research, education, evaluation and institutional improvement initiative. Its five connected layers examine lawful authority, government operations, human outcomes, evidence and controlled improvement.
 
-This repository contains the **A–E architecture, a 50-slot project portfolio, and controllable synthetic software prototypes**. The project spans all five layers; its GitHub URL currently retains the original `we-the-people-omega-layer-a` slug. The shared local application, including the C/D/E workspaces, lives under `layer-b/`.
+This repository contains the **A–E architecture, a 50-slot project portfolio, and controllable synthetic software prototypes**. The shared local application, including the C/D/E workspaces, lives under `layer-b/`.
 
 ## Start here
 
 - [Five-layer architecture index](Docs/Architecture/README.md)
-- [Repository identity and updating local remotes](Docs/Architecture/repository-identity.md)
+- [Project identity and GitHub description](Docs/Architecture/repository-identity.md)
 - [Run the portfolio application](layer-b/portfolio/APPLICATION.md)
 - [Capacity Atlas interface: topology, time and editable work](capacity-atlas/README.md)
 - [State controls for all 44 defined workstreams](layer-b/portfolio/CONTROLLED-PORTFOLIO.md)
