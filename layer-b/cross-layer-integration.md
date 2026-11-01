@@ -11,7 +11,7 @@
 The packet uses stable proposal_id, record_id, review_id and evidence_id values and explicit
 schema versions. A local reference pins Layer A review revision, schema version and SHA-256
 of exact bytes. It is a synthetic reference, not a claim that the new permit review exists
-in the Layer A repository. See [upstream provenance](vendor/layer-a/UPSTREAM.md).
+in the Layers A–E repository. See [upstream provenance](vendor/layer-a/UPSTREAM.md).
 
 The Layer A [synthetic exchange example](https://github.com/tltmgnt/we-the-people-omega-layer-a/tree/main/examples/cross-layer)
 has its own proposed 0.1.0 envelope. This Layer B operational record is a separate draft

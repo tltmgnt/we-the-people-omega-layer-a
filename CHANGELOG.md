@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Align remaining repository labels and setup guidance with Layers A–E; document the requested slug/description change and local-remote migration. The GitHub settings rename is pending.
 - Reject duplicate JSON keys and nonstandard numeric constants in records, exchanges and pinned JSON; add regression coverage and a stack-review report.
 - Add a milestone roadmap, 0.2.0-alpha acceptance criteria, stacked-PR merge procedure and release evidence ledger; no release is published.
 - Add a versioned synthetic B/C/A/D exchange, pinned-reference consumer, contract documentation and negative integration tests.
