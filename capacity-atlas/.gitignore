@@ -1,0 +1,5 @@
+.local/
+node_modules/
+.openai/
+*.log
+capacity-atlas-session.json

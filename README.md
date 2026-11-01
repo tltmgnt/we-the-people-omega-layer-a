@@ -8,6 +8,7 @@ This repository contains the **A–E architecture, a 50-slot project portfolio, 
 
 - [Five-layer architecture index](Docs/Architecture/README.md)
 - [Run the portfolio application](layer-b/portfolio/APPLICATION.md)
+- [Capacity Atlas interface: topology, time and editable work](capacity-atlas/README.md)
 - [State controls for all 44 defined workstreams](layer-b/portfolio/CONTROLLED-PORTFOLIO.md)
 - [Dedicated C/D/E workspaces and worked example](layer-b/portfolio/LAYER-WORKSPACES.md)
 - [All 50 project slots and six definition holds](layer-b/portfolio/CONTROL-COVERAGE.md)
@@ -87,6 +88,14 @@ In the dedicated local workspaces, **D evidence revisions → C pinned observati
 Controls differ between the shared scenario controller and individual labs. Consult their state maps and handoffs for terminal states, role separation, version checks and recovery conditions.
 
 [Permit state example](layer-b/portfolio/SCENARIO-CONTROLS.md) · [All defined workflow controls](layer-b/portfolio/CONTROLLED-PORTFOLIO.md) · [C/D/E state table](layer-b/portfolio/LAYER-WORKSPACES.md)
+
+## Capacity Atlas interface
+
+[Capacity Atlas](capacity-atlas/README.md) adds a standalone browser-local interface for exploring A–E work items, dependencies, time budgets and interruption assumptions. Inspect the topology, edit nodes, use permitted work-state controls, compare a frozen baseline, restore history, and explicitly save or import/export a session.
+
+From the repository root, run `python -m http.server 8767 --bind 127.0.0.1 --directory capacity-atlas/dist` and open <http://127.0.0.1:8767>. It requires no frontend build or runtime dependencies. The source and tests are under `capacity-atlas/`.
+
+This planning model is separate from the Python/SQLite portfolio and does not measure intelligence, establish clinical cognitive capacity, or clear legal review. Browser saves are local and explicit. The hosted Site retains its own access settings; this repository copy does not deploy or change that Site.
 
 ## The 50-project portfolio
 

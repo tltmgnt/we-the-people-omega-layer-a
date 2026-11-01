@@ -1,0 +1,35 @@
+name: Validate Capacity Atlas
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  model-and-browser:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: capacity-atlas
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check model and module syntax
+        run: |
+          node --test model.test.mjs
+          node --check dist/app.mjs
+      - run: npm install --no-save --prefix .local/browser-check playwright@1.62.1
+      - run: .local/browser-check/node_modules/.bin/playwright install --with-deps chromium
+      - name: Check interactive controls and mobile layout
+        run: node browser-smoke.cjs
+        env:
+          NODE_PATH: .local/browser-check/node_modules
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: capacity-atlas-browser-checks
+          path: capacity-atlas/.local/atlas-*.png
+          if-no-files-found: ignore
+          include-hidden-files: true
