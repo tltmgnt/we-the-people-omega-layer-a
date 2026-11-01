@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Align remaining repository labels and setup guidance with Layers A–E and add a complete project identity/description reference; retain the existing repository name and genuine Layer A component names.
 - Reject duplicate JSON keys and nonstandard numeric constants in records, exchanges and pinned JSON; add regression coverage and a stack-review report.
 - Add a milestone roadmap, 0.2.0-alpha acceptance criteria, stacked-PR merge procedure and release evidence ledger; no release is published.
 - Add a versioned synthetic B/C/A/D exchange, pinned-reference consumer, contract documentation and negative integration tests.

@@ -2,7 +2,7 @@
 
 ## Current repository
 
-Layer B is published inside the public [Layer A repository](https://github.com/tltmgnt/we-the-people-omega-layer-a), under `layer-b/`. The owner selected this destination for the starter import.
+Layer B is published inside the public [Layers A–E repository](https://github.com/tltmgnt/we-the-people-omega-layer-a), under `layer-b/`. The owner selected this destination for the starter import.
 
 [PR #7](https://github.com/tltmgnt/we-the-people-omega-layer-a/pull/7) imported the 42-file starter and was merged on 2026-10-31. The original package was prepared for a standalone Layer B repository; this import uses a subdirectory instead.
 
