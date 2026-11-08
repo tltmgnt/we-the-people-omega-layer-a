@@ -184,3 +184,7 @@ The proposed combined methodology is not claimed to be a validated universal sta
 - [Bureau of Indian Affairs](https://www.bia.gov/)
 
 These are research starting points, not exhaustive controlling authority. Check current applicable constitutional text, statutes, treaties, Tribal law, judicial decisions and jurisdiction-specific requirements before relying on a legal conclusion.
+
+## ResearchOS / TECT concept integration
+
+The [ResearchOS / Topological Epistemic Control Theory technical concept paper](docs/researchos/TECT_WHITE_PAPER.md) proposes an epistemic control and assurance infrastructure for AI-generated knowledge. Read the [repository integration status](docs/researchos/INTEGRATION.md) and [machine-readable scope](docs/researchos/integration.json) for the boundary between the concept and implemented capabilities. Performance targets are research objectives, not achieved results. This documentation addition does not implement the complete ResearchOS architecture or change operational authority.
