@@ -1,5 +1,14 @@
 # WE THE PEOPLE Ω — Layers A–E
 
+<!-- research-workbench:start -->
+## Research workbench
+
+[Open this repository's private workbench](https://tltmgnt-we-the-people-omega-layer-a.troturn31.chatgpt.site) · [All repository workbenches](https://tltmgnt-research-workbenches.troturn31.chatgpt.site)
+
+The hosted interface requires ChatGPT sign-in and access to the private Site. It supports browser-local research records, evidence fingerprints and workspace export. It is a prototype: no live AI model or repository backend is connected, and it does not establish external validation.
+<!-- research-workbench:end -->
+
+
 WE THE PEOPLE Ω is a civic systems research, education, evaluation and institutional improvement initiative. Its five connected layers examine lawful authority, government operations, human outcomes, evidence and controlled improvement.
 
 This repository contains the **A–E architecture, a 50-slot project portfolio, and controllable synthetic software prototypes**. The shared local application, including the C/D/E workspaces, lives under `layer-b/`.
