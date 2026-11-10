@@ -1,6 +1,6 @@
 # Topology compatibility and curriculum v2 — we-the-people-omega-layer-a
 
-Version 2 adapts the explicit-molecular-graph teaching pattern to this repository's actual role. This is documentation and a learning/decision framework; it introduces no mathematical engine, runtime dependency or operational permission.
+The verified edition of version 2 adapts the explicit-molecular-graph teaching pattern to this repository's actual role. This edition adds executable learning checks and reviewed answer keys. It does not introduce a new topology engine or grant operational permission.
 
 ## Repository decision
 
@@ -40,47 +40,55 @@ Prerequisites: basic programming, sets, functions and graph vocabulary. Work in 
 | 5. Comparison | Justify mathematical necessity and cost. | Complete the six-criterion card for the existing approach and one proposed alternative; record unknowns honestly. | Evidence-backed recommendation with baseline and explicit veto conditions. |
 | 6. Reproduction | Communicate the bounded result. | Reproduce the capstone using existing offline fixtures and record software version, inputs, outputs and limitations. | Reviewable notebook or report distinguishing computation, replay, independent evaluation and authorization. |
 
-## Source-linked reading laboratory
+## Worked reasoning and source explanation
 
-The table is a guided selection of source lines, not an assertion that the whole repository is covered. Line numbers refer to the inspected source blob `e454ed2545e9ceaa11c3f4d127c35c477670ff68` in [layer-b/civic_portfolio/__main__.py](../../layer-b/civic_portfolio/__main__.py). Recheck anchors after source changes.
+validate_review.main() has two distinct gates. A schema-valid DRAFT can exit zero in ordinary validation but exits 2 under --require-ready. Merely replacing review_status with READY_FOR_HUMAN_DECISION does not fill missing attribution, evidence or unresolved conditions. load_json() also rejects duplicate keys and NaN before schema checking, avoiding ambiguous or nonstandard transport.
 
-| Line | Statement | Learning check |
+Read the [inspected source](https://github.com/tltmgnt/we-the-people-omega-layer-a/blob/4535dd6cea40f305b35d89ce63b11ff3738782e6/scripts/validate_review.py) alongside the [executable answer key](../../curriculum/lab.py). The source link is pinned to the inspected revision; the lab and any explicitly described fix are in this change.
+
+## Run the worked laboratory
+
+From the repository root, with Python 3.12 (the recorded local version is 3.12.14):
+
+```sh
+python curriculum/lab.py --verify
+```
+
+This lab uses the existing jsonschema dependency; the recorded local run used jsonschema 4.26.0.
+
+The lab checks **5 explicit expectations** against existing repository functions. It prints a JSON case report and exits nonzero on a wrong result. `--verify` additionally compares the entire case report with [expected.json](../../curriculum/expected.json). Read the input and predict each result before opening the answer key. No API account, credentials, model download, trading action or equipment connection is needed.
+
+| Checkpoint | Expected answer |
+| --- | --- |
+| synthetic review fits schema | `true` |
+| valid record need not be ready | `2` |
+| duplicate review status is ambiguous JSON | `"ValueError"` |
+| nonstandard NaN rejected | `"ValueError"` |
+| changing label alone does not satisfy readiness | `false` |
+
+The comparisons above encode independently specified small examples and contract expectations; a passing answer key is not evidence of complete domain correctness. The original functions and their existing test suites remain the authority for broader supported contracts.
+
+## Learner tasks and assessment rubric
+
+1. Before running the lab, predict every expected answer and derive one numeric result or state transition by hand.
+2. Explain the worked reasoning above using the referenced source, including the rejected or counterexample case.
+3. Add a new valid example and a nearby failing example. Explain which assumption changes, then compare against the existing implementation. For concept/static labs, keep the result explicitly at that level.
+4. Complete the scorecard for a proposed extension and a simpler baseline. Leave measurements unknown until collected; a task that the baseline already solves is not evidence for additional topology.
+
+| Competency | Points | Full-credit evidence |
 | --- | --- | --- |
-| [32](../../layer-b/civic_portfolio/__main__.py#L32) | `def strict_json(raw):` | State the input/output contract and trace one normal and one failing case. |
-| [33](../../layer-b/civic_portfolio/__main__.py#L33) | `def pairs(items):` | State the input/output contract and trace one normal and one failing case. |
-| [37](../../layer-b/civic_portfolio/__main__.py#L37) | `raise ValueError('duplicate JSON key')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [39](../../layer-b/civic_portfolio/__main__.py#L39) | `return result` | Predict the returned value and distinguish a computed result from authorization. |
-| [41](../../layer-b/civic_portfolio/__main__.py#L41) | `def reject(value):` | State the input/output contract and trace one normal and one failing case. |
-| [42](../../layer-b/civic_portfolio/__main__.py#L42) | `raise ValueError('nonfinite JSON constant')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [43](../../layer-b/civic_portfolio/__main__.py#L43) | `return json.loads(raw, object_pairs_hook=pairs, parse_constant=reject)` | Predict the returned value and distinguish a computed result from authorization. |
-| [46](../../layer-b/civic_portfolio/__main__.py#L46) | `def server(store, port=8765):` | State the input/output contract and trace one normal and one failing case. |
-| [65](../../layer-b/civic_portfolio/__main__.py#L65) | `class Handler(BaseHTTPRequestHandler):` | State the input/output contract and trace one normal and one failing case. |
-| [66](../../layer-b/civic_portfolio/__main__.py#L66) | `def log_message(self, *_):` | State the input/output contract and trace one normal and one failing case. |
-| [69](../../layer-b/civic_portfolio/__main__.py#L69) | `def send(self, status, body, kind='application/json; charset=utf-8',download_name=None):` | State the input/output contract and trace one normal and one failing case. |
-| [81](../../layer-b/civic_portfolio/__main__.py#L81) | `def dispatch(self, mutation=False):` | State the input/output contract and trace one normal and one failing case. |
-| [96](../../layer-b/civic_portfolio/__main__.py#L96) | `raise ValueError('request body is empty or too large')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [99](../../layer-b/civic_portfolio/__main__.py#L99) | `raise ValueError('request must be an object')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [213](../../layer-b/civic_portfolio/__main__.py#L213) | `if set(data)!={'actor'} or not isinstance(data.get('actor'),str) or not data['actor'].strip() or len(data['actor'])>200:raise ValueError('actor required, at most 200 characters')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [223](../../layer-b/civic_portfolio/__main__.py#L223) | `if set(data)!={'actor'}:raise ValueError('actor required')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [381](../../layer-b/civic_portfolio/__main__.py#L381) | `def do_GET(self):` | State the input/output contract and trace one normal and one failing case. |
-| [384](../../layer-b/civic_portfolio/__main__.py#L384) | `def do_POST(self):` | State the input/output contract and trace one normal and one failing case. |
-| [387](../../layer-b/civic_portfolio/__main__.py#L387) | `return ThreadingHTTPServer(('127.0.0.1', port), Handler)` | Predict the returned value and distinguish a computed result from authorization. |
-| [390](../../layer-b/civic_portfolio/__main__.py#L390) | `def main(argv=None):` | State the input/output contract and trace one normal and one failing case. |
-| [430](../../layer-b/civic_portfolio/__main__.py#L430) | `if args.output.exists():raise ValueError('output exists; refusing to overwrite')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [434](../../layer-b/civic_portfolio/__main__.py#L434) | `if not sep or not seq.isdigit():raise ValueError('snapshot must be SYN-RUN:sequence')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [449](../../layer-b/civic_portfolio/__main__.py#L449) | `raise ValueError('source file is too large')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [464](../../layer-b/civic_portfolio/__main__.py#L464) | `return 1` | Predict the returned value and distinguish a computed result from authorization. |
-## Assessment and verification
+| Model and contract | 0–3 | Correct objects, relation direction, labels/units, input bounds and missingness. |
+| Derivation and trace | 0–3 | Hand derivation agrees with the specified fixture; source steps explain why. |
+| Counterexample | 0–3 | New failing/boundary case has a justified expected result; rejection is not suppressed. |
+| Scope and necessity | 0–3 | Distinguishes software behavior from validation and compares an explicit simpler alternative. |
 
-A learner must explain the model, trace the capstone, identify a counterexample and state the scope boundary. Assess these four competencies equally; a numerical score cannot compensate for an unsupported scientific or operational claim.
+Completion requires at least 10/12 and no zero in scope/necessity. A runnable answer key alone is not evidence that a learner achieved this competency. No learner-outcome study has been performed.
 
-Relevant existing checks:
+## Verification evidence and maintenance
 
-- [tests/test_benefits_pilot.py](../../tests/test_benefits_pilot.py)
-- [tests/test_cross_layer_exchange.py](../../tests/test_cross_layer_exchange.py)
-- [tests/test_review_validation.py](../../tests/test_review_validation.py)
+[VALIDATION.json](../../curriculum/VALIDATION.json) records the inspected base revision, local Python version, source/fixture hashes, lab/answer hashes, case count and exit codes. All cases were executed locally. An in-memory copy with a deliberately wrong comparison was also executed and returned nonzero, checking that the grading failure path is active. Those injected failures are harness checks, not scientific adversarial evaluations.
 
-Follow [README](../../README.md) for environment and installed-package instructions. Read scripts before execution; source-reading exercises do not authorize provider calls, model downloads, live orders, hardware actions or messages. Synthetic fixtures establish software behavior only. This documentation change does not report those exercises as already executed.
+The dedicated [curriculum workflow](../../.github/workflows/curriculum.yml) runs the same `--verify` command on relevant pull-request changes. CI status is reported by GitHub; the local record does not assert that remote CI passed. Existing full-suite and installed-package requirements still apply to runtime changes. When source or fixture semantics change, inspect the diff and rederive answers before updating expected.json. Never regenerate expected answers solely to silence a failure. Refresh the local validation record after an actual run; do not rewrite its recorded base revision as if a new run occurred.
 
 ## Interoperability and adoption gate
 
