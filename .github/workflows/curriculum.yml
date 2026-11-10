@@ -1,5 +1,13 @@
 name: Curriculum laboratory
 on:
+  push:
+    branches: [main, 'curriculum/topology-compatibility-v2']
+    paths:
+      - 'curriculum/**'
+      - '**/*.py'
+      - '**/*.json'
+      - 'docs/portfolio/TOPOLOGY_CURRICULUM_V2.md'
+      - '.github/workflows/curriculum.yml'
   pull_request:
     paths:
       - 'curriculum/**'
