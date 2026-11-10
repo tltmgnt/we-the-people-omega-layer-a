@@ -1,0 +1,22 @@
+{
+  "case_count": 5,
+  "command": "python curriculum/lab.py --verify",
+  "exit_code": 0,
+  "expected_sha256": "6b7870ee3a5462afd105278dbe613b949a1368d75dcec8ac20c0f071f388ee0f",
+  "jsonschema": "4.26.0",
+  "lab_sha256": "fafe0f4f4115a3a9eb9f0fee59a8250c1b7582803eb2827fd746fb41b3904de1",
+  "python": "3.12.14",
+  "repository": "tltmgnt/we-the-people-omega-layer-a",
+  "schema_version": 1,
+  "scope": "Local synthetic curriculum validation on the recorded source snapshot; not complete repository CI, learning outcomes, independent scientific reproduction or deployment approval",
+  "source_and_fixture_sha256": {
+    "example-review.json": "c3e676a4e59088b3bf10b99582bed86e3fdabab6177e0e6a562c6284f8300f0a",
+    "layer-b/schemas/operational-review.schema.json": "1f2380134c10a331526707b79eb49cda5cb39f0c2804e9c2f1a561da84267ef5",
+    "layer-b/vendor/layer-a/review-record.schema.json": "23cc221ea67b482bde6a1417d4763f16b778520a2c13f4ccc6adf4942ddffcc3",
+    "schemas/cross-layer-exchange.schema.json": "c048cd88319a25b077028ece6acbbffb4b1ae11b39ac3641a9c05a20d0090082",
+    "schemas/review-record.schema.json": "23cc221ea67b482bde6a1417d4763f16b778520a2c13f4ccc6adf4942ddffcc3",
+    "scripts/validate_review.py": "ac1ab1d5aef17ca4f89acda26a8f6d683f8c735671ecd6504cd1b0387a08ab1d"
+  },
+  "source_base_commit": "4535dd6cea40f305b35d89ce63b11ff3738782e6",
+  "wrong_expectation_exit_code": 1
+}

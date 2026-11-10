@@ -1,0 +1,38 @@
+{
+  "case_count": 5,
+  "cases": [
+    {
+      "actual": true,
+      "case": "synthetic review fits schema",
+      "expected": true,
+      "passed": true
+    },
+    {
+      "actual": 2,
+      "case": "valid record need not be ready",
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "actual": "ValueError",
+      "case": "duplicate review status is ambiguous JSON",
+      "expected": "ValueError",
+      "passed": true
+    },
+    {
+      "actual": "ValueError",
+      "case": "nonstandard NaN rejected",
+      "expected": "ValueError",
+      "passed": true
+    },
+    {
+      "actual": false,
+      "case": "changing label alone does not satisfy readiness",
+      "expected": false,
+      "passed": true
+    }
+  ],
+  "schema_version": 1,
+  "scope": "Synthetic curriculum checks only",
+  "status": "PASS"
+}
